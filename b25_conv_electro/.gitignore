@@ -40,3 +40,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Ignora todos los archivos dentro de src/environments pero no la propia carpeta
+/src/environments/*
+!src/environments/

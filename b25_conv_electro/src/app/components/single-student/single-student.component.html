@@ -1,0 +1,22 @@
+<div class="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full">
+    <h2 class="text-xl font-bold mb-2">Detalles del Estudiante</h2>
+
+    <div class="mb-4">
+      <p><strong>Nombre:</strong> {{ selectedUser()?.name }}</p>
+      <p><strong>Email:</strong> {{ selectedUser()?.email }}</p>
+      <p><strong>Estado:</strong> {{ selectedUser()?.estado }}</p>
+      <p><strong>Locación:</strong> {{ selectedUser()?.locacion }}</p>
+    </div>
+
+    <!-- Test: asegúrate de que esto se muestre primero -->
+    <div class="bg-gray-100 p-4 rounded mb-4">
+      <p>🧪 Contenido del formulario va aquí</p>
+    </div>
+
+    <!-- Reemplaza esto con tu componente real si ya funciona -->
+    <!-- <app-student-form [user]="selectedUser"></app-student-form> -->
+
+    <div class="text-right">
+      <button class="btn btn-sm btn-outline" (click)="onClose()">Cerrar</button>
+    </div>
+  </div>

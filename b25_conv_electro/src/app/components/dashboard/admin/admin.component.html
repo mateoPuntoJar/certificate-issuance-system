@@ -1,22 +1,21 @@
-<div class="flex justify-center items-center min-h-screen bg-base-200">
-    <div class="overflow-x-auto">
-      <table class="table table-zebra table-bordered bg-white shadow-xl">
-        <!-- head -->
-        <thead>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" class="checkbox" />
-              </label>
-            </th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for(item of user(); track $index){
+<div class="overflow-x-auto">
+    <table class="table table-zebra table-bordered bg-white shadow-xl">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>
+            <label>
+              <input type="checkbox" class="checkbox" />
+            </label>
+          </th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of user(); track $index">
           <!-- row 1 -->
           <tr>
             <th>
@@ -40,7 +39,7 @@
               </div>
             </td>
             <td>
-             <p> {{item.email}}</p>
+              <p> {{item.email}}</p>
               <br />
               <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
             </td>
@@ -49,27 +48,22 @@
               <button class="btn btn-ghost btn-xs" (click)="openDetails(item)">Detalles del Estudiante</button>
             </th>
           </tr>
-          }
-        </tbody>
-        <!-- foot -->
-        <tfoot>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
-
-<!-- MODAL QUE SE MUESTRA LOS DETALLES DEL ESTUDIANTE DIVIDIR EN COMPONENTE -->
-<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-    <app-single-student (close)="closeDetails()" [selectedUser] = "selectedUser"></app-single-student>
+        </ng-container>
+      </tbody>
+      <!-- foot -->
+      <tfoot>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </tfoot>
+    </table>
   </div>
   
-  
-  
- 
+  <!-- MODAL CON EFECTO BORROSO -->
+  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <app-single-student (close)="closeDetails()" [selectedUser]="selectedUser"></app-single-student>
+  </div>

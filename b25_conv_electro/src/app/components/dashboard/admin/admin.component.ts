@@ -13,7 +13,7 @@ export interface User{
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, SingleStudentComponent],
+  imports: [CommonModule, SingleStudentComponent,],
   templateUrl: './admin.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

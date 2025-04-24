@@ -1,0 +1,33 @@
+<div class="flex items-center justify-center min-h-screen bg-base-100">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full max-w-3xl h-4/5">
+    <fieldset class=" flex flex-col fieldset bg-base-200 border-base-300 rounded-box border p-8 w-4/5 mx-auto h-[70vh]">
+      <legend class="fieldset-legend text-xl font-semibold mb-4">Inicia sesión</legend>
+
+      <label class="label font-bold">Email</label>
+      <input type="email" formControlName="email" class="input input-bordered w-full mb-4" placeholder="ejemplo@ejemplo.com" />
+      @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+        <div class="text-error text-sm mb-4">
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">El email es obligatorio</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">Email inválido</span>
+        </div>
+      }
+
+      <label class="label font-bold">Contraseña</label>
+      <input type="password" formControlName="password" class="input input-bordered w-full mb-6" placeholder="********" />
+      @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+        <div class="text-error text-sm mb-4">
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es obligatoria</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Mínimo 6 caracteres</span>
+        </div>
+      }
+
+
+      <button type="submit" class="btn btn-primary w-full">Iniciar sesión</button>
+
+      <p class="mt-auto pt-4">
+        ¿No tienes una cuenta?
+        <a href="#" class="text-secondary hover:underline">Crear una cuenta</a>
+      </p>
+    </fieldset>
+  </form>
+</div>

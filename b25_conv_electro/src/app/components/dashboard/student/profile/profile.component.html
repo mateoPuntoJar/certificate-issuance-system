@@ -1,30 +1,62 @@
 <div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-md">
-  <h2 class="text-3xl font-bold text-[#002782] mb-4">Mi Perfil</h2>
+  <h2 class="text-3xl font-bold text-[#002782] mb-6 text-center">Mi Perfil</h2>
 
-  <div class="space-y-4 text-sm sm:text-base text-gray-700">
-    <!-- Correo electrónico -->
-    <div>
-      <p class="font-semibold text-[#002782]">Correo electrónico:</p>
-      <p>{{ 'usuario@medac.com' }}</p>
+  <!-- Cabecera: foto + datos -->
+  <div class="flex flex-col items-center mb-8">
+    <div class="avatar mb-4">
+      <div class="w-24 rounded-full shadow-md">
+        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="Foto de perfil" />
+      </div>
     </div>
 
-    <!-- Solicitudes de certificados -->
-    <div>
-      <p class="font-semibold text-[#002782]">Solicitudes de certificados:</p>
-      <ul class="list-disc list-inside ml-2">
-        <li>Certificado Profesional – En revisión</li>
-        <li>Título Académico – Enviado</li>
+    <h3 class="text-xl font-semibold text-[#002782]">Marta García López</h3>
+    <p class="text-gray-600 text-sm sm:text-base flex items-center gap-2 mt-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#FF5B41]" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+      </svg>
+      {{ email }}
+    </p>
+  </div>
+
+  <!-- Panel de certificaciones -->
+  <div class="grid gap-6 sm:grid-cols-2">
+
+    <!-- Solicitudes -->
+    <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
+      <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#FF5B41]" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h7.586a2 2 0 001.414-.586l4.414-4.414A2 2 0 0018 11.586V4a2 2 0 00-2-2H4zm10 10H6v-1h8v1zm0-2H6V9h8v1zm0-2H6V7h8v1z" />
+        </svg>
+        Solicitudes de certificados
+      </h4>
+      <ul class="space-y-2 text-sm sm:text-base">
+        <li class="flex justify-between items-center border-b border-gray-200 pb-2">
+          <span>Certificado Profesional</span>
+          <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">En revisión</span>
+        </li>
+        <li class="flex justify-between items-center pt-2">
+          <span>Título Académico</span>
+          <span class="px-2 py-1 rounded-full bg-[#E0E8FF] text-[#002782] text-xs font-medium">Enviado</span>
+        </li>
       </ul>
     </div>
 
-    <!-- Certificados aprobados -->
-    <div>
-      <p class="font-semibold text-[#002782]">Certificados aprobados:</p>
-      <ul class="list-disc list-inside ml-2">
-        <li>Manipulador de alimentos</li>
-        <li>Curso de Instalación de placas solares</li>
+    <!-- Aprobados -->
+    <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
+      <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 5.707 10.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+        Certificados aprobados
+      </h4>
+      <ul class="space-y-2 text-sm sm:text-base">
+        <li class="border-b border-gray-200 pb-2">Manipulador de alimentos</li>
+        <li class="pt-2">Curso de Instalación de placas solares</li>
       </ul>
     </div>
+
   </div>
 </div>
-

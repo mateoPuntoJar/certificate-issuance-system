@@ -6,4 +6,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './profile.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileComponent { }
+export class ProfileComponent {
+  nombre = 'Marta García López';
+  email = 'usuario@medac.com';
+}

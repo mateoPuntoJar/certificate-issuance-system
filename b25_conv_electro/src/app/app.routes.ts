@@ -7,25 +7,24 @@ import { StatusComponent } from './components/dashboard/student/status/status.co
 import { FormComponent } from './components/dashboard/student/form/form.component';
 
 export const routes: Routes = [
-
   {
     path: '',
     component: LoginComponent,
   },
-
   {
     path: 'dashboard',
     component: DashboardComponent,
+    children: [
+      { path: '', redirectTo: 'profile', pathMatch: 'full' },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'form', component: FormComponent },
+      { path: 'status', component: StatusComponent },
+      { path: 'notifications', component: NotificationsComponent },
+    ]
   },
-
-  {
-    path: 'notifications',
-    component: NotificationsComponent,
-  },
-
   {
     path: '**',
     redirectTo: '',
-  },
-
+  }
 ];
+

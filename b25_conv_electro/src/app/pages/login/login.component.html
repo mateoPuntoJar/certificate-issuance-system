@@ -1,5 +1,5 @@
 <div class="flex items-center justify-center min-h-screen bg-base-100">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full max-w-3xl h-4/5">
+  <form [formGroup]="loginForm" class="w-full max-w-3xl h-4/5">
     <fieldset class=" flex flex-col fieldset bg-base-200 border-base-300 rounded-box border p-8 w-4/5 mx-auto h-[70vh]">
       <legend class="fieldset-legend text-xl font-semibold mb-4">Inicia sesión</legend>
 
@@ -22,11 +22,11 @@
       }
 
 
-      <button type="submit" class="btn btn-primary w-full">Iniciar sesión</button>
+      <button type="submit" (click)="onSubmit()" class="btn btn-primary w-full">Iniciar sesión</button>
 
       <p class="mt-auto pt-4">
         ¿No tienes una cuenta?
-        <a href="#" class="text-secondary hover:underline">Crear una cuenta</a>
+        <button (click)="guestLogin()" class="text-secondary hover:underline">Entrar como invitado</button>
       </p>
     </fieldset>
   </form>

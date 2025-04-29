@@ -1,20 +1,19 @@
-<div class="flex min-h-screen" style="background-color: #FFFFFF">
+<div class="flex flex-col lg:flex-row min-h-screen bg-white">
   <!-- Sidebar -->
-  <div class="w-64 p-4" style="background-color: #EDEDED; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.233);">
-    <h2 class="text-lg font-bold mb-6 text-[#002782]">Biendenido/a [Admin/Student]</h2>
+  <div
+    class="w-full lg:w-64 p-4 bg-[#EDEDED] shadow-md"
+    style="box-shadow: 0 2px 8px rgba(0, 0, 0, 0.233);"
+  >
+    <h2 class="text-lg font-bold mb-6 text-[#002782]">Bienvenido/a [Admin/Student]</h2>
     <hr class="my-4 border-t-1 border-[#002782]" />
-  <!-- Dymanic Menu here -->
-   <app-admin-menu></app-admin-menu>
-   <!--  <app-student-menu></app-student-menu> -->
+    <app-student-menu></app-student-menu>
   </div>
 
-  <!-- Main Content -->
-  <div class="flex-1 p-6">
-    <h1 class="text-2xl font-bold mb-6 text-[#002782]">Páginas dinámicas aquí</h1>
-    <app-admin [user] = "estudiantes"></app-admin>
+  <!-- Main Content dinámico -->
+  <div class="flex-1 px-4 sm:px-6 py-6">
     <div class="grid gap-4">
-      <!-- Components-->
-
+    <app-notifications-banner></app-notifications-banner>
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>

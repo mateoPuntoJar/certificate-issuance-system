@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
+import { supabase } from './config/init-supabase';
 
-@Injectable({providedIn: 'root'})
+@Injectable({
+  providedIn: 'root',
+})
 export class SupabaseService {
-  constructor() { }
+  constructor() {}
 
+  get client() {
+    return supabase;
+  }
 }

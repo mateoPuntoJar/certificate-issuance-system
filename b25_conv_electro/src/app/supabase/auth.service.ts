@@ -7,6 +7,7 @@ import { SupabaseService } from './supabase.service';
 })
 export class AuthService {
   public user: any = null;
+  public userRol: string= '';
 
   constructor(
     private router: Router,
@@ -22,7 +23,6 @@ export class AuthService {
       });
 
     if (error || !data.user) {
-      console.warn('Login fallido:', error?.message || 'Usuario inválido');
       await this.supabaseService.client.auth.signOut(); // Borra cualquier sesión mal puesta
       throw error || new Error('Usuario o contraseña incorrectos');
     }
@@ -39,15 +39,17 @@ export class AuthService {
     }
 
     this.user = data.user;
+    this.userRol = profileRol.rol;
 
     // Redirigir al dashboard
-    this.redirecTo(profileRol.rol);
+    this.redirecTo();
   }
 
   // Cerrar sesión
   async signOut(): Promise<void> {
     await this.supabaseService.client.auth.signOut();
     this.user = null;
+    this.userRol = '';
     await this.router.navigate(['']);
   }
 
@@ -57,11 +59,33 @@ export class AuthService {
   }
 
   // Redirige a una página u otra según el rol del usuario
-  redirecTo(rol: string): void {
-    if(rol === 'admin') {
+  redirecTo(): void {
+    if(this.userRol === 'admin') {
       this.router.navigate(['/dashboard/admin']);
     } else {
       this.router.navigate(['/dashboard/profile']);
+    }
+  }
+
+  // Verifica si hay una sesión activa para volver a incluir las credenciales y el rol al usuario
+  async restoreSession(): Promise<void> {
+    const { data: { session } } = await this.supabaseService.client.auth.getSession();
+
+    if (session?.user) {
+      this.user = session.user;
+
+      // Buscar el rol asociado al usuario en la tabla "usuarios"
+      const { data: profileRol, error } = await this.supabaseService.client
+        .from('usuarios')
+        .select('rol')
+        .eq('correo', session.user.email)
+        .single();
+
+      if (!error && profileRol) {
+        this.userRol = profileRol.rol;
+      } else {
+        this.userRol = '';
+      }
     }
   }
 }

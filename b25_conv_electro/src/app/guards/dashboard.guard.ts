@@ -1,0 +1,53 @@
+import { Injectable } from '@angular/core';
+import { CanActivate, CanActivateChild, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { AuthService } from '../supabase/auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DashboardGuard implements CanActivate, CanActivateChild {
+
+  constructor(private auth: AuthService, private router: Router) {}
+
+  // Protege /dashboard (ruta padre)
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const isAuthenticated = this.auth.isAuthenticated();
+    const rol = this.auth.userRol;
+
+    if (!isAuthenticated || !['admin', 'alumno', 'invitado'].includes(rol)) {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    return true;
+  }
+
+  // Protege rutas hijas de /dashboard
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const isAuthenticated = this.auth.isAuthenticated();
+    const rol = this.auth.userRol;
+    const url = state.url;
+    console.log(isAuthenticated);
+
+    if (!isAuthenticated) {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    if (url.includes('/dashboard/admin') && rol !== 'admin') {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    if (
+      !url.includes('/dashboard/admin') &&
+      rol !== 'alumno' &&
+      rol !== 'invitado'
+    ) {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    return true;
+  }
+}

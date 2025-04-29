@@ -6,15 +6,20 @@ import { ProfileComponent } from './components/dashboard/student/profile/profile
 import { StatusComponent } from './components/dashboard/student/status/status.component';
 import { FormComponent } from './components/dashboard/student/form/form.component';
 import { AdminComponent } from './components/dashboard/admin/admin.component';
+import { LoginGuard } from './guards/login.guard';
+import { DashboardGuard } from './guards/dashboard.guard';
 
 export const routes: Routes = [
   {
     path: '',
+    canActivate: [LoginGuard],
     component: LoginComponent,
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [DashboardGuard],
+    canActivateChild: [DashboardGuard],
     children: [
       { path: '', redirectTo: 'profile', pathMatch: 'full' },
       { path: 'profile', component: ProfileComponent },

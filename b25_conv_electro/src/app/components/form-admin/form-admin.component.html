@@ -1,6 +1,35 @@
+<div class="flex justify-center">
 <select class="select select-primary">
     <option disabled selected>Estado del tramite</option>
     <option>Pendiente</option>
     <option>Aprobado</option>
   </select>
-<textarea type="text" placeholder="Comentario" class="textarea textarea-primary"></textarea>
+</div>
+  <div class="flex justify-center mb-8">
+    <div class="overflow-x-auto">
+      <table class="table table-zebra">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th></th>
+            <th>Fecha</th>
+            <th>Comentarios</th>
+            <th>Tramite</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- row 1 -->
+          <tr>
+            <th>1</th>
+            <td>12-11-22</td>
+            <td>Falta anviar documentacion</td>
+            <td>Pendiente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!--   --------CAMPO COMENTARIO----------- -->
+  <div class="flex justify-center">
+<textarea type="text" placeholder="Agregar comentario" class=" textarea textarea-primary"></textarea>
+</div>

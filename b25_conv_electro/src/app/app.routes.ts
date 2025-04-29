@@ -22,10 +22,10 @@ export const routes: Routes = [
     path: 'notifications',
     component: NotificationsComponent,
   },
-
   {
     path: '**',
     redirectTo: '',
   },
+
 
 ];

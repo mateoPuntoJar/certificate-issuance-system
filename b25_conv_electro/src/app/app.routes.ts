@@ -5,6 +5,7 @@ import { NotificationsComponent } from './pages/notifications/notifications.comp
 import { ProfileComponent } from './components/dashboard/student/profile/profile.component';
 import { StatusComponent } from './components/dashboard/student/status/status.component';
 import { FormComponent } from './components/dashboard/student/form/form.component';
+import { AdminComponent } from './components/dashboard/admin/admin.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'form', component: FormComponent },
       { path: 'status', component: StatusComponent },
       { path: 'notifications', component: NotificationsComponent },
+      { path: 'admin', component: AdminComponent },
     ]
   },
   {

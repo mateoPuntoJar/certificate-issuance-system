@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms'
+import { AuthService } from '../../supabase/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,7 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angula
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
+  private auth = inject(AuthService);
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -19,12 +21,26 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Formulario enviado: ', this.loginForm.value);
-      //Crear llamada al servicio de Supabase aquí
+      const {email, password} = this.loginForm.value;
+
+      this.auth.login(email, password).catch(error => {
+          console.error('Login error:', error.message);
+
+          alert('El email o la contraseña son incorrectos');
+        }
+      );
     } else {
       // Muestra errores si los hay
       this.loginForm.markAllAsTouched();
     }
   }
 
+  guestLogin() {
+    this.auth.login('usuario@invitado.com', '123456').catch(error => {
+      console.error('Login error:', error.message);
+
+      alert('El email o la contraseña son incorrectos');
+    }
+  );
+  }
 }

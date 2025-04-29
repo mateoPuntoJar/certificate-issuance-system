@@ -1,4 +1,5 @@
 <section class="p-10 space-y-6">
+  <!-- Header -->
   <article class="flex flex-row justify-between items-center mb-12">
     <h3 class="text-primary text-3xl font-semibold">
       Hola, Juliana Álvarez Castillo
@@ -6,82 +7,43 @@
     <button class="btn btn-primary">Subir Archivos</button>
   </article>
 
+  <!-- Listado de Notificaciones -->
   <ul class="space-y-4">
     <li
-      class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2 border-secondary"
+      *ngFor="let notification of notifications; trackBy: trackByNotificationId"
+      class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2"
+      [ngClass]="{
+        'border-secondary': !notification.leido,
+        'border-primary': notification.leido
+      }"
     >
+      <!-- Detalles de la notificación -->
       <div class="flex-grow">
-        <div class="font-semibold text-base-content">Certificado validado</div>
-        <div class="text-sm text-base-content/60">
-          Tu solicitud fue aprobada por el administrador
+        <div class="font-semibold text-base-content">
+          {{ notification.titulo }}
         </div>
-        <div class="text-xs text-base-content/40 mt-1">23 de abril, 14:32</div>
+        <div class="text-sm text-base-content/65">
+          {{ notification.mensaje | limitWords : 20 }}
+        </div>
+        <div class="text-xs text-base-content/40 mt-1">
+          {{ notification.fecha }}
+        </div>
       </div>
 
-      <span class="w-2.5 h-2.5 rounded-full bg-orange-400 ml-2"></span>
-      <button class="btn btn-ghost btn-square">
-        <svg
-          class="size-[1.2em]"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M6 3L20 12 6 21 6 3z"></path>
-          </g>
-        </svg>
-      </button>
-    </li>
+      <!-- Indicador de lectura (círculo de color) -->
+      <span
+        [ngClass]="{
+          'w-2.5 h-2.5 rounded-full ml-2': true,
+          'bg-orange-400': !notification.leido,
+          'bg-blue-400': notification.leido
+        }"
+      ></span>
 
-    <li
-      class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2 border-primary"
-    >
-      <div class="flex-grow">
-        <div class="font-semibold text-base-content">Documentos pendientes</div>
-        <div class="text-sm text-base-content/60">
-          Faltan documentos por subir en tu perfil
-        </div>
-        <div class="text-xs text-base-content/40 mt-1">22 de abril, 10:15</div>
-      </div>
-
-      <span class="w-2.5 h-2.5 rounded-full bg-primary ml-2"></span>
-      <button class="btn btn-ghost btn-square">
-        <svg
-          class="size-[1.2em]"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M6 3L20 12 6 21 6 3z"></path>
-          </g>
-        </svg>
-      </button>
-    </li>
-
-    <li
-      class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2 border-primary"
-    >
-      <div class="flex-grow">
-        <div class="font-semibold text-base-content">Perfil actualizado</div>
-        <div class="text-sm text-base-content/60">
-          Se guardaron los últimos cambios en tu perfil
-        </div>
-        <div class="text-xs text-base-content/40 mt-1">21 de abril, 18:50</div>
-      </div>
-
-      <span class="w-2.5 h-2.5 rounded-full bg-primary ml-2"></span>
-      <button class="btn btn-ghost btn-square">
+      <!-- Botón para abrir el modal -->
+      <button
+        class="btn btn-ghost btn-square"
+        (click)="openModal(notification)"
+      >
         <svg
           class="size-[1.2em]"
           xmlns="http://www.w3.org/2000/svg"
@@ -101,3 +63,47 @@
     </li>
   </ul>
 </section>
+
+<!-- Modal -->
+<div
+  *ngIf="modalOpen"
+  class="fixed inset-0 bg-gray-100 opacity-95 z-50 flex justify-center items-center"
+>
+  <div
+    class="card bg-base-100 text-base-content shadow-2xl rounded-[2rem] w-full sm:w-4/5 lg:w-2/5 p-6 border border-primary"
+  >
+    <!-- Icono de campana -->
+    <div class="flex justify-center mb-4">
+      <div class="bg-primary p-4 rounded-full">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="inline w-6 h-6 mr-1 text-white"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            d="M10 2a6 6 0 00-6 6v2c0 .628-.134 1.24-.39 1.8L3 14h14l-.61-2.2A3.993 3.993 0 0016 10V8a6 6 0 00-6-6zm0 16a2 2 0 001.995-1.85L12 16H8a2 2 0 002 2z"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Contenido del modal -->
+    <h2 class="text-2xl font-semibold text-center mb-4">
+      {{ selectedNotification.titulo }}
+    </h2>
+    <p class="text-md text-center mb-4">
+      {{ selectedNotification.mensaje }}
+    </p>
+
+    <!-- Botón cerrar -->
+    <div class="text-center mt-6">
+      <button
+        class="btn btn-outline btn-primary rounded-full px-8"
+        (click)="closeModal()"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

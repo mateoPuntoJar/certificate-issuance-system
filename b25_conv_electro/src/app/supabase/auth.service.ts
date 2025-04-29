@@ -21,14 +21,27 @@ export class AuthService {
         password,
       });
 
-    if (error) {
-      throw error;
+    if (error || !data.user) {
+      console.warn('Login fallido:', error?.message || 'Usuario inválido');
+      await this.supabaseService.client.auth.signOut(); // Borra cualquier sesión mal puesta
+      throw error || new Error('Usuario o contraseña incorrectos');
+    }
+
+    // Hace un select a la tabla usuarios con el usuario autenticado para averiguar el rol
+    const {data: profileRol, error: profileError} = await this.supabaseService.client
+      .from('usuarios')
+      .select('rol')
+      .eq('correo', data.user.email)
+      .single()
+
+    if (profileError || !profileRol) {
+      throw profileError || new Error('No se pudo obtener el perfil del usuario');
     }
 
     this.user = data.user;
 
     // Redirigir al dashboard
-    await this.router.navigate(['/dashboard']);
+    this.redirecTo(profileRol.rol);
   }
 
   // Cerrar sesión
@@ -43,13 +56,12 @@ export class AuthService {
     return !!this.user;
   }
 
-  // Verificar si es administrador
-  isAdmin(): boolean {
-    return this.user?.rol === 'admin';
-  }
-
-  // Verificar si es alumno
-  isUser(): boolean {
-    return this.user?.rol === 'alumno';
+  // Redirige a una página u otra según el rol del usuario
+  redirecTo(rol: string): void {
+    if(rol === 'admin') {
+      this.router.navigate(['/dashboard/admin']);
+    } else {
+      this.router.navigate(['/dashboard/profile']);
+    }
   }
 }

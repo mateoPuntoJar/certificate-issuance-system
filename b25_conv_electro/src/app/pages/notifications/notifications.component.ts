@@ -1,11 +1,12 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { LimitWordsPipe } from './limit-words.pipe';
 
 @Component({
   selector: 'app-notificaciones',
-  templateUrl: './notifications.component.html',
+  standalone: true,
   imports: [CommonModule, LimitWordsPipe],
+  templateUrl: './notifications.component.html',
 })
 export class NotificationsComponent {
   notifications = [
@@ -53,5 +54,22 @@ export class NotificationsComponent {
   // Función para el trackBy en el ngFor (optimiza la renderización)
   trackByNotificationId(index: number, notification: any) {
     return notification.id;
+  }
+
+  filtro: 'todas' | 'no-leidas' = 'todas';
+
+  notificacionesFiltradas() {
+    if (this.filtro === 'no-leidas') {
+      return this.notifications.filter((n) => !n.leido);
+    }
+    return this.notifications;
+  }
+
+  contarNoLeidas() {
+    return this.notifications.filter((n) => !n.leido).length;
+  }
+
+  todasLeidas() {
+    this.notifications.forEach((n) => (n.leido = true));
   }
 }

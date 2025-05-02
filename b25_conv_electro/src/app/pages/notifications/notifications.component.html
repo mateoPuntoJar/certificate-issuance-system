@@ -7,10 +7,40 @@
     <button class="btn btn-primary">Subir Archivos</button>
   </article>
 
+  <!-- Filtros -->
+  <div class="flex mb-6">
+    <button
+      class="btn btn-md mr-2"
+      [ngClass]="{ 'btn-active': filtro === 'todas' }"
+      (click)="filtro = 'todas'"
+    >
+      Todas <span class="font-bold"> ( {{ notifications.length }} )</span>
+    </button>
+
+    <button
+      class="btn btn-md mr-2"
+      [ngClass]="{ 'btn-active': filtro === 'no-leidas' }"
+      (click)="filtro = 'no-leidas'"
+    >
+      No leídas <span class="font-bold"> ( {{ contarNoLeidas() }} )</span>
+    </button>
+
+    <button
+      class="btn btn-md mr-2"
+      (click)="todasLeidas()"
+      *ngIf="contarNoLeidas() > 0"
+    >
+      Marcar todas como leídas
+    </button>
+  </div>
+
   <!-- Listado de Notificaciones -->
   <ul class="space-y-4">
     <li
-      *ngFor="let notification of notifications; trackBy: trackByNotificationId"
+      *ngFor="
+        let notification of notificacionesFiltradas();
+        trackBy: trackByNotificationId
+      "
       class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2"
       [ngClass]="{
         'border-secondary': !notification.leido,

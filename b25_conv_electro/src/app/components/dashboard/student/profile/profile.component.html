@@ -1,17 +1,14 @@
 <div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-md">
   <h2 class="text-3xl font-bold text-[#002782] mb-6 text-center">Mi Perfil</h2>
 
-  <!-- Cabecera: foto + datos -->
+  <!-- Cabecera -->
   <div class="flex flex-col items-center mb-8">
-    <div class="avatar mb-4">
-      <div class="w-24 rounded-full shadow-md">
-        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="Foto de perfil" />
-      </div>
+    <div class="mb-4 rounded-full w-24 h-24 bg-base-300 flex items-center justify-center shadow-md">
+      <i class="fas fa-user text-5xl text-[#002782]"></i>
     </div>
-
-    <h3 class="text-xl font-semibold text-[#002782]">Marta García López</h3>
+    <h3 class="text-xl font-semibold text-primary">{{ nombre }}</h3>
     <p class="text-gray-600 text-sm sm:text-base flex items-center gap-2 mt-1">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#FF5B41]" fill="currentColor" viewBox="0 0 20 20">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-accent" fill="#F96149" viewBox="0 0 20 20">
         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
       </svg>
@@ -19,43 +16,43 @@
     </p>
   </div>
 
-  <!-- Panel de certificaciones -->
+  <!-- Paneles -->
   <div class="grid gap-6 sm:grid-cols-2">
-
-    <!-- Solicitudes -->
-    <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
-      <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#FF5B41]" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h7.586a2 2 0 001.414-.586l4.414-4.414A2 2 0 0018 11.586V4a2 2 0 00-2-2H4zm10 10H6v-1h8v1zm0-2H6V9h8v1zm0-2H6V7h8v1z" />
-        </svg>
-        Solicitudes de certificados
-      </h4>
-      <ul class="space-y-2 text-sm sm:text-base">
-        <li class="flex justify-between items-center border-b border-gray-200 pb-2">
-          <span>Certificado Profesional</span>
-          <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">En revisión</span>
-        </li>
-        <li class="flex justify-between items-center pt-2">
-          <span>Título Académico</span>
-          <span class="px-2 py-1 rounded-full bg-[#E0E8FF] text-[#002782] text-xs font-medium">Enviado</span>
-        </li>
-      </ul>
-    </div>
 
     <!-- Aprobados -->
     <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
       <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd"
-            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 5.707 10.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
-            clip-rule="evenodd" />
-        </svg>
-        Certificados aprobados
+        ✅ Certificados aprobados
       </h4>
-      <ul class="space-y-2 text-sm sm:text-base">
-        <li class="border-b border-gray-200 pb-2">Manipulador de alimentos</li>
-        <li class="pt-2">Curso de Instalación de placas solares</li>
-      </ul>
+      <ng-container *ngIf="aprobados.length > 0; else sinAprobados">
+        <ul class="space-y-2 text-sm sm:text-base">
+          <li *ngFor="let cert of aprobados" class="flex justify-between items-center border-b border-gray-200 pb-2">
+            <span>{{ cert }}</span>
+            <span class="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">Aprobado</span>
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #sinAprobados>
+        <p class="text-gray-500 text-sm">No tienes certificados aprobados.</p>
+      </ng-template>
+    </div>
+
+    <!-- Rechazados -->
+    <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
+      <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
+        ❌ Documentos rechazados
+      </h4>
+      <ng-container *ngIf="rechazados.length > 0; else sinRechazados">
+        <ul class="space-y-2 text-sm sm:text-base">
+          <li *ngFor="let cert of rechazados" class="flex justify-between items-center border-b border-gray-200 pb-2">
+            <span>{{ cert }}</span>
+            <span class="px-2 py-1 rounded-full bg-red-100 text-red-800 text-xs font-medium">Rechazado</span>
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #sinRechazados>
+        <p class="text-gray-500 text-sm">No tienes documentos rechazados.</p>
+      </ng-template>
     </div>
 
   </div>

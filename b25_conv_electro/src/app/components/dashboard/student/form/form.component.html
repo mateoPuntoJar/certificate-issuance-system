@@ -96,7 +96,6 @@
       </div>
     </div>
 
-    <!-- Experiencia laboral (opcional) -->
 <!-- Experiencia laboral (opcional) -->
 <div>
   <label class="block font-semibold mb-2">Experiencia laboral</label>
@@ -113,7 +112,6 @@
     placeholder="Describe brevemente tu experiencia"
   ></textarea>
 </div>
-
 
     <!-- Subida de archivos -->
     <div>
@@ -143,7 +141,7 @@
       </button>
     </div>
   </form>
-  <div *ngIf="mensajeExito" class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">
+  <div *ngIf="successMessage" class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">
     ✅ Tu solicitud se ha enviado correctamente.
   </div>
 </div>
@@ -151,22 +149,28 @@
 <!-- Documentos ya subidos -->
 <div class="max-w-4xl mx-auto px-4 sm:px-6 mt-8 p-6 rounded-2xl shadow-md bg-[#EDEDED]">
   <h3 class="text-2xl font-bold text-[#002782] mb-4">Documentación enviada</h3>
-  <ul class="space-y-3">
-    <li
-      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-white rounded-xl shadow-sm">
-      <div class="flex items-center gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#002782]" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h5v-2H4V5h12v3h2V5a2 2 0 00-2-2H4z" />
-          <path d="M14 11v2h-4v2h4v2l3-3-3-3z" />
-        </svg>
-        <span class="text-gray-800 font-medium text-sm sm:text-base">
-          García_López_Marta_TituloDietetica_2023.pdf
-        </span>
-      </div>
-      <a href="#" download
+  <ng-container *ngIf="uploadedDocs.length > 0; else noDocs">
+    <ul class="space-y-3">
+      <li *ngFor="let doc of uploadedDocs"
+          class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-white rounded-xl shadow-sm">
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#002782]" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h5v-2H4V5h12v3h2V5a2 2 0 00-2-2H4z" />
+            <path d="M14 11v2h-4v2h4v2l3-3-3-3z" />
+          </svg>
+          <span class="text-gray-800 font-medium text-sm sm:text-base">
+            {{ doc.nombre_archivo || 'Sin nombre' }}
+          </span>
+        </div>
+        <button (click)="downloadFile(doc)"
         class="btn px-8 py-3 text-base bg-[#002782] text-white hover:bg-[#FF5B41] rounded-full transition-all w-full sm:w-auto text-center">
         Descargar
-      </a>
-    </li>
-  </ul>
+      </button>
+      </li>
+    </ul>
+  </ng-container>
+
+  <ng-template #noDocs>
+    <p class="text-gray-500 text-sm">No tienes ningún documento subido.</p>
+  </ng-template>
 </div>

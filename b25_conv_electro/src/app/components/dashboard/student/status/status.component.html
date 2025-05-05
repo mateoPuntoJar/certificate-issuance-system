@@ -1,45 +1,49 @@
 <div class="max-w-4xl mx-auto bg-white px-4 sm:px-6 py-6 rounded-2xl shadow-md space-y-6">
   <h2 class="text-2xl font-bold text-[#002782] mb-4">Estado de Verificación</h2>
 
-  <!-- ENVIADO -->
-  <div class="flex flex-row sm:flex-row items-start sm:items-center gap-4 bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
-    <div class="w-4 h-4 rounded-full bg-blue-500 flex-shrink-0"></div>
-    <div>
-      <h3 class="text-lg font-semibold text-[#002782]">Enviado</h3>
-      <p class="text-gray-700 text-sm">Tu título académico <strong>[titulo]</strong> ha sido enviado correctamente.</p>
-    </div>
-  </div>
+  <div *ngFor="let doc of documentos" class="bg-[#F9FAFB] p-5 rounded-xl shadow-sm border border-gray-200 space-y-4">
 
-  <!-- PENDIENTE -->
-  <div class="flex flex-row sm:flex-row items-start sm:items-center gap-4 bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
-    <div class="w-4 h-4 rounded-full bg-yellow-400 flex-shrink-0"></div>
     <div>
-      <h3 class="text-lg font-semibold text-[#002782]">Pendiente de aprobación</h3>
-      <p class="text-gray-700 text-sm">Tu documentación está siendo revisada por un administrador.</p>
+      <p class="text-base text-gray-800 font-semibold mb-1">
+        Tipo de titulación: <span class="font-normal">{{ doc.tipo_documento }}</span>
+      </p>
+      <p class="text-base text-gray-800 font-semibold">
+        Nombre del título/certificado: <span class="font-normal">{{ doc.nombre_titulacion }}</span>
+      </p>
     </div>
-  </div>
+    
+    <div class="flex items-center gap-3">
+      <div class="w-4 h-4 rounded-full"
+        [ngClass]="{
+          'bg-blue-500': doc.estado_verificacion === 'enviado',
+          'bg-yellow-400': doc.estado_verificacion === 'pendiente',
+          'bg-green-500': doc.estado_verificacion === 'aprobado',
+          'bg-red-500': doc.estado_verificacion === 'rechazado'
+        }">
+      </div>
 
-  <!-- APROBADO -->
-  <div class="flex flex-row sm:flex-row items-start sm:items-center gap-4 bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
-    <div class="w-4 h-4 rounded-full bg-green-500 flex-shrink-0"></div>
-    <div>
-      <h3 class="text-lg font-semibold text-[#002782]">Aprobado</h3>
-      <p class="text-gray-700 text-sm">Enhorabuena, tu título académico ha sido aprobado por uno de nuestros administradores.</p>
+      <div>
+        <h3 class="text-lg font-bold text-[#002782] capitalize leading-none">
+          {{ doc.estado_verificacion }}
+        </h3>
+        <p class="text-sm text-gray-700 mt-1">
+          <ng-container [ngSwitch]="doc.estado_verificacion">
+            <span *ngSwitchCase="'enviado'">
+              El documento ha sido enviado correctamente.
+            </span>
+            <span *ngSwitchCase="'pendiente'">
+              El documento está siendo revisado por un administrador.
+            </span>
+            <span *ngSwitchCase="'aprobado'">
+              Enhorabuena, el documento ha sido aprobado.
+            </span>
+            <span *ngSwitchCase="'rechazado'">
+              El documento ha sido rechazado. Consulta los comentarios del administrador.
+            </span>
+            <span *ngSwitchDefault>Estado desconocido.</span>
+          </ng-container>
+        </p>
+      </div>
     </div>
-  </div>
-
-  <!-- SUSPENDIDO -->
-  <div class="flex flex-row sm:flex-row items-start sm:items-center gap-4 bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
-    <div class="w-4 h-4 rounded-full bg-red-500 flex-shrink-0"></div>
-    <div>
-      <h3 class="text-lg font-semibold text-[#002782]">Rechazado</h3>
-      <p class="text-gray-700 text-sm">Tu título ha sido rechazado. Consulta los comentarios del administrador.</p>
-    </div>
-  </div>
-
-  <!-- Comentario del admin -->
-  <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md">
-    <p class="font-semibold">Comentario del administrador:</p>
-    <p class="text-sm">Falta adjuntar el certificado de profesionalidad escaneado.</p>
   </div>
 </div>

@@ -10,10 +10,10 @@ import { Router } from 'express';
 import { get } from 'http';
 
 @Component({
+  standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule, StudentMenuComponent, AdminComponent, AdminMenuComponent, NotificationBannerComponent,RouterOutlet],
+  imports: [CommonModule, StudentMenuComponent, AdminMenuComponent, NotificationBannerComponent,RouterOutlet],
   templateUrl: './dashboard.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 
@@ -26,13 +26,9 @@ export class DashboardComponent  implements OnInit{
   rol : string = ""
   
   
-  async getRol(){
-    this.rol = await this.authService.userRol
-    return this.rol
+  getRol() {
+    return this.rol = this.authService.userRol;
   }
   
-
-  estudiantes: User[] = [
-  ];
 
 }

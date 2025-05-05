@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
 import { SingleStudentComponent } from '../../single-student/single-student.component';
+import { SupabaseService } from '../../../supabase/supabase.service';
 
 
 export interface User{
-  id: number;
-  name : string,
-  email: string;
-  estado: string;
-  locacion: string;
+  uid: string;
+  nombre : string,
+  correo: string;
+  rol: string;
+  fecha_registro: string;
 }
 
 @Component({
@@ -18,13 +19,21 @@ export interface User{
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class AdminComponent {
+export class AdminComponent  implements OnInit{
+
+  constructor( private supabase : SupabaseService){}
+
+  ngOnInit(): void {
+    this.allStudent();  
+  }
+  public usuario : User[] = [];
+
   selectedUser: User = {
-    id: 0,
-    name: '',
-    email: '',
-    estado: '',
-    locacion: ''
+    uid: "",
+    nombre : "",
+    correo: "",
+    rol: "",
+    fecha_registro: "",
   };
 showModal = false;
 
@@ -36,14 +45,26 @@ openDetails(user: User) {
 closeDetails() {
   this.showModal = false;
   this.selectedUser = {
-    id: 0,
-    name: '',
-    email: '',
-    estado: '',
-    locacion: ''
+    uid: "",
+    nombre : "",
+    correo: "",
+    rol: "",
+    fecha_registro: "",
   };
 }
 
+allStudent(){
+  this.supabase.getAllStudents().subscribe({
+    next:(respuesta) =>{
+      this.usuario = respuesta.data
+      console.log(this.usuario)
+    },
+    error: ( error)=>{
+      alert('NO SE ENCONTRARON ESTUDIANTES')
+    }
+  }) 
+}  
 
-  public user = input.required<User[]>();
- }
+}
+
+ 

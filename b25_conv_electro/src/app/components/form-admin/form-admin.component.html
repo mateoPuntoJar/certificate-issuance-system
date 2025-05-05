@@ -31,5 +31,6 @@
   </div>
 <!--   --------CAMPO COMENTARIO----------- -->
   <div class="flex justify-center">
-<textarea type="text" placeholder="Agregar comentario" class=" textarea textarea-primary"></textarea>
+<input id="mensaje" placeholder="Agregar comentario" [formControl] ="mensaje" class="textarea textarea-primary">
+<button (click)="sendNotification()" class="btn btn-primary self-end"> ENVIAR</button>
 </div>

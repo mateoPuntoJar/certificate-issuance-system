@@ -12,19 +12,19 @@
         <div class="card-body items-center text-center">
           <div class="avatar">
             <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-              <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+              <img src="https://imgs.search.brave.com/h6yxdqWgKWbXEI4rGRq6IWGdvfZLvOIJZuzdJ5B3_Vc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvcGxh/Y2Vob2xkZXItcHJv/ZmlsZS1pY29uLTIw/dGVoZmF3eHQ1ZWlo/Y28ucG5n" />
             </div>
           </div>
-          <h2 class="card-title mt-4">{{ selectedUser()?.name }}</h2>
-          <p class="text-sm text-gray-500">{{ selectedUser()?.email }}</p>
-          <p class="mt-1"><strong>Locación:</strong> {{ selectedUser()?.locacion }}</p>
+          <h2 class="card-title mt-4">{{ selectedUser().nombre}}</h2>
+          <p class="text-sm text-gray-500">{{ selectedUser().correo }}</p>
+          <p class="mt-1"><strong>Locación:</strong> {{ selectedUser().fecha_registro }}</p>
         </div>
       </div>
     </div>
 
     <!-- Formulario administrativo -->
     <div class="bg-gray-100 p-4 rounded-xl">
-      <app-form-admin></app-form-admin>
+    <app-form-admin  [selectedUser]="selectedUser()"></app-form-admin>
     </div>
 
     <!-- Archivos adjuntos -->
@@ -32,24 +32,7 @@
       <h3 class="text-primary text-center text-lg font-semibold mb-4">ARCHIVOS ADJUNTOS</h3>
       <div class="flex justify-center">
         <div class="overflow-x-auto rounded-xl border border-base-content/10 bg-base-100 shadow-sm w-full max-w-2xl">
-          <table class="table table-zebra">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Archivo</th>
-                <th>Trámite</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td><span class="badge badge-info">Blue</span></td>
-              </tr>
-            </tbody>
-          </table>
+         <app-archivos-adjuntos [id_user]="selectedUser().uid"></app-archivos-adjuntos>
         </div>
       </div>
     </div>
@@ -58,6 +41,5 @@
     <div class="flex justify-end space-x-3 pt-2">
       <button class="btn btn-outline btn-secondary" (click)="onClose()">Cerrar</button>
     </div>
-
   </div>
 </div>

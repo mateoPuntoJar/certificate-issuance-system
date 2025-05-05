@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { SupabaseService } from './../../supabase/supabase.service';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LimitWordsPipe } from './limit-words.pipe';
 
@@ -7,56 +8,94 @@ import { LimitWordsPipe } from './limit-words.pipe';
   standalone: true,
   imports: [CommonModule, LimitWordsPipe],
   templateUrl: './notifications.component.html',
+  styleUrls: ['./notifications.css'],
 })
-export class NotificationsComponent {
-  notifications = [
-    {
-      id: 1,
-      titulo: 'Certificado validado',
-      mensaje:
-        '¡Tu solicitud ha sido aprobada por el administrador! Esto significa que el proceso ha sido validado y podrás continuar con el siguiente paso, que ahora está disponible para ti.',
-      fecha: '23 de abril, 14:32',
-      leido: false,
-    },
-    {
-      id: 2,
-      titulo: 'Documentos pendientes',
-      mensaje: 'Faltan documentos por subir en tu perfil',
-      fecha: '22 de abril, 10:15',
-      leido: true,
-    },
-    {
-      id: 3,
-      titulo: 'Perfil actualizado',
-      mensaje: 'Se guardaron los últimos cambios en tu perfil',
-      fecha: '21 de abril, 18:50',
-      leido: false,
-    },
-  ];
+export class NotificationsComponent implements OnInit {
+  notifications: any[] = [];
+  filtro: 'todas' | 'no-leidas' = 'todas';
 
-  // Variables para el control del modal
   modalOpen = false;
   selectedNotification: any;
+  modalStyles = {};
 
-  // Función para abrir el modal con los detalles de la notificación
+  constructor(
+    private supabaseService: SupabaseService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  async ngOnInit() {
+    await this.loadNotifications();
+  }
+
+  async loadNotifications() {
+    const user = await this.supabaseService.client.auth.getUser();
+    const uid = user?.data?.user?.id;
+
+    const { data, error } = await this.supabaseService.client
+      .from('notificaciones')
+      .select('*')
+      .eq('uid_usuario', uid)
+      .order('fecha_notificacion', { ascending: false });
+    if (error) {
+      console.error('Error cargando notificaciones:', error.message);
+    } else {
+      this.notifications = data.map((n) => ({
+        id: n.id_notificacion,
+        titulo: this.generarTitulo(n),
+        mensaje: n.mensaje,
+        fecha: this.formatearFecha(n.fecha_notificacion),
+        leido: n.leido,
+        supabaseRaw: n,
+      }));
+      this.cdr.detectChanges();
+    }
+  }
+
+  generarTitulo(n: any) {
+    if (n.id_documento) return 'Nuevo documento';
+    return 'Notificación';
+  }
+
+  formatearFecha(fecha: string) {
+    const f = new Date(fecha);
+    return f.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
   openModal(notification: any) {
     this.selectedNotification = notification;
     this.modalOpen = true;
+
+    this.modalStyles = {
+      animation: 'fadeInUp 0.4s ease-out forwards',
+      opacity: '0',
+    };
+
     notification.leido = true;
+
+    this.supabaseService.client
+      .from('notificaciones')
+      .update({ leido: true })
+      .eq('id_notificacion', notification.id)
+      .then(({ error }) => {
+        if (error) {
+          console.error('Error al marcar como leída:', error.message);
+        }
+      });
   }
 
-  // Función para cerrar el modal
   closeModal() {
     this.modalOpen = false;
     this.selectedNotification = null;
   }
 
-  // Función para el trackBy en el ngFor (optimiza la renderización)
   trackByNotificationId(index: number, notification: any) {
     return notification.id;
   }
-
-  filtro: 'todas' | 'no-leidas' = 'todas';
 
   notificacionesFiltradas() {
     if (this.filtro === 'no-leidas') {
@@ -70,6 +109,12 @@ export class NotificationsComponent {
   }
 
   todasLeidas() {
-    this.notifications.forEach((n) => (n.leido = true));
+    this.notifications.forEach((n) => {
+      n.leido = true;
+      this.supabaseService.client
+        .from('notificaciones')
+        .update({ leido: true })
+        .eq('id_notificacion', n.id);
+    });
   }
 }

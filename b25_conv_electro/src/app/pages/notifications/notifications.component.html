@@ -24,18 +24,10 @@
     >
       No leídas <span class="font-bold"> ( {{ contarNoLeidas() }} )</span>
     </button>
-
-    <button
-      class="btn btn-md mr-2"
-      (click)="todasLeidas()"
-      *ngIf="contarNoLeidas() > 0"
-    >
-      Marcar todas como leídas
-    </button>
   </div>
 
   <!-- Listado de Notificaciones -->
-  <ul class="space-y-4">
+  <ul class="space-y-4" *ngIf="notifications.length > 0">
     <li
       *ngFor="
         let notification of notificacionesFiltradas();
@@ -67,8 +59,8 @@
           'bg-orange-400': !notification.leido,
           'bg-blue-400': notification.leido
         }"
+        class="min-w-2.5 min-h-2.5 sm:w-2.5 sm:h-2.5"
       ></span>
-
       <!-- Botón para abrir el modal -->
       <button
         class="btn btn-ghost btn-square"
@@ -97,10 +89,10 @@
 <!-- Modal -->
 <div
   *ngIf="modalOpen"
-  class="fixed inset-0 bg-gray-100 opacity-95 z-50 flex justify-center items-center"
+  class="fixed inset-0 bg-gray-100/90 z-50 flex justify-center items-center"
 >
   <div
-    class="card bg-base-100 text-base-content shadow-2xl rounded-[2rem] w-full sm:w-4/5 lg:w-2/5 p-6 border border-primary"
+    class="card bg-base-100 text-base-content shadow-2xl rounded-[2rem] w-full sm:w-4/5 lg:w-2/5 p-6 border border-primary modal-enter"
   >
     <!-- Icono de campana -->
     <div class="flex justify-center mb-4">

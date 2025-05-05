@@ -1,0 +1,21 @@
+<table class="table table-zebra">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Archivo</th>
+        <th>Trámite</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+            @for(item of documents; track $index){
+                <tr>
+                  <td>{{item.nombre_titulacion}}</td>
+                  <td>{{item.nombre_archivo}}</td>
+                  <td>{{item.fecha_subida}}</td>
+                  <td><span class="badge badge-info">{{item.estado_verificacion}}</span></td>
+                </tr>
+        }
+        
+    </tbody>
+  </table>

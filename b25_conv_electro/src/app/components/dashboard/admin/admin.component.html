@@ -1,1 +1,69 @@
-<p>admin works!</p>,
+<div class="overflow-x-auto">
+    <table class="table table-zebra table-bordered bg-white shadow-xl">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>
+            <label>
+              <input type="checkbox" class="checkbox" />
+            </label>
+          </th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(item of usuario; track $index){
+          <!-- row 1 -->
+          <tr>
+            <th>
+              <label>
+                <input type="checkbox" class="checkbox" />
+              </label>
+            </th>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="avatar">
+                  <div class="mask mask-squircle h-12 w-12">
+                    <img
+                      src="https://imgs.search.brave.com/h6yxdqWgKWbXEI4rGRq6IWGdvfZLvOIJZuzdJ5B3_Vc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvcGxh/Y2Vob2xkZXItcHJv/ZmlsZS1pY29uLTIw/dGVoZmF3eHQ1ZWlo/Y28ucG5n"
+                      alt="Avatar Tailwind CSS Component" />
+                  </div>
+                </div>
+                <div>
+                  <div class="font-bold">{{item.nombre}}</div>
+                  <div class="text-sm opacity-50">{{item.correo}}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p> {{item.fecha_registro}}</p>
+              <br />
+              <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+            </td>
+            <td>{{item.rol}}</td>
+            <th>
+              <button class="btn btn-ghost btn-xs" (click)="openDetails(item)">Detalles del Estudiante</button>
+            </th>
+          </tr>
+        }
+      </tbody>
+      <!-- foot -->
+      <tfoot>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  
+
+  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <app-single-student (close)="closeDetails()" [selectedUser]="selectedUser"></app-single-student>
+  </div> 

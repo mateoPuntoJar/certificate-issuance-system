@@ -27,7 +27,6 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
     const isAuthenticated = this.auth.isAuthenticated();
     const rol = this.auth.userRol;
     const url = state.url;
-    console.log(isAuthenticated);
 
     if (!isAuthenticated) {
       this.router.navigate(['/']);

@@ -1,0 +1,87 @@
+<ul class="menu space-y-2 text-sm sm:text-base">
+  <!-- Perfil -->
+  <li>
+    <a
+      routerLink="profile"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Perfil
+    </a>
+  </li>
+
+  <!-- Envío de Documentación -->
+  <li>
+    <a
+      routerLink="form"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 py-2 hover:text-[#FF5B41] transition rounded-full"
+    >
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" fill="none" stroke="currentColor" stroke-width="1.5"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M7.5 17.25h9m-9-4.5h9m-9-4.5h5.25M4.875 4.5h14.25c.621 0 1.125.504 1.125 1.125v12.75c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 013.75 18.375V5.625c0-.621.504-1.125 1.125-1.125z" />
+      </svg>
+      <span class="truncate">Envío Documentación</span>
+    </a>
+  </li>
+
+
+  <!-- Notificaciones -->
+  <li>
+    <a
+      routerLink="notifications"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition"
+    >
+      <!-- Icono SVG igual al del banner pero azul -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#002782] min-w-[20px]" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 2a6 6 0 00-6 6v2c0 .628-.134 1.24-.39 1.8L3 14h14l-.61-2.2A3.993 3.993 0 0016 10V8a6 6 0 00-6-6zm0 16a2 2 0 001.995-1.85L12 16H8a2 2 0 002 2z"/>
+      </svg>
+
+      Notificaciones
+
+      <span *ngIf="notificacionesPendientes > 0"
+            class="badge badge-sm bg-[#FF5B41] text-white">
+        {{ notificacionesPendientes }}
+      </span>
+    </a>
+  </li>
+
+
+  <!-- Estado -->
+  <li>
+    <a
+      routerLink="status"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m2 0a2 2 0 100-4H7a2 2 0 100 4zm0 0a2 2 0 110 4H7a2 2 0 110-4z" />
+      </svg>
+      Estado
+    </a>
+  </li>
+
+  <!-- Cerrar sesión -->
+  <li>
+    <a
+      (click)="logout()"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition cursor-pointer"
+    >
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M17 16l4-4m0 0l-4-4m4 4H7" />
+      </svg>
+      Cerrar sesión
+    </a>
+  </li>
+</ul>
+
+
+

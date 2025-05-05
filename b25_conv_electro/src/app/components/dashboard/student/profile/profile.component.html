@@ -1,0 +1,59 @@
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-md">
+  <h2 class="text-3xl font-bold text-[#002782] mb-6 text-center">Mi Perfil</h2>
+
+  <!-- Cabecera -->
+  <div class="flex flex-col items-center mb-8">
+    <div class="mb-4 rounded-full w-24 h-24 bg-base-300 flex items-center justify-center shadow-md">
+      <i class="fas fa-user text-5xl text-[#002782]"></i>
+    </div>
+    <h3 class="text-xl font-semibold text-primary">{{ nombre }}</h3>
+    <p class="text-gray-600 text-sm sm:text-base flex items-center gap-2 mt-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-accent" fill="#F96149" viewBox="0 0 20 20">
+        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+      </svg>
+      {{ email }}
+    </p>
+  </div>
+
+  <!-- Paneles -->
+  <div class="grid gap-6 sm:grid-cols-2">
+
+    <!-- Aprobados -->
+    <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
+      <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
+        ✅ Certificados aprobados
+      </h4>
+      <ng-container *ngIf="aprobados.length > 0; else sinAprobados">
+        <ul class="space-y-2 text-sm sm:text-base">
+          <li *ngFor="let cert of aprobados" class="flex justify-between items-center border-b border-gray-200 pb-2">
+            <span>{{ cert }}</span>
+            <span class="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">Aprobado</span>
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #sinAprobados>
+        <p class="text-gray-500 text-sm">No tienes certificados aprobados.</p>
+      </ng-template>
+    </div>
+
+    <!-- Rechazados -->
+    <div class="bg-[#F9FAFB] p-4 rounded-xl shadow-sm">
+      <h4 class="font-semibold text-[#002782] flex items-center gap-2 mb-3">
+        ❌ Documentos rechazados
+      </h4>
+      <ng-container *ngIf="rechazados.length > 0; else sinRechazados">
+        <ul class="space-y-2 text-sm sm:text-base">
+          <li *ngFor="let cert of rechazados" class="flex justify-between items-center border-b border-gray-200 pb-2">
+            <span>{{ cert }}</span>
+            <span class="px-2 py-1 rounded-full bg-red-100 text-red-800 text-xs font-medium">Rechazado</span>
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #sinRechazados>
+        <p class="text-gray-500 text-sm">No tienes documentos rechazados.</p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>

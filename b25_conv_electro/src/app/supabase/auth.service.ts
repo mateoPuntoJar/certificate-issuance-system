@@ -8,6 +8,7 @@ import { SupabaseService } from './supabase.service';
 export class AuthService {
   public user: any = null;
   public userRol: string= '';
+  public appLoading = true;
 
   constructor(
     private router: Router,
@@ -86,6 +87,11 @@ export class AuthService {
       } else {
         this.userRol = '';
       }
+    } else {
+      this.user = null;
+      this.userRol = '';
     }
+
+    return;
   }
 }

@@ -1,5 +1,5 @@
-import { NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CommonModule, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms'
 import { AuthService } from '../../supabase/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, CommonModule],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -15,6 +15,8 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private snackBar = inject(MatSnackBar);
+  private cdRef = inject(ChangeDetectorRef);
+  loading = this.auth.appLoading;
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -22,13 +24,23 @@ export class LoginComponent {
   });
 
   async ngOnInit() {
+    setTimeout(() => {
+      this.loading = this.auth.appLoading;
+      this.cdRef.markForCheck();
+    })
     // Restaura sesión si la hay
     await this.auth.restoreSession();
 
-    // Redirige si hay sesión activa
+    // Redirige si hay sesión activa o muestra el formulario en caso de que no la haya
     if (this.auth.isAuthenticated()) {
       this.auth.redirecTo();
+      return;
+    } else {
+      this.loading = false;
     }
+
+    this.cdRef.markForCheck();
+
   }
 
   onSubmit() {

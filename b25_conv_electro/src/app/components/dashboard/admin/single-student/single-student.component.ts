@@ -1,5 +1,5 @@
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { User } from '../dashboard/admin/admin.component';
+import { User } from '../../../dashboard/admin/admin.component';
 import { FormAdminComponent } from '../form-admin/form-admin.component';
 import { Router } from '@angular/router';
 import { ArchivosAdjuntosComponent } from "../archivos-adjuntos/archivos-adjuntos.component";
@@ -7,11 +7,11 @@ import { ArchivosAdjuntosComponent } from "../archivos-adjuntos/archivos-adjunto
 
 @Component({
   selector: 'app-single-student',
-  imports: [FormAdminComponent, ArchivosAdjuntosComponent],
+  imports: [FormAdminComponent, ArchivosAdjuntosComponent,],
   templateUrl: './single-student.component.html',
 })
 export class SingleStudentComponent {
-  
+
   selectedUser = input.required<User>();
 
   @Output() close = new EventEmitter<void>();
@@ -20,6 +20,4 @@ export class SingleStudentComponent {
   onClose() {
     this.close.emit(); // notifica al padre
   }
-  
-
 }

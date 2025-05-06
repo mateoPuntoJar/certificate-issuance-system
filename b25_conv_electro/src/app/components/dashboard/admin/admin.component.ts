@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
-import { SingleStudentComponent } from '../../single-student/single-student.component';
+import { SingleStudentComponent } from './single-student/single-student.component';
 import { SupabaseService } from '../../../supabase/supabase.service';
 
 

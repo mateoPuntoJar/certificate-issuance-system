@@ -27,11 +27,11 @@ export const routes: Routes = [
       { path: 'status', component: StatusComponent },
       { path: 'notifications', component: NotificationsComponent },
       { path: 'admin', component: AdminComponent },
-    ]
+      { path: 'subir-archivos', component: FormComponent },
+    ],
   },
   {
     path: '**',
     redirectTo: '',
-  }
+  },
 ];
-

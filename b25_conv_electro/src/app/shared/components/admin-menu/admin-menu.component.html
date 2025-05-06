@@ -1,30 +1,45 @@
 <ul class="menu space-y-2 text-sm sm:text-base">
- <li><fieldset class="fieldset">
-  <legend class="fieldset-legend">Filtrar por Estado</legend>
-  <select class="select select select-primary">
-    <option disabled selected>Selecciona un estado</option>
-    <option>Pendiente</option>
-    <option>Aprobado</option>
-    <option>Rechazado</option>
-  </select>
-  <span class="label">Optional</span>
-</fieldset>
+  <li>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Filtrar por Estado</legend>
+      <select class="select select select-primary">
+        <option disabled selected>Selecciona un estado</option>
+        <option>Pendiente</option>
+        <option>Aprobado</option>
+        <option>Rechazado</option>
+      </select>
+      <span class="label">Optional</span>
+    </fieldset>
 
-    </li>
-  
+  </li>
+
+  <li>
+
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Filtrar por localidad</legend>
+      <select class="select select select-primary">
+        <option disabled selected>Selecciona una Localidad</option>
+        <option>Málaga</option>
+        <option>Madrid</option>
+        <option>Alicante</option>
+      </select>
+      <span class="label">Optional</span>
+    </fieldset>
+
+  </li>
+
+    <!-- Cerrar sesión -->
     <li>
-      
-  <fieldset class="fieldset">
-    <legend class="fieldset-legend">Filtrar por localidad</legend>
-    <select class="select select select-primary">
-      <option disabled selected>Selecciona una Localidad</option>
-      <option>Málaga</option>
-      <option>Madrid</option>
-      <option>Alicante</option>
-    </select>
-    <span class="label">Optional</span>
-  </fieldset>
-
+      <a
+        (click)="logout()"
+        class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition cursor-pointer"
+      >
+        <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7" />
+        </svg>
+        Cerrar sesión
+      </a>
     </li>
-  </ul>
-  
+</ul>

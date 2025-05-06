@@ -1,18 +1,19 @@
 <div class="flex flex-col lg:flex-row min-h-screen bg-white">
   <!-- Sidebar -->
   <div
-    class="lg:h-screen w-full lg:w-64 p-4"
+    class="h-full lg:h-screen w-full lg:w-64 p-4"
     style="background-color: #EDEDED; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.233);"
   >
-    <h2 class="text-lg font-bold mb-6 text-[#002782]">Bienvenido/a [Admin/Student]</h2>
+    <h2 class="text-lg font-bold mb-6 text-[#002782]">Bienvenido/a</h2>
     <hr class="my-4 border-t-1 border-[#002782]" />
 
-    @if(rol === 'admin'){
+    <ng-container *ngIf="rol === 'admin'; else studentView">
       <app-admin-menu></app-admin-menu>
-    }@else {
-      <app-notifications-banner></app-notifications-banner>
+    </ng-container>
+
+    <ng-template #studentView>
       <app-student-menu></app-student-menu>
-    }
+    </ng-template>
   </div>
 
   <!-- Main Content -->

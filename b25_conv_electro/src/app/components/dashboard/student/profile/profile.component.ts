@@ -1,11 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { NgFor, NgIf } from '@angular/common';
+import { NotificationBannerComponent } from '../../../../shared/components/notifications-banner/notifications.banner.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, NotificationBannerComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

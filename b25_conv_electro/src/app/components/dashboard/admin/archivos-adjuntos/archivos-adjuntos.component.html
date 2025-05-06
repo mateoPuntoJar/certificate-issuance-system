@@ -13,7 +13,11 @@
                   <td>{{item.nombre_titulacion}}</td>
                   <td>{{item.nombre_archivo}}</td>
                   <td>{{item.fecha_subida}}</td>
-                  <td><span class="badge badge-info">{{item.estado_verificacion}}</span></td>
+                  <td><select class="select select-primar badge badge-info">
+                    <option disabled selected>Estado del tramite</option>
+                    <option>Pendiente</option>
+                    <option>Aprobado</option>
+                  </select></td>
                 </tr>
         }
         

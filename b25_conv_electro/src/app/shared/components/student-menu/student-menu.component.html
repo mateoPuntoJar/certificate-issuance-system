@@ -29,28 +29,24 @@
     </a>
   </li>
 
+<!-- Notificaciones -->
+<li>
+  <a
+    routerLink="notifications"
+    routerLinkActive="text-[#002782] font-bold"
+    class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#002782] min-w-[20px]" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 2a6 6 0 00-6 6v2c0 .628-.134 1.24-.39 1.8L3 14h14l-.61-2.2A3.993 3.993 0 0016 10V8a6 6 0 00-6-6zm0 16a2 2 0 001.995-1.85L12 16H8a2 2 0 002 2z"/>
+    </svg>
 
-  <!-- Notificaciones -->
-  <li>
-    <a
-      routerLink="notifications"
-      routerLinkActive="text-[#002782] font-bold"
-      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition"
-    >
-      <!-- Icono SVG igual al del banner pero azul -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#002782] min-w-[20px]" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M10 2a6 6 0 00-6 6v2c0 .628-.134 1.24-.39 1.8L3 14h14l-.61-2.2A3.993 3.993 0 0016 10V8a6 6 0 00-6-6zm0 16a2 2 0 001.995-1.85L12 16H8a2 2 0 002 2z"/>
-      </svg>
+    Notificaciones
 
-      Notificaciones
-
-      <span *ngIf="notificacionesPendientes > 0"
-            class="badge badge-sm bg-[#FF5B41] text-white">
-        {{ notificacionesPendientes }}
-      </span>
-    </a>
-  </li>
-
+    <span *ngIf="notificacionesPendientes > 0" class="badge badge-sm bg-[#FF5B41] text-white">
+      {{ notificacionesPendientes }}
+    </span>
+  </a>
+</li>
 
   <!-- Estado -->
   <li>
@@ -82,6 +78,3 @@
     </a>
   </li>
 </ul>
-
-
-

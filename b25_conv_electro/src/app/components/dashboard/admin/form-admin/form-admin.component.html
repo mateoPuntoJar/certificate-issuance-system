@@ -1,9 +1,4 @@
 <div class="flex justify-center">
-<select class="select select-primary">
-    <option disabled selected>Estado del tramite</option>
-    <option>Pendiente</option>
-    <option>Aprobado</option>
-  </select>
 </div>
   <div class="flex justify-center mb-8">
     <div class="overflow-x-auto">
@@ -11,20 +6,25 @@
         <!-- head -->
         <thead>
           <tr>
-            <th></th>
             <th>Fecha</th>
             <th>Comentarios</th>
-            <th>Tramite</th>
+            <th>Estado</th>
           </tr>
         </thead>
         <tbody>
           <!-- row 1 -->
+          @for(comment of comments; track $index){
           <tr>
-            <th>1</th>
-            <td>12-11-22</td>
-            <td>Falta anviar documentacion</td>
-            <td>Pendiente</td>
+            <th>{{comment.fecha_notificacion}}</th>
+            <td>{{comment.mensaje}}</td>
+            @if(comment.leido){
+              <td>Notificacion leida</td>
+            }@else {
+              <td>Notifacion no revisada</td>
+            }
+            
           </tr>
+        }
         </tbody>
       </table>
     </div>

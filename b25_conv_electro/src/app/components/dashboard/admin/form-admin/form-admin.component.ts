@@ -1,20 +1,22 @@
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, Input, input, OnInit, Output } from '@angular/core';
+import { FormControl,ReactiveFormsModule } from '@angular/forms';
+import { User } from '../../../dashboard/admin/admin.component';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { AuthService } from '../../../../supabase/auth.service';
-import { FormControl,ReactiveFormsModule } from '@angular/forms';
-import { User } from '../admin.component';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-form-admin',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,],
   templateUrl: './form-admin.component.html',
-  styleUrl: './form-admin.component.css'
 })
-export class FormAdminComponent{
-  constructor( private supabase : SupabaseService, private auth : AuthService){}
-
-   
+export class FormAdminComponent implements OnInit{
+  constructor( private supabase : SupabaseService, private auth : AuthService, private cdr : ChangeDetectorRef){}
+ngOnInit(): void {
+  this.loadComments();
+}
     mensaje = new FormControl("");
     @Input() selectedUser !: User
+    comments : any[] = [];
    
     sendNotification() {
     const msg = this.mensaje.value;
@@ -22,14 +24,27 @@ export class FormAdminComponent{
       console.warn('El mensaje está vacío o es inválido');
       return;
     }
-  
+
     this.supabase.sendNotification(this.selectedUser.uid,msg).subscribe({
       next: () => {
         this.mensaje.reset();
+        this.loadComments();
       },
       error: (err) => console.error('Error al enviar', err)
     });
   }
-  
+
+   loadComments(){
+    this.supabase.getAllNotification(this.selectedUser.uid).subscribe({
+      next: (response) => { 
+        this.comments = response.data;
+        this.cdr.detectChanges();
+        console.log(this.comments)
+      },
+      error: ( err) => console.error("Error al buscar notificaciones")
+    })
+
+  }
+
 
 }

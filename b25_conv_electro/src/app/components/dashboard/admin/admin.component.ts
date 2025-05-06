@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
-import { SingleStudentComponent } from './single-student/single-student.component';
 import { SupabaseService } from '../../../supabase/supabase.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { SingleStudentComponent } from './single-student/single-student.component';
 
 
 export interface User{
@@ -14,17 +15,17 @@ export interface User{
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, SingleStudentComponent,],
+  imports: [CommonModule, SingleStudentComponent],
   templateUrl: './admin.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class AdminComponent  implements OnInit{
 
-  constructor( private supabase : SupabaseService){}
+  constructor( private supabase : SupabaseService, private cdr: ChangeDetectorRef){}
 
   ngOnInit(): void {
-    this.allStudent();  
+    this.allStudent();
   }
   public usuario : User[] = [];
 
@@ -57,14 +58,15 @@ allStudent(){
   this.supabase.getAllStudents().subscribe({
     next:(respuesta) =>{
       this.usuario = respuesta.data
+      this.cdr.detectChanges();
       console.log(this.usuario)
     },
     error: ( error)=>{
       alert('NO SE ENCONTRARON ESTUDIANTES')
     }
-  }) 
-}  
+  })
+}
 
 }
 
- 
+

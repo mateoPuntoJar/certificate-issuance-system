@@ -12,7 +12,7 @@ import { get } from 'http';
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [CommonModule, StudentMenuComponent, AdminMenuComponent, NotificationBannerComponent,RouterOutlet],
+  imports: [CommonModule, StudentMenuComponent, AdminMenuComponent, NotificationBannerComponent,RouterOutlet,],
   templateUrl: './dashboard.component.html',
 })
 

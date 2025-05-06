@@ -1,12 +1,19 @@
 import { SupabaseService } from './../../supabase/supabase.service';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LimitWordsPipe } from './limit-words.pipe';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-notificaciones',
   standalone: true,
-  imports: [CommonModule, LimitWordsPipe],
+  imports: [CommonModule, LimitWordsPipe, RouterModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.css'],
 })
@@ -17,14 +24,20 @@ export class NotificationsComponent implements OnInit {
   modalOpen = false;
   selectedNotification: any;
   modalStyles = {};
+  nombreUsuario: string = '';
 
   constructor(
     private supabaseService: SupabaseService,
     private cdr: ChangeDetectorRef
   ) {}
 
-  async ngOnInit() {
-    await this.loadNotifications();
+  async ngOnInit() {}
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.loadUser();
+      this.loadNotifications();
+    });
   }
 
   async loadNotifications() {
@@ -33,7 +46,7 @@ export class NotificationsComponent implements OnInit {
 
     const { data, error } = await this.supabaseService.client
       .from('notificaciones')
-      .select('*')
+      .select('id_notificacion, mensaje, fecha_notificacion, leido')
       .eq('uid_usuario', uid)
       .order('fecha_notificacion', { ascending: false });
     if (error) {
@@ -45,14 +58,30 @@ export class NotificationsComponent implements OnInit {
         mensaje: n.mensaje,
         fecha: this.formatearFecha(n.fecha_notificacion),
         leido: n.leido,
-        supabaseRaw: n,
+        supabaseId: n.id_notificacion,
       }));
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
+    }
+  }
+
+  async loadUser() {
+    const user = await this.supabaseService.client.auth.getUser();
+    const uid = user?.data?.user?.id;
+    const { data, error } = await this.supabaseService.client
+      .from('usuarios')
+      .select('nombre')
+      .eq('uid', uid)
+      .single();
+
+    if (error) {
+      console.error('Error cargando el nombre de usuario:', error.message);
+    } else if (data) {
+      this.nombreUsuario = data.nombre;
+      this.cdr.markForCheck();
     }
   }
 
   generarTitulo(n: any) {
-    if (n.id_documento) return 'Nuevo documento';
     return 'Notificación';
   }
 
@@ -66,7 +95,7 @@ export class NotificationsComponent implements OnInit {
     });
   }
 
-  openModal(notification: any) {
+  async openModal(notification: any) {
     this.selectedNotification = notification;
     this.modalOpen = true;
 
@@ -75,17 +104,26 @@ export class NotificationsComponent implements OnInit {
       opacity: '0',
     };
 
+    // Actualiza el estado local para reflejar el cambio de 'leido'
     notification.leido = true;
 
-    this.supabaseService.client
+    // Actualiza la lista de notificaciones también
+    this.notifications = this.notifications.map((n) =>
+      n.id === notification.id ? { ...n, leido: true } : n
+    );
+
+    console.log('Intentando marcar como leída:', notification);
+
+    const { data, error } = await this.supabaseService.client
       .from('notificaciones')
       .update({ leido: true })
-      .eq('id_notificacion', notification.id)
-      .then(({ error }) => {
-        if (error) {
-          console.error('Error al marcar como leída:', error.message);
-        }
-      });
+      .eq('id_notificacion', notification.id);
+
+    if (error) {
+      console.error('UPDATE error:', error);
+    } else {
+      console.log('Fila actualizada:', data);
+    }
   }
 
   closeModal() {
@@ -106,15 +144,5 @@ export class NotificationsComponent implements OnInit {
 
   contarNoLeidas() {
     return this.notifications.filter((n) => !n.leido).length;
-  }
-
-  todasLeidas() {
-    this.notifications.forEach((n) => {
-      n.leido = true;
-      this.supabaseService.client
-        .from('notificaciones')
-        .update({ leido: true })
-        .eq('id_notificacion', n.id);
-    });
   }
 }

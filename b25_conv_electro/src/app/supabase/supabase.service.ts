@@ -8,26 +8,27 @@ import { from, Observable } from 'rxjs';
 export class SupabaseService {
   constructor() { }
 
+  // Getter que devuelve la instancia del cliente Supabase
   get client() {
     return supabase;
   }
 
-  // Devuelve todos los registros de una tabla específica
+  // Obtiene todos los registros de una tabla específica de la base de datos
   async getAllFromTable(table: string) {
     return this.client.from(table).select('*');
   }
 
-  // Sube un archivo al bucket de almacenamiento
+  // Sube un archivo al bucket de almacenamiento 'documentos' en Supabase
   async uploadFile(file: File, path: string) {
     return this.client.storage
       .from('documentos')
       .upload(path, file, {
         contentType: file.type,
-        upsert: true,
+        upsert: true, // Sobrescribe el archivo si ya existe
       });
   }
 
-  // Inserta los registros en tabla documentos_subidos
+  // Inserta un nuevo registro en la tabla 'documentos_subidos' con los metadatos del archivo
   async insertDocument(data: {
     uid_usuario: string;
     tipo_documento: string;
@@ -53,7 +54,7 @@ export class SupabaseService {
     });
   }
 
-  // Genera una URL firmada temporal para un archivo del bucket
+  // Genera una URL firmada temporalmente para acceder a un archivo almacenado en el bucket
   async getSignedUrl(path: string, expiresInSeconds: number = 60): Promise<string | null> {
     const { data, error } = await this.client.storage
       .from('documentos')
@@ -61,7 +62,7 @@ export class SupabaseService {
     return error ? null : data.signedUrl;
   }
 
-  // Inserta o actualiza el perfil del alumno en la tabla perfiles_alumnoset
+  // Inserta o actualiza el perfil de un alumno en la tabla 'perfiles_alumnos'
   async insertProfileStudent(uid: string, tipo: string, fileName: string, experiencia: string) {
     const profileData: any = {
       uid_usuario: uid,
@@ -76,38 +77,50 @@ export class SupabaseService {
       .upsert(profileData, { onConflict: 'uid_usuario' });
   }
 
-  // Obtiene todos los documentos subidos por los usuarios
+  //Listar Notificaciones 
+  getAllNotification(id : string):Observable<any>{
+    return  from(supabase
+    .from('notificaciones')
+    .select('*')
+    .eq('uid_usuario', id)
+  );
+  }
+
+  // Recupera todos los registros de la tabla 'documentos_subidos'
   async getAllDocuments() {
     return this.client
       .from('documentos_subidos')
       .select('*');
   }
 
+  // Obtiene todos los usuarios registrados en la tabla 'usuarios'
   getAllStudents(): Observable<any> {
     return from(
       supabase
-        .from('usuarios')  // Asegúrate de que esta es la tabla correcta
+        .from('usuarios')
         .select('*')
     );
   }
 
-  sendNotification(id_usuario: string,mensaje: string){
-    return from(supabase.
-      from("notificaciones")
-    .insert([
-      {uid_usuario: id_usuario,mensaje : mensaje}
-    ]). select()
-  )
+  // Envía una notificación a un usuario insertando un nuevo registro en la tabla 'notificaciones'
+  sendNotification(id_usuario: string, mensaje: string) {
+    return from(
+      supabase
+        .from('notificaciones')
+        .insert([
+          { uid_usuario: id_usuario, mensaje: mensaje }
+        ])
+        .select()
+    );
   }
 
-  showDocuments(id_usuario : string){
-    return from(supabase.
-      from("documentos_subidos")
-      .select("*")
-      .eq('uid_usuario',id_usuario)
-    )
+  // Recupera todos los documentos subidos por un usuario específico
+  showDocuments(id_usuario: string) {
+    return from(
+      supabase
+        .from('documentos_subidos')
+        .select('*')
+        .eq('uid_usuario', id_usuario)
+    );
   }
-
-
-
 }

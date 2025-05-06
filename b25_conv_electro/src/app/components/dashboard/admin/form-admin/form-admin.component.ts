@@ -4,9 +4,10 @@ import { User } from '../../../dashboard/admin/admin.component';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { AuthService } from '../../../../supabase/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-form-admin',
-  imports: [ReactiveFormsModule,],
+  imports: [ReactiveFormsModule,CommonModule],
   templateUrl: './form-admin.component.html',
 })
 export class FormAdminComponent implements OnInit{

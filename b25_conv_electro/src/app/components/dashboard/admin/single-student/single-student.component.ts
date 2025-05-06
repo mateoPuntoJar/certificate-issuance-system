@@ -3,11 +3,12 @@ import { User } from '../../../dashboard/admin/admin.component';
 import { FormAdminComponent } from '../form-admin/form-admin.component';
 import { Router } from '@angular/router';
 import { ArchivosAdjuntosComponent } from "../archivos-adjuntos/archivos-adjuntos.component";
+import { CommonModule } from '@angular/common';
 /* import { AdminFormComponent } from '../admin-form/admin-form.component'; */
 
 @Component({
   selector: 'app-single-student',
-  imports: [FormAdminComponent, ArchivosAdjuntosComponent,],
+  imports: [FormAdminComponent, ArchivosAdjuntosComponent,CommonModule],
   templateUrl: './single-student.component.html',
 })
 export class SingleStudentComponent {

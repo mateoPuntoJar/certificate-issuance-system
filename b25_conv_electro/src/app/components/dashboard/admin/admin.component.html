@@ -8,9 +8,9 @@
               <input type="checkbox" class="checkbox" />
             </label>
           </th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Estado</th>
+          <th>Usuario</th>
+          <th>Fecha de registro</th>
+          <th>Rol</th>
           <th></th>
         </tr>
       </thead>
@@ -39,11 +39,9 @@
               </div>
             </td>
             <td>
-              <p> {{item.fecha_registro}}</p>
-              <br />
-              <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+              <p> {{item.fecha_registro | date:'dd/MM/yyyy'}} </p>
             </td>
-            <td>{{item.rol}}</td>
+            <td><span class="badge badge-ghost badge-sm">{{item.rol}}</span></td>
             <th>
               <button class="btn btn-ghost btn-xs" (click)="openDetails(item)">Detalles del Estudiante</button>
             </th>
@@ -54,9 +52,9 @@
       <tfoot>
         <tr>
           <th></th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Estado</th>
+          <th>Usuario</th>
+          <th>Fecha de registro</th>
+          <th>Rol</th>
           <th></th>
         </tr>
       </tfoot>

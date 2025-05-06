@@ -62,6 +62,16 @@ export class SupabaseService {
     return error ? null : data.signedUrl;
   }
 
+  //Update estados de documentos 
+  updateDocumentStatus(value : string, id : string){
+    return from(supabase.
+      from('documentos_subidos')
+      .update({estado_verificacion : value})
+      .eq('id_documento', id)
+      .select()
+    )
+  }
+
   // Inserta o actualiza el perfil de un alumno en la tabla 'perfiles_alumnos'
   async insertProfileStudent(uid: string, tipo: string, fileName: string, experiencia: string) {
     const profileData: any = {

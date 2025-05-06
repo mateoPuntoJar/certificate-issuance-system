@@ -1,24 +1,24 @@
 import { Component, Input, input, OnInit } from '@angular/core';
-import { SupabaseService } from '../../supabase/supabase.service';
+import { SupabaseService } from '../../../../supabase/supabase.service';
+
 
 @Component({
   selector: 'app-archivos-adjuntos',
   imports: [],
   templateUrl: './archivos-adjuntos.component.html',
-  styleUrl: './archivos-adjuntos.component.css'
 })
 export class ArchivosAdjuntosComponent implements OnInit{
 
   ngOnInit(): void {
     this.showDocuments(this.id_user);
-    
+
   }
   constructor( private supabase : SupabaseService){}
 
   @Input() id_user !: string;
-  
+
   documents : any;
-  
+
   showDocuments(id : string){
     this.supabase.showDocuments(id).subscribe({
       next:(response) =>{

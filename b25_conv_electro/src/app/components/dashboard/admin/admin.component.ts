@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
-import { SingleStudentComponent } from '../../single-student/single-student.component';
 import { SupabaseService } from '../../../supabase/supabase.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { SingleStudentComponent } from './single-student/single-student.component';
 
 
 export interface User{
@@ -15,7 +15,7 @@ export interface User{
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, SingleStudentComponent,],
+  imports: [CommonModule, SingleStudentComponent],
   templateUrl: './admin.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

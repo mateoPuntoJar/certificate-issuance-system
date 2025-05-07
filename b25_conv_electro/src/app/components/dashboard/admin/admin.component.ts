@@ -11,6 +11,7 @@ export interface User{
   correo: string;
   rol: string;
   fecha_registro: string;
+  centro: string;
 }
 
 @Component({
@@ -35,6 +36,7 @@ export class AdminComponent  implements OnInit{
     correo: "",
     rol: "",
     fecha_registro: "",
+    centro: ""
   };
 showModal = false;
 
@@ -51,6 +53,7 @@ closeDetails() {
     correo: "",
     rol: "",
     fecha_registro: "",
+    centro : ""
   };
 }
 
@@ -67,6 +70,9 @@ allStudent(){
   })
 }
 
+
+
 }
+
 
 

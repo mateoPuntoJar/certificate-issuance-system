@@ -1,9 +1,4 @@
 <div class="flex justify-center">
-<select class="select select-primary">
-    <option disabled selected>Estado del tramite</option>
-    <option>Pendiente</option>
-    <option>Aprobado</option>
-  </select>
 </div>
   <div class="flex justify-center mb-8">
     <div class="overflow-x-auto">
@@ -11,26 +6,49 @@
         <!-- head -->
         <thead>
           <tr>
-            <th></th>
             <th>Fecha</th>
             <th>Comentarios</th>
-            <th>Tramite</th>
+            <th>Estado</th>
           </tr>
         </thead>
         <tbody>
           <!-- row 1 -->
-          <tr>
-            <th>1</th>
-            <td>12-11-22</td>
-            <td>Falta anviar documentacion</td>
-            <td>Pendiente</td>
-          </tr>
+         
+            @if(comments.length > 0){
+              @for(comment of comments; track $index){
+              <tr>
+                <th>{{comment.fecha_notificacion | date:'dd/MM/yyyy'}}</th>
+                <td>{{comment.mensaje}}</td>
+                @if(comment.leido){
+                  <td>Notificacion leida</td>
+                }@else {
+                  <td>Notifacion no revisada</td>
+               
+                }
+              </tr>
+              }
+                
+              
+            }@else {
+              <td>No hay comentarios</td>
+            }
+          
+       
         </tbody>
       </table>
     </div>
   </div>
 <!--   --------CAMPO COMENTARIO----------- -->
-  <div class="flex justify-center">
-<input id="mensaje" placeholder="Agregar comentario" [formControl] ="mensaje" class="textarea textarea-primary">
-<button (click)="sendNotification()" class="btn btn-primary self-end"> ENVIAR</button>
+<div class="relative w-full max-w-md mx-auto">
+  <input 
+    id="mensaje"
+    placeholder="Agregar comentario" 
+    [formControl]="mensaje" 
+    class="textarea textarea-primary w-full pr-28"/>
+
+  <button 
+    (click)="sendNotification()" 
+    class="absolute bottom-2 right-2 px-4 py-2 bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full">
+    ENVIAR
+  </button>
 </div>

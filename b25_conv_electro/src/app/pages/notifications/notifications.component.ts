@@ -25,18 +25,18 @@ export class NotificationsComponent implements OnInit {
   selectedNotification: any;
   modalStyles = {};
   nombreUsuario: string = '';
+  loading: boolean = true;
 
   constructor(
     private supabaseService: SupabaseService,
     private cdr: ChangeDetectorRef
   ) {}
 
-  async ngOnInit() {}
-
-  ngAfterViewInit() {
+  async ngOnInit() {
     setTimeout(() => {
       this.loadUser();
       this.loadNotifications();
+      this.loading = false;
     });
   }
 

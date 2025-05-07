@@ -22,6 +22,7 @@ export interface User{
 })
 
 export class AdminComponent  implements OnInit{
+  loading = true;
 
   constructor( private supabase : SupabaseService, private cdr: ChangeDetectorRef){}
 
@@ -60,7 +61,9 @@ closeDetails() {
 allStudent(){
   this.supabase.getAllStudents().subscribe({
     next:(respuesta) =>{
+      this.loading = true;
       this.usuario = respuesta.data
+      this.loading = false;
       this.cdr.detectChanges();
       console.log(this.usuario)
     },

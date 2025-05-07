@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './form-admin.component.html',
 })
 export class FormAdminComponent implements OnInit{
+  loading = true;
   constructor( private supabase : SupabaseService, private auth : AuthService, private cdr : ChangeDetectorRef){}
 ngOnInit(): void {
   this.loadComments();
@@ -38,7 +39,9 @@ ngOnInit(): void {
    loadComments(){
     this.supabase.getAllNotification(this.selectedUser.uid).subscribe({
       next: (response) => { 
+        this.loading = true;
         this.comments = response.data;
+        this.loading = false;
         this.cdr.detectChanges();
         console.log(this.comments)
       },

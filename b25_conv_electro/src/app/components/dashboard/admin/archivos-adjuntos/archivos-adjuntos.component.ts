@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './archivos-adjuntos.component.html',
 })
 export class ArchivosAdjuntosComponent implements OnInit{
+  loading = true;
 
   ngOnInit(): void {
     this.showDocuments(this.id_user);
@@ -22,12 +23,14 @@ export class ArchivosAdjuntosComponent implements OnInit{
   @Input() id_user !: string;
 
   documents : any;
-
   showDocuments(id : string){
+    this.loading = true;
     this.supabase.showDocuments(id).subscribe({
       next:(response) =>{
         this.documents = response.data
+        this.loading = false;
         this.cdr.detectChanges();
+        
       },
       error: (err)=>{
         alert("IMPOSIBLE OBTENER DOCUMENTOS")

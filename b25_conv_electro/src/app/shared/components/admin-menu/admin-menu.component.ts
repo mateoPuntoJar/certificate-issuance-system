@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../supabase/auth.service';
 import { SupabaseService } from '../../../supabase/supabase.service';
+import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-menu',
-  imports: [],
+  imports: [RouterLink, RouterModule],
   templateUrl: './admin-menu.component.html',
-  styleUrl: './admin-menu.component.css'
 })
 export class AdminMenuComponent {
   constructor(

@@ -9,6 +9,15 @@
       </tr>
     </thead>
     <tbody>
+      @if(loading){
+        <tr>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+        </tr>
+      }@else{
       @if(documents.length > 0){
             @for(item of documents; track $index){
                 <tr>
@@ -49,6 +58,7 @@
       }@else {
         <td>NO HAY DOCUMENTOS SUBIDOS</td>
       }
+    }
         
     </tbody>
   </table>

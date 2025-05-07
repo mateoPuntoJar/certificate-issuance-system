@@ -1,0 +1,77 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 p-6 rounded-2xl shadow-md bg-[#EDEDED] my-24">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
+    <h2 class="text-center text-3xl font-bold mb-6 text-primary">Registrar un nuevo alumno/a</h2>
+
+    <h3 class="text-xl font-bold mb-6 text-secondary">Datos del alumno/a</h3>
+
+    <!-- Nombre del alumno -->
+    <div>
+      <label class="block font-semibold mb-2">Nombre del alumno/a</label>
+      <input type="text" formControlName="userName" placeholder="Ej. María López Gallardo" [ngClass]="{
+            'border-red-500': form.get('userName')?.touched && form.get('userName')?.invalid,
+            'border-green-500': form.get('userName')?.touched && form.get('userName')?.valid,
+            'border-gray-300': !form.get('userName')?.touched
+          }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400
+                 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
+                 transition-all duration-200" />
+      <div *ngIf="form.get('userName')?.touched && form.get('userName')?.errors?.['required']" class="text-red-600 text-sm mt-1">
+        Campo obligatorio
+      </div>
+      <div *ngIf="form.get('userName')?.touched && form.get('userName')?.errors?.['minlength']" class="text-red-600 text-sm mt-1">
+        Mínimo 6 caracteres
+      </div>
+    </div>
+
+    <!-- Correo del administrador -->
+    <div>
+      <label class="block font-semibold mb-2">Email del alumno/a</label>
+      <input type="email" formControlName="userEmail" placeholder="Ej. ejemplo@ejemplo.com" [ngClass]="{
+            'border-red-500': form.get('userEmail')?.touched && form.get('userEmail')?.invalid,
+            'border-green-500': form.get('userEmail')?.touched && form.get('userEmail')?.valid,
+            'border-gray-300': !form.get('userEmail')?.touched
+          }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400
+                 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
+                 transition-all duration-200" />
+      <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['required']" class="text-red-600 text-sm mt-1">
+        Campo obligatorio
+      </div>
+      <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['email']" class="text-red-600 text-sm mt-1">
+        Introduzca un email correcto
+      </div>
+    </div>
+
+    <!-- Contraseña del administrador -->
+    <div>
+      <label class="block font-semibold mb-2">Contraseña del alumno</label>
+      <input type="password" formControlName="userPassword" placeholder="******" [ngClass]="{
+            'border-red-500': form.get('userPassword')?.touched && form.get('userPassword')?.invalid,
+            'border-green-500': form.get('userPassword')?.touched && form.get('userPassword')?.valid,
+            'border-gray-300': !form.get('userPassword')?.touched
+          }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400
+                 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
+                 transition-all duration-200" />
+      <div *ngIf="form.get('userPassword')?.touched && form.get('userPassword')?.errors?.['required']" class="text-red-600 text-sm mt-1">
+        Campo obligatorio
+      </div>
+      <div *ngIf="form.get('userPassword')?.touched && form.get('userPassword')?.errors?.['minlength']" class="text-red-600 text-sm mt-1">
+        Mínimo 6 caracteres
+      </div>
+    </div>
+
+
+    <div class="flex flex-col sm:flex-row justify-end gap-4 mt-6">
+      <button type="button" (click)="resetForm()"
+        class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto">
+        Limpiar
+      </button>
+      <button type="submit"
+        class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto">
+        Enviar
+      </button>
+    </div>
+  </form>
+  <div *ngIf="successMessage" class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">
+    ✅ Tu solicitud se ha enviado correctamente.
+  </div>
+</div>
+

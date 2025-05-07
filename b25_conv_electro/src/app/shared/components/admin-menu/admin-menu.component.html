@@ -2,7 +2,7 @@
   <li>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por Estado</legend>
-      <select class="select select select-primary">
+      <select class="select select-primary">
         <option disabled selected>Selecciona un estado</option>
         <option>Pendiente</option>
         <option>Aprobado</option>
@@ -17,7 +17,7 @@
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por localidad</legend>
-      <select class="select select select-primary">
+      <select class="select select-primary">
         <option disabled selected>Selecciona una Localidad</option>
         <option>Málaga</option>
         <option>Madrid</option>
@@ -26,6 +26,34 @@
       <span class="label">Optional</span>
     </fieldset>
 
+  </li>
+
+  <!-- Registrar nuevo centro -->
+  <li>
+    <a
+      routerLink="registrar-centro"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Registrar nuevo centro
+    </a>
+  </li>
+
+  <!-- Registrar nuevo alumno -->
+  <li>
+    <a
+      routerLink="registrar-usuario"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Registrar nuevo alumno/a
+    </a>
   </li>
 
     <!-- Cerrar sesión -->

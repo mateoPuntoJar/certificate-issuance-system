@@ -11,6 +11,7 @@ export interface User{
   correo: string;
   rol: string;
   fecha_registro: string;
+  centro: string;
 }
 
 @Component({
@@ -21,6 +22,7 @@ export interface User{
 })
 
 export class AdminComponent  implements OnInit{
+  loading = true;
 
   constructor( private supabase : SupabaseService, private cdr: ChangeDetectorRef){}
 
@@ -35,6 +37,7 @@ export class AdminComponent  implements OnInit{
     correo: "",
     rol: "",
     fecha_registro: "",
+    centro: ""
   };
 showModal = false;
 
@@ -51,13 +54,16 @@ closeDetails() {
     correo: "",
     rol: "",
     fecha_registro: "",
+    centro : ""
   };
 }
 
 allStudent(){
   this.supabase.getAllStudents().subscribe({
     next:(respuesta) =>{
+      this.loading = true;
       this.usuario = respuesta.data
+      this.loading = false;
       this.cdr.detectChanges();
       console.log(this.usuario)
     },
@@ -67,6 +73,9 @@ allStudent(){
   })
 }
 
+
+
 }
+
 
 

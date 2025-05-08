@@ -1,4 +1,12 @@
-<section class="p-10 space-y-6">
+<div
+  *ngIf="loading"
+  class="flex justify-center items-center py-20 text-base-content/60"
+>
+  <span class="loading loading-spinner loading-lg text-primary"></span>
+  <span class="ml-4 text-lg">Cargando notificaciones...</span>
+</div>
+
+<section class="p-10 space-y-6" *ngIf="loading == false">
   <!-- Header -->
   <article class="flex flex-row justify-between items-center mb-12">
     <h3 class="text-primary text-3xl font-semibold">
@@ -10,82 +18,111 @@
   </article>
 
   <!-- Filtros -->
-  <div class="flex mb-6">
-    <button
-      class="btn btn-md mr-2"
-      [ngClass]="{ 'btn-active': filtro === 'todas' }"
-      (click)="filtro = 'todas'"
-    >
-      Todas <span class="font-bold"> ( {{ notifications.length }} )</span>
-    </button>
-
-    <button
-      class="btn btn-md mr-2"
-      [ngClass]="{ 'btn-active': filtro === 'no-leidas' }"
-      (click)="filtro = 'no-leidas'"
-    >
-      No leídas <span class="font-bold"> ( {{ contarNoLeidas() }} )</span>
-    </button>
-  </div>
-
-  <!-- Listado de Notificaciones -->
-  <ul class="space-y-4" *ngIf="notifications.length > 0">
-    <li
-      *ngFor="
-        let notification of notificacionesFiltradas();
-        trackBy: trackByNotificationId
-      "
-      class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2"
-      [ngClass]="{
-        'border-secondary': !notification.leido,
-        'border-primary': notification.leido
-      }"
-    >
-      <!-- Detalles de la notificación -->
-      <div class="flex-grow">
-        <div class="font-semibold text-base-content">
-          {{ notification.titulo }}
-        </div>
-        <div class="text-sm text-base-content/65">
-          {{ notification.mensaje | limitWords : 20 }}
-        </div>
-        <div class="text-xs text-base-content/40 mt-1">
-          {{ notification.fecha }}
-        </div>
-      </div>
-
-      <!-- Indicador de lectura (círculo de color) -->
-      <span
-        [ngClass]="{
-          'w-2.5 h-2.5 rounded-full ml-2': true,
-          'bg-orange-400': !notification.leido,
-          'bg-blue-400': notification.leido
-        }"
-        class="min-w-2.5 min-h-2.5 sm:w-2.5 sm:h-2.5"
-      ></span>
-      <!-- Botón para abrir el modal -->
+  <article *ngIf="notifications.length > 0">
+    <div class="flex mb-6">
       <button
-        class="btn btn-ghost btn-square"
-        (click)="openModal(notification)"
+        class="btn btn-md mr-2"
+        [ngClass]="{ 'btn-active': filtro === 'todas' }"
+        (click)="filtro = 'todas'"
       >
-        <svg
-          class="size-[1.2em]"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M6 3L20 12 6 21 6 3z"></path>
-          </g>
-        </svg>
+        Todas <span class="font-bold"> ( {{ notifications.length }} )</span>
       </button>
-    </li>
-  </ul>
+
+      <button
+        class="btn btn-md mr-2"
+        [ngClass]="{ 'btn-active': filtro === 'no-leidas' }"
+        (click)="filtro = 'no-leidas'"
+      >
+        No leídas <span class="font-bold"> ( {{ contarNoLeidas() }} )</span>
+      </button>
+    </div>
+
+    <!-- Listado de Notificaciones -->
+    <ul class="space-y-4">
+      <li
+        *ngFor="
+          let notification of notificacionesFiltradas();
+          trackBy: trackByNotificationId
+        "
+        class="flex items-center gap-4 bg-base-100 p-4 rounded-box shadow-md border-l-2"
+        [ngClass]="{
+          'border-secondary': !notification.leido,
+          'border-primary': notification.leido
+        }"
+      >
+        <!-- Detalles de la notificación -->
+        <div class="flex-grow">
+          <div class="font-semibold text-base-content">
+            {{ notification.titulo }}
+          </div>
+          <div class="text-sm text-base-content/65">
+            {{ notification.mensaje | limitWords : 20 }}
+          </div>
+          <div class="text-xs text-base-content/40 mt-1">
+            {{ notification.fecha }}
+          </div>
+        </div>
+
+        <!-- Indicador de lectura (círculo de color) -->
+        <span
+          [ngClass]="{
+            'w-2.5 h-2.5 rounded-full ml-2': true,
+            'bg-orange-400': !notification.leido,
+            'bg-blue-400': notification.leido
+          }"
+          class="min-w-2.5 min-h-2.5 sm:w-2.5 sm:h-2.5"
+        ></span>
+        <!-- Botón para abrir el modal -->
+        <button
+          class="btn btn-ghost btn-square"
+          (click)="openModal(notification)"
+        >
+          <svg
+            class="size-[1.2em]"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M6 3L20 12 6 21 6 3z"></path>
+            </g>
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </article>
+
+  <!-- Sin notificaciones -->
+  <div
+    *ngIf="notifications.length === 0"
+    class="text-center py-10 text-base-content/60"
+  >
+    <svg
+      class="mx-auto mb-4 w-12 h-12 text-primary"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 16h-1v-4h-1m0-4h.01M12 20h.01M4 6h16M4 10h16M4 14h16M4 18h16"
+      />
+    </svg>
+    <p class="text-lg font-medium text-base-content">
+      No tienes ninguna notificación
+    </p>
+    <p class="text-sm text-base-content/60">
+      Te avisaremos de tus próximas notificaciones.
+    </p>
+  </div>
 </section>
 
 <!-- Modal -->

@@ -1,8 +1,6 @@
-<!-- Fondo oscuro con desenfoque -->
-<div class="fixed inset-0 bg-black/30 backdrop-blur-lg flex items-center justify-center z-50 p-4">
-  <!-- Ventana flotante -->
-  <div class="bg-white text-neutral-800 p-6 rounded-2xl shadow-2xl max-w-3xl w-full space-y-6 transition-all duration-300">
-
+<div class="fixed inset-0 bg-black/30 backdrop-blur-lg flex items-center justify-center  z-90 p-4">
+  <div class="bg-white text-neutral-800 p-6 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 transition-all duration-300">
+    <!-- Contenido aquí -->
     <!-- Título principal -->
     <h2 class="text-2xl font-bold text-center">Detalles del Estudiante</h2>
 
@@ -17,7 +15,8 @@
           </div>
           <h2 class="card-title mt-4">{{ selectedUser().nombre}}</h2>
           <p class="text-sm text-gray-500">{{ selectedUser().correo }}</p>
-          <p class="mt-1"><strong>Locación:</strong> {{ selectedUser().fecha_registro }}</p>
+          <p class="mt-1"><strong>Centro:</strong> {{ selectedUser().centro}} </p>
+          <p class="mt-1"><strong>Fecha de registro:</strong> {{ selectedUser().fecha_registro | date:'dd/MM/yyyy' }}</p>
         </div>
       </div>
     </div>
@@ -31,7 +30,7 @@
     <div>
       <h3 class="text-primary text-center text-lg font-semibold mb-4">ARCHIVOS ADJUNTOS</h3>
       <div class="flex justify-center">
-        <div class="overflow-x-auto rounded-xl border border-base-content/10 bg-base-100 shadow-sm w-full max-w-2xl">
+        <div class="overflow-x-auto rounded-xl border border-base-content/10 bg-base-100 shadow-sm w-full max-w-4xl">
          <app-archivos-adjuntos [id_user]="selectedUser().uid"></app-archivos-adjuntos>
         </div>
       </div>
@@ -39,7 +38,7 @@
 
     <!-- Botones de acción -->
     <div class="flex justify-end space-x-3 pt-2">
-      <button class="btn btn-outline btn-secondary" (click)="onClose()">Cerrar</button>
+      <button class="btn btn-warning btn-wide" (click)="onClose()">Cerrar</button>
     </div>
   </div>
 </div>

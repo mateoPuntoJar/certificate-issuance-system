@@ -1,3 +1,9 @@
+
+@if(loading){
+  <div class="flex justify-center items-center h-screen">
+    <span class="loading loading-bars loading-lg text-primary"></span>
+  </div>}@else{
+
 <div class="overflow-x-auto">
     <table class="table table-zebra table-bordered bg-white shadow-xl">
       <!-- head -->
@@ -8,9 +14,9 @@
               <input type="checkbox" class="checkbox" />
             </label>
           </th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Estado</th>
+          <th>Usuario</th>
+          <th>Fecha de registro</th>
+          <th>Rol</th>
           <th></th>
         </tr>
       </thead>
@@ -39,11 +45,9 @@
               </div>
             </td>
             <td>
-              <p> {{item.fecha_registro}}</p>
-              <br />
-              <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+              <p> {{item.fecha_registro | date:'dd/MM/yyyy'}} </p>
             </td>
-            <td>{{item.rol}}</td>
+            <td><span class="badge badge-ghost badge-sm">{{item.rol}}</span></td>
             <th>
               <button class="btn btn-ghost btn-xs" (click)="openDetails(item)">Detalles del Estudiante</button>
             </th>
@@ -54,9 +58,9 @@
       <tfoot>
         <tr>
           <th></th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Estado</th>
+          <th>Usuario</th>
+          <th>Fecha de registro</th>
+          <th>Rol</th>
           <th></th>
         </tr>
       </tfoot>
@@ -67,3 +71,4 @@
   <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
     <app-single-student (close)="closeDetails()" [selectedUser]="selectedUser"></app-single-student>
   </div>
+}

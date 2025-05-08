@@ -1,21 +1,64 @@
 <table class="table table-zebra">
     <thead>
       <tr>
-        <th>#</th>
-        <th>Archivo</th>
-        <th>Trámite</th>
+        <th>Titulacion</th>
+        <th>Nombre archivo</th>
+        <th>Fecha de subida</th>
         <th>Estado</th>
+        <th>Descargar Archivo</th>
       </tr>
     </thead>
     <tbody>
+      @if(loading){
+        <tr>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+          <td class="skeleton h-4 w-28"></td>
+        </tr>
+      }@else{
+      @if(documents.length > 0){
             @for(item of documents; track $index){
                 <tr>
                   <td>{{item.nombre_titulacion}}</td>
-                  <td>{{item.nombre_archivo}}</td>
-                  <td>{{item.fecha_subida}}</td>
-                  <td><span class="badge badge-info">{{item.estado_verificacion}}</span></td>
+                  <td>{{item.nombre_archivo  | slice:0:20 }}</td>
+                  <td>{{item.fecha_subida | date:'dd/MM/yyyy'}}</td>
+                  <td>
+                    <select 
+                      class="select select-bordered w-full max-w-xs transition-all duration-200 ease-in-out text-base"
+                      [ngClass]="{
+                        'bg-yellow-100 border-yellow-400 text-yellow-800 hover:bg-yellow-200': item.estado_verificacion === 'pendiente',
+                        'bg-green-100 border-green-500 text-green-800 hover:bg-green-200': item.estado_verificacion === 'aprobado',
+                        'bg-red-100 border-red-500 text-red-800 hover:bg-red-200': item.estado_verificacion === 'rechazado',
+                        'hover:shadow-md': true
+                      }"
+                      [(ngModel)]="item.estado_verificacion"
+                      (ngModelChange)="changeDocumentStatus($event, item.id_documento)">
+                      <option 
+                        value="pendiente" 
+                        class="bg-white text-yellow-800 hover:bg-yellow-100">Pendiente</option>
+                      <option 
+                        value="aprobado" 
+                        class="bg-white text-green-800 hover:bg-green-100">Aprobado</option>
+                      <option 
+                        value="rechazado" 
+                        class="bg-white text-red-800 hover:bg-red-100">Rechazado</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button 
+                      (click)="downloadFile(item)" 
+                      class="btn px-8 py-3 text-base bg-[#002782] text-white hover:bg-[#FF5B41] rounded-full transition-all w-full sm:w-auto text-center">
+                      Descargar
+                    </button>
+                  </td>
                 </tr>
         }
+      }@else {
+        <td>NO HAY DOCUMENTOS SUBIDOS</td>
+      }
+    }
         
     </tbody>
   </table>

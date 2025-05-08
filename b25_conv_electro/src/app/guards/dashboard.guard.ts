@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import {
+  CanActivate,
+  CanActivateChild,
+  Router,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { AuthService } from '../supabase/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardGuard implements CanActivate, CanActivateChild {
 
   constructor(private auth: AuthService, private router: Router) {}
 
-  // Protege /dashboard (ruta padre)
+  /**
+   * Protege la ruta padre /dashboard
+   */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const isAuthenticated = this.auth.isAuthenticated();
     const rol = this.auth.userRol;
 
+    // Si no está autenticado o no tiene un rol válido, redirige al login
     if (!isAuthenticated || !['admin', 'alumno', 'invitado'].includes(rol)) {
       this.router.navigate(['/']);
       return false;
@@ -22,7 +31,9 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
     return true;
   }
 
-  // Protege rutas hijas de /dashboard
+  /**
+   * Protege las rutas hijas de /dashboard
+   */
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const isAuthenticated = this.auth.isAuthenticated();
     const rol = this.auth.userRol;
@@ -33,16 +44,20 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
       return false;
     }
 
-    if (url.includes('/dashboard/admin') && rol !== 'admin') {
+    // Rutas exclusivas para admin
+    const adminOnlyRoutes = [
+      '/dashboard/admin',
+      '/dashboard/registrar-centro',
+      '/dashboard/registrar-usuario',
+    ];
+
+    if (adminOnlyRoutes.includes(url) && rol !== 'admin') {
       this.router.navigate(['/']);
       return false;
     }
 
-    if (
-      !url.includes('/dashboard/admin') &&
-      rol !== 'alumno' &&
-      rol !== 'invitado'
-    ) {
+    // Resto de rutas (accesibles solo por alumno o invitado)
+    if (!adminOnlyRoutes.includes(url) && !['alumno', 'invitado'].includes(rol)) {
       this.router.navigate(['/']);
       return false;
     }

@@ -1,4 +1,4 @@
-import { Component, Input, input, NgModule, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';

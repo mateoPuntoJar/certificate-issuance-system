@@ -26,6 +26,4 @@ export class FormAdminComponent{
       error: (err) => console.error('Error al enviar', err)
     });
   }
-
-
 }

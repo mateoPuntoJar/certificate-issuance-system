@@ -108,7 +108,14 @@ export class SupabaseService {
     return from(
       supabase
         .from('usuarios')
-        .select('*')
+        .select(`uid,nombre, 
+          correo,
+          rol,
+          fecha_registro,
+          centro,
+          centros (id_centro, 
+          nombre)`
+        )
     );
   }
 

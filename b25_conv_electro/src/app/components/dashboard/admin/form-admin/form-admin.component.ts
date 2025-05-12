@@ -43,7 +43,6 @@ ngOnInit(): void {
         this.comments = response.data;
         this.loading = false;
         this.cdr.detectChanges();
-        console.log(this.comments)
       },
       error: ( err) => console.error("Error al buscar notificaciones")
     })

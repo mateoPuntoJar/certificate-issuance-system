@@ -1,20 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../supabase/auth.service';
 import { SupabaseService } from '../../../supabase/supabase.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DataSharingService} from '../../services/shared.functions';
+import { Centro } from '../../../components/dashboard/admin/admin.component';
+import { supabase } from '../../../supabase/config/init-supabase';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-menu',
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-menu.component.html',
   styleUrl: './admin-menu.component.css'
 })
-export class AdminMenuComponent {
+export class AdminMenuComponent implements OnInit{
+  centros: any[] = [];
+  centroSeleccionado: string = ""
+  error: string | null = null;
   constructor(
     private authService: AuthService,
-    private supabase: SupabaseService
+    private supabase: SupabaseService,
+    private cdr: ChangeDetectorRef,
+    private centroService : DataSharingService
   ) {}
 
+ 
+  ngOnInit(): void {
+    this.loadCentros();
+
+    this.centroService.centroSeleccionado$.subscribe(
+      centro=>{
+        this.centroSeleccionado = centro;
+      }
+    )
+  }
   logout() {
     this.authService.signOut();
   }
+
+  async loadCentros(){
+    try{
+      this.centros = await this.centroService.getCentros();
+      console.log(this.centros)
+
+      if (this.centros.length > 0 && !this.centroSeleccionado) {
+        this.centroService.seleccionarCentro(this.centros[0].id_centro)
+      } 
+    }catch(error){
+      this.error = "no se puede cargar los centros"
+    }
+  }
+
+  seleccionarCentro(centro: string) {
+    this.centroService.seleccionarCentro(centro);
+  }
+
+
+
+
 }
+

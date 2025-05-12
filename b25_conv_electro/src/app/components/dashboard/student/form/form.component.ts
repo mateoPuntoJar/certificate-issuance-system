@@ -13,6 +13,7 @@ export class FormComponent implements OnInit {
   form: FormGroup;
   successMessage = false;
   uploadedDocs: any[] = [];
+  loading = true;
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -30,23 +31,24 @@ export class FormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const { data } = await this.supabase.client.auth.getSession();
-    const uid = data.session?.user?.id;
+    const uid = (await this.supabase.client.auth.getSession()).data.session?.user?.id;
     if (uid) await this.loadDocs(uid);
 
-    this.supabase.client.auth.onAuthStateChange((_event, session) => {
+    this.supabase.client.auth.onAuthStateChange((_e, session) => {
       const newUid = session?.user?.id;
-      if (newUid && this.uploadedDocs.length === 0) this.loadDocs(newUid);
+      if (newUid && !this.uploadedDocs.length) this.loadDocs(newUid);
     });
   }
 
   async loadDocs(uid: string) {
+    this.loading = true;
     const { data } = await this.supabase.client
       .from('documentos_subidos')
       .select('*')
       .eq('uid_usuario', uid);
-    if (data) this.uploadedDocs = data;
 
+    this.uploadedDocs = data || [];
+    this.loading = false;
     this.cdr.detectChanges();
   }
 
@@ -54,8 +56,7 @@ export class FormComponent implements OnInit {
     if (this.form.invalid) return this.form.markAllAsTouched();
 
     const file = this.form.value.documentos[0];
-    const session = await this.supabase.client.auth.getSession();
-    const uid = session.data.session?.user.id;
+    const uid = (await this.supabase.client.auth.getSession()).data.session?.user?.id;
     if (!file || !uid) return;
 
     const filePath = `${uid}/${file.name}`;
@@ -64,47 +65,31 @@ export class FormComponent implements OnInit {
       .upload(filePath, file, { contentType: file.type, upsert: true });
     if (uploadError) return;
 
-    const url = this.supabase.client.storage.from('documentos').getPublicUrl(filePath).data?.publicUrl;
-    if (!url) return;
-
     const ext = file.name.split('.').pop()?.toLowerCase() || 'desconocido';
-
-    const documentTypeLabel =
-      this.form.value.tipoTitulacion === 'reglada'
-        ? 'Titulación Académica Reglada'
-        : 'Certificado Profesional';
+    const tipo = this.form.value.tipoTitulacion;
+    const nombre = this.form.value.titulo;
+    const docLabel = tipo === 'reglada' ? 'Titulación Académica Reglada' : 'Certificado Profesional';
 
     await this.supabase.insertDocument({
       uid_usuario: uid,
-      tipo_documento: documentTypeLabel,
-      nombre_titulacion: this.form.value.titulo,
+      tipo_documento: docLabel,
+      nombre_titulacion: nombre,
       nombre_archivo: file.name,
       formato_documento: ext,
       fecha_subida: new Date(),
       estado_verificacion: 'enviado',
     });
 
-    await this.supabase.insertProfileStudent(
-      uid,
-      this.form.value.tipoTitulacion,
-      file.name,
-      this.form.value.experiencia
-    );
-
-    await this.loadDocs(uid);
+    await this.supabase.insertProfileStudent(uid, tipo, file.name, this.form.value.experiencia);
 
     const update: any = {
       ...(this.form.value.experiencia && { experiencia_laboral: this.form.value.experiencia }),
-      ...(this.form.value.titulo && { titulo_academico: this.form.value.titulo }),
+      ...(nombre && { titulo_academico: nombre }),
+      ...(tipo === 'certificado' && { certificado_profesionalidad: nombre }),
     };
-    if (this.form.value.tipoTitulacion === 'certificado') {
-      update.certificado_profesionalidad = this.form.value.titulo;
-    }
+
     if (Object.keys(update).length) {
-      await this.supabase.client
-        .from('perfiles_alumnos')
-        .update(update)
-        .eq('uid_usuario', uid);
+      await this.supabase.client.from('perfiles_alumnos').update(update).eq('uid_usuario', uid);
     }
 
     await this.loadDocs(uid);
@@ -137,8 +122,8 @@ export class FormComponent implements OnInit {
 
     const response = await fetch(signedUrl);
     const blob = await response.blob();
-
     const url = window.URL.createObjectURL(blob);
+
     const a = document.createElement('a');
     a.href = url;
     a.download = doc.nombre_archivo;

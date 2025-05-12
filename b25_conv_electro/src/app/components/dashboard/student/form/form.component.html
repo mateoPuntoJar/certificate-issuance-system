@@ -149,28 +149,42 @@
 <!-- Documentos ya subidos -->
 <div class="max-w-4xl mx-auto px-4 sm:px-6 mt-8 p-6 rounded-2xl shadow-md bg-[#EDEDED]">
   <h3 class="text-2xl font-bold text-[#002782] mb-4">Documentación enviada</h3>
-  <ng-container *ngIf="uploadedDocs.length > 0; else noDocs">
-    <ul class="space-y-3">
-      <li *ngFor="let doc of uploadedDocs"
-          class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-white rounded-xl shadow-sm">
-        <div class="flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#002782]" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h5v-2H4V5h12v3h2V5a2 2 0 00-2-2H4z" />
-            <path d="M14 11v2h-4v2h4v2l3-3-3-3z" />
-          </svg>
-          <span class="text-gray-800 font-medium text-sm sm:text-base">
-            {{ doc.nombre_archivo || 'Sin nombre' }}
-          </span>
-        </div>
-        <button (click)="downloadFile(doc)"
-        class="btn px-8 py-3 text-base bg-[#002782] text-white hover:bg-[#FF5B41] rounded-full transition-all w-full sm:w-auto text-center">
-        Descargar
-      </button>
-      </li>
-    </ul>
+
+  <!-- Mostrar spinner primero -->
+  <ng-container *ngIf="loading; else contenidoDocs">
+    <div class="flex justify-center items-center py-6">
+      <span class="loading loading-spinner loading-lg text-[#002782]"></span>
+    </div>
   </ng-container>
 
-  <ng-template #noDocs>
-    <p class="text-gray-500 text-sm">No tienes ningún documento subido.</p>
+  <!-- Contenido si no está cargando -->
+  <ng-template #contenidoDocs>
+    <ng-container *ngIf="uploadedDocs.length > 0; else noDocs">
+      <ul class="space-y-3">
+        <li *ngFor="let doc of uploadedDocs"
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-white rounded-xl shadow-sm">
+          <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#002782]" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h5v-2H4V5h12v3h2V5a2 2 0 00-2-2H4z" />
+              <path d="M14 11v2h-4v2h4v2l3-3-3-3z" />
+            </svg>
+            <span class="text-gray-800 font-medium text-sm sm:text-base">
+              {{ doc.nombre_archivo || 'Sin nombre' }}
+            </span>
+          </div>
+          <button (click)="downloadFile(doc)"
+            class="btn px-8 py-3 text-base bg-[#002782] text-white hover:bg-[#FF5B41] rounded-full transition-all w-full sm:w-auto text-center">
+            Descargar
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+
+    <!-- No hay documentos -->
+    <ng-template #noDocs>
+      <p class="text-gray-500 text-sm">No tienes ningún documento subido.</p>
+    </ng-template>
   </ng-template>
 </div>
+
+

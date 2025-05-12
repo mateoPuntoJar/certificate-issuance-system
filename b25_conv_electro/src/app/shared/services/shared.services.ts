@@ -62,4 +62,3 @@ export class DataSharingService {
     return this.centroSeleccionadoSubject.getValue();
   }
 }
-

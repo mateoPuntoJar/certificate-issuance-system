@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
 import { SupabaseService } from '../../../supabase/supabase.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { DataSharingService} from '../../../shared/services/shared.functions';
+import { DataSharingService} from '../../../shared/services/shared.services';
 import { SingleStudentComponent } from './single-student/single-student.component';
 import { Subscription } from 'rxjs';
 
@@ -37,8 +37,21 @@ export class AdminComponent  implements OnInit{
   constructor( private supabase : SupabaseService, private cdr: ChangeDetectorRef, private centroService : DataSharingService){}
 
   ngOnInit(): void {
+
+    this.subscription = this.centroService.centroSeleccionado$.subscribe(
+      centro =>{
+        if(centro){
+          this.cargarCentros(centro);
+        }
+      }
+    );
+
+    const centroActual = this.centroService.getCentroSeleccionado();
+    if(centroActual){
+      this.cargarCentros(centroActual);
+    }
   
-   this.allStudent(); 
+   /* this.allStudent();  */
 
   }
   public usuario : User[] = [];

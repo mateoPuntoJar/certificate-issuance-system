@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class StatusComponent implements OnInit {
   documentos: any[] = [];
+  loading = true;
 
   constructor(
     private supabase: SupabaseService,
@@ -28,12 +29,15 @@ export class StatusComponent implements OnInit {
   }
 
   async loadDocs(uid: string) {
+    this.loading = true;
+
     const { data } = await this.supabase.client
       .from('documentos_subidos')
-      .select('*')
+      .select('tipo_documento, nombre_titulacion, estado_verificacion')
       .eq('uid_usuario', uid);
 
-    if (data) this.documentos = data;
+    this.documentos = data || [];
+    this.loading = false;
     this.cdr.detectChanges();
   }
 }

@@ -1,18 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../supabase/auth.service';
 import { SupabaseService } from '../../../supabase/supabase.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataSharingService} from '../../services/shared.functions';
-import { Centro } from '../../../components/dashboard/admin/admin.component';
-import { supabase } from '../../../supabase/config/init-supabase';
 import { FormsModule } from '@angular/forms';
-
+import { supabase } from '../../../supabase/config/init-supabase';
+import { ChangeDetectorRef } from '@angular/core';
+import { DataSharingService} from '../../services/shared.services';
 @Component({
   selector: 'app-admin-menu',
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-menu.component.html',
-  styleUrl: './admin-menu.component.css'
 })
 export class AdminMenuComponent implements OnInit{
   centros: any[] = [];

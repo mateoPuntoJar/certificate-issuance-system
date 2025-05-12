@@ -8,6 +8,8 @@ import { FormComponent } from './components/dashboard/student/form/form.componen
 import { AdminComponent } from './components/dashboard/admin/admin.component';
 import { LoginGuard } from './guards/login.guard';
 import { DashboardGuard } from './guards/dashboard.guard';
+import { RegisterUserFormComponent } from './components/dashboard/admin/register-user-form/register-user-form.component';
+import { RegisterCenterFormComponent } from './components/dashboard/admin/register-center-form/register-center-form.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +17,7 @@ export const routes: Routes = [
     canActivate: [LoginGuard],
     component: LoginComponent,
   },
+
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -27,7 +30,9 @@ export const routes: Routes = [
       { path: 'status', component: StatusComponent },
       { path: 'notifications', component: NotificationsComponent },
       { path: 'admin', component: AdminComponent },
-      { path: 'subir-archivos', component: FormComponent },
+      { path: 'registrar-centro', component: RegisterCenterFormComponent},
+      { path: 'registrar-usuario', component: RegisterUserFormComponent},
+
     ],
   },
   {

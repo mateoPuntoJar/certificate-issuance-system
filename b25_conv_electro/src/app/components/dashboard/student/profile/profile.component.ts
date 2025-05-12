@@ -16,6 +16,7 @@ export class ProfileComponent implements OnInit {
   pendientes: string[] = [];
   aprobados: string[] = [];
   rechazados: string[] = [];
+  loading = true;
 
   constructor(
     private supabase: SupabaseService,
@@ -23,8 +24,7 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const sessionResult = await this.supabase.client.auth.getSession();
-    const uid = sessionResult.data.session?.user.id;
+    const uid = (await this.supabase.client.auth.getSession()).data.session?.user.id;
     if (!uid) return;
 
     const { data: usuarios } = await this.supabase.getAllFromTable('usuarios');
@@ -39,25 +39,15 @@ export class ProfileComponent implements OnInit {
       .select('nombre_titulacion, estado_verificacion')
       .eq('uid_usuario', uid);
 
-    if (docs) {
-      this.enviados = docs
-        .filter((d: any) => d.estado_verificacion === 'enviado')
-        .map((d: any) => d.nombre_titulacion);
+    const filtrar = (estado: string) =>
+      docs?.filter((d) => d.estado_verificacion === estado).map((d) => d.nombre_titulacion) || [];
 
-      this.pendientes = docs
-        .filter((d: any) => d.estado_verificacion === 'pendiente')
-        .map((d: any) => d.nombre_titulacion);
+    this.enviados = filtrar('enviado');
+    this.pendientes = filtrar('pendiente');
+    this.aprobados = filtrar('aprobado');
+    this.rechazados = filtrar('rechazado');
 
-      this.aprobados = docs
-        .filter((d: any) => d.estado_verificacion === 'aprobado')
-        .map((d: any) => d.nombre_titulacion);
-
-      this.rechazados = docs
-        .filter((d: any) => d.estado_verificacion === 'rechazado')
-        .map((d: any) => d.nombre_titulacion);
-    }
-
+    this.loading = false;
     this.cdr.detectChanges();
   }
 }
-

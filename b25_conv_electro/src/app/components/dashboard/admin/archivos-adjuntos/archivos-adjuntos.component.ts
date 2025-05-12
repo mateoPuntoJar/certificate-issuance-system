@@ -1,4 +1,4 @@
-import { Component, Input, input, NgModule, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
@@ -30,7 +30,7 @@ export class ArchivosAdjuntosComponent implements OnInit{
         this.documents = response.data
         this.loading = false;
         this.cdr.detectChanges();
-        
+
       },
       error: (err)=>{
         alert("IMPOSIBLE OBTENER DOCUMENTOS")
@@ -51,7 +51,7 @@ export class ArchivosAdjuntosComponent implements OnInit{
   onStatusChange(event: Event, id: string) {
     const selectElement = event.target as HTMLSelectElement;
     const value = selectElement.value;
-  
+
     this.changeDocumentStatus(value, id);
   }
 
@@ -69,5 +69,5 @@ export class ArchivosAdjuntosComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
 }

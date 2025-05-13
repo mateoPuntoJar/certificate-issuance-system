@@ -15,7 +15,7 @@
           </div>
           <h2 class="card-title mt-4">{{ selectedUser().nombre}}</h2>
           <p class="text-sm text-gray-500">{{ selectedUser().correo }}</p>
-          <p class="mt-1"><strong>Centro:</strong> {{ selectedUser().centros.nombre}} </p>
+          <p class="mt-1"><strong>Centro:</strong> {{ selectedUser().centro_nombre}} </p>
           <p class="mt-1"><strong>Fecha de registro:</strong> {{ selectedUser().fecha_registro | date:'dd/MM/yyyy' }}</p>
         </div>
       </div>
@@ -42,3 +42,4 @@
     </div>
   </div>
 </div>
+

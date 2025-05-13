@@ -8,6 +8,7 @@ import { SupabaseService } from './supabase.service';
 export class AuthService {
   public user: any = null;
   public userRol: string= '';
+  public userCentro : string = '';
   public appLoading = true;
 
   constructor(
@@ -32,7 +33,7 @@ export class AuthService {
     // Hace un select a la tabla usuarios con el usuario autenticado para averiguar el rol
     const {data: profileRol, error: profileError} = await this.supabaseService.client
       .from('usuarios')
-      .select('rol')
+      .select('rol, centro')
       .eq('correo', data.user.email)
       .single()
 
@@ -42,6 +43,7 @@ export class AuthService {
 
     this.user = data.user;
     this.userRol = profileRol.rol;
+    this.userCentro = profileRol.centro; 
 
     // Redirigir al dashboard
     this.redirecTo();
@@ -79,14 +81,16 @@ export class AuthService {
       // Buscar el rol asociado al usuario en la tabla "usuarios"
       const { data: profileRol, error } = await this.supabaseService.client
         .from('usuarios')
-        .select('rol')
+        .select('rol, centro')
         .eq('correo', session.user.email)
         .single();
 
       if (!error && profileRol) {
         this.userRol = profileRol.rol;
+        this.userCentro = profileRol.centro;
       } else {
         this.userRol = '';
+        this.userCentro = '';
       }
     } else {
       this.user = null;

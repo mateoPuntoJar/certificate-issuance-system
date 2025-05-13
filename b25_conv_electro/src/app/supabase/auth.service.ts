@@ -24,6 +24,7 @@ export class AuthService {
         password,
       });
 
+
     if (error || !data.user) {
       await this.supabaseService.client.auth.signOut(); // Borra cualquier sesión mal puesta
       throw error || new Error('Usuario o contraseña incorrectos');

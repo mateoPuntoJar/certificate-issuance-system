@@ -61,3 +61,4 @@ export class AdminMenuComponent implements OnInit{
     this.supabase.seleccionarCentro(centro);
   }
 }
+

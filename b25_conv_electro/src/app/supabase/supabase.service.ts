@@ -219,3 +219,4 @@ return this.centroSeleccionadoSubject.getValue();
     );
   }
 }
+

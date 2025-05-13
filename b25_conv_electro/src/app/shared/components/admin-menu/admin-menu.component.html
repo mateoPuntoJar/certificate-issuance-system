@@ -16,7 +16,7 @@
   <li>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por localidad</legend>
-      <select class="select select-primary w-full form-control"  [(ngModel)]="centroSeleccionado" 
+      <select class="select select-primary w-full form-control"  [(ngModel)]="centroSeleccionado"
       (change)="seleccionarCentro(centroSeleccionado)">
         <option disabled value="">Selecciona una Localidad</option>
         @for(centro of centros; track centro.id_centro) {
@@ -70,8 +70,8 @@
       Estudiantes
     </a>
   </li>
-     
- 
+
+
 
     <!-- Cerrar sesión -->
     <li>
@@ -89,4 +89,3 @@
     </li>
 </ul>
 
- 

@@ -9,23 +9,25 @@ import { ChangeDetectorRef } from '@angular/core';
 import { get } from 'http';
 
 @Component({
-  selector: 'app-admin-menu', 
+  selector: 'app-admin-menu',
   standalone: true,
-  imports: [RouterLink, RouterModule, CommonModule,FormsModule],
+  imports: [ CommonModule, FormsModule, RouterLink, RouterModule ],
   templateUrl: './admin-menu.component.html',
 })
 export class AdminMenuComponent implements OnInit{
-   centros: any[] = [];
+  centros: any[] = [];
   centroSeleccionado: string = ""
   error: string | null = null;
+  userRole: string = '';
   constructor(
     private authService: AuthService,
     private supabase: SupabaseService,
      private cdr: ChangeDetectorRef
   ) {}
+
   ngOnInit(): void {
-    this.getRol();
-     this.loadCentros();
+    this.userRole = this.authService.userRol;
+    this.loadCentros();
 
     this.supabase.centroSeleccionado$.subscribe(
       centro=>{
@@ -50,8 +52,9 @@ export class AdminMenuComponent implements OnInit{
       this.centros = await this.supabase.getCentros();
       console.log(this.centros)
       if (this.centros.length > 0 && !this.centroSeleccionado) {
+
         this.supabase.seleccionarCentro(this.centros[0].id_centro)
-      } 
+      }
     }catch(error){
       this.error = "no se puede cargar los centros"
     }
@@ -61,4 +64,3 @@ export class AdminMenuComponent implements OnInit{
     this.supabase.seleccionarCentro(centro);
   }
 }
-

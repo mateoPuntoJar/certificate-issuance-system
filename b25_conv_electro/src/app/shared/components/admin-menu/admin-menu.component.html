@@ -1,5 +1,5 @@
 <ul class="menu space-y-2 text-sm sm:text-base">
-  <li>
+ <!--  <li>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por Estado</legend>
       <select class="select select-primary">
@@ -11,39 +11,36 @@
       <span class="label">Optional</span>
     </fieldset>
 
-  </li>
-
+  </li> -->
+   @if(rol == "superadmin"){
   <li>
-
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por localidad</legend>
-    
-      <select class="select select-primary w-full form-control"  [(ngModel)]="centroSeleccionado" 
+      <select class="select select-primary w-full form-control"  [(ngModel)]="centroSeleccionado"
       (change)="seleccionarCentro(centroSeleccionado)">
-        <option disabled selected>Selecciona una Localidad</option>
-        @for(centro of centros; track $index){
-            <option [value]="centro.id_centro">{{centro.nombre}}</option>
+        <option disabled value="">Selecciona una Localidad</option>
+        @for(centro of centros; track centro.id_centro) {
+          <option [value]="centro.id_centro">{{centro.nombre}}</option>
         }
       </select>
+      <span class="label">Optional</span>
     </fieldset>
-    
 
   </li>
 
   <!-- Registrar nuevo centro -->
-  @if (userRole === 'superadmin') {
-    <li>
-      <a
-        routerLink="registrar-centro"
-        routerLinkActive="text-[#002782] font-bold"
-        class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
-        <svg class="w-4 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-        </svg>
-        Registrar nuevo centro
-      </a>
-    </li>
+  <li>
+    <a
+      routerLink="registrar-centro"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Registrar nuevo centro
+    </a>
+  </li>
   }
 
   <!-- Registrar nuevo alumno -->
@@ -60,6 +57,22 @@
     </a>
   </li>
 
+    <!-- Registrar nuevo alumno -->
+  <li>
+    <a
+      routerLink="admin"
+      routerLinkActive="text-[#002782] font-bold"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Estudiantes
+    </a>
+  </li>
+
+
+
     <!-- Cerrar sesión -->
     <li>
       <a
@@ -75,4 +88,4 @@
       </a>
     </li>
 </ul>
- 
+

@@ -17,14 +17,16 @@
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por localidad</legend>
-      <select class="select select-primary">
+    
+      <select class="select select-primary w-full form-control"  [(ngModel)]="centroSeleccionado" 
+      (change)="seleccionarCentro(centroSeleccionado)">
         <option disabled selected>Selecciona una Localidad</option>
-        <option>Málaga</option>
-        <option>Madrid</option>
-        <option>Alicante</option>
+        @for(centro of centros; track $index){
+            <option [value]="centro.id_centro">{{centro.nombre}}</option>
+        }
       </select>
-      <span class="label">Optional</span>
     </fieldset>
+    
 
   </li>
 
@@ -73,3 +75,4 @@
       </a>
     </li>
 </ul>
+ 

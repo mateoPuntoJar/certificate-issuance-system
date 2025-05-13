@@ -19,7 +19,7 @@ ngOnInit(): void {
     mensaje = new FormControl("");
     @Input() selectedUser !: User
     comments : any[] = [];
-   
+
     sendNotification() {
     const msg = this.mensaje.value;
     if (!msg || msg.trim() === '') {
@@ -38,17 +38,14 @@ ngOnInit(): void {
 
    loadComments(){
     this.supabase.getAllNotification(this.selectedUser.uid).subscribe({
-      next: (response) => { 
+      next: (response) => {
         this.loading = true;
         this.comments = response.data;
         this.loading = false;
         this.cdr.detectChanges();
-        console.log(this.comments)
       },
       error: ( err) => console.error("Error al buscar notificaciones")
     })
 
   }
-
-
 }

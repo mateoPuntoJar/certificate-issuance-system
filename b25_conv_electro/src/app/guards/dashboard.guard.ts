@@ -23,7 +23,7 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
     const rol = this.auth.userRol;
 
     // Si no está autenticado o no tiene un rol válido, redirige al login
-    if (!isAuthenticated || !['admin', 'alumno', 'invitado'].includes(rol)) {
+    if (!isAuthenticated || !['superadmin', 'admin', 'alumno', 'invitado'].includes(rol)) {
       this.router.navigate(['/']);
       return false;
     }
@@ -51,7 +51,7 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
       '/dashboard/registrar-usuario',
     ];
 
-    if (adminOnlyRoutes.includes(url) && rol !== 'admin') {
+    if (adminOnlyRoutes.includes(url) && rol !== 'admin' && rol !== 'superadmin') {
       this.router.navigate(['/']);
       return false;
     }

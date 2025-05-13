@@ -13,6 +13,11 @@ export class SupabaseService {
     return supabase;
   }
 
+  // Getter para acceder al objeto de autenticación de Supabase
+  get auth() {
+    return supabase.auth;
+  }
+
   // Obtiene todos los registros de una tabla específica de la base de datos
   async getAllFromTable(table: string) {
     return this.client.from(table).select('*');
@@ -62,7 +67,7 @@ export class SupabaseService {
     return error ? null : data.signedUrl;
   }
 
-  //Update estados de documentos 
+  // Update estados de documentos
   updateDocumentStatus(value : string, id : string){
     return from(supabase.
       from('documentos_subidos')
@@ -87,7 +92,7 @@ export class SupabaseService {
       .upsert(profileData, { onConflict: 'uid_usuario' });
   }
 
-  //Listar Notificaciones 
+  //Listar Notificaciones
   getAllNotification(id : string):Observable<any>{
     return  from(supabase
     .from('notificaciones')

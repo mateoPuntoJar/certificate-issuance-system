@@ -61,7 +61,7 @@ export class AuthService {
 
   // Redirige a una página u otra según el rol del usuario
   redirecTo(): void {
-    if(this.userRol === 'admin') {
+    if(this.userRol === 'admin' || this.userRol === 'superadmin') {
       this.router.navigate(['/dashboard/admin']);
     } else {
       this.router.navigate(['/dashboard/profile']);

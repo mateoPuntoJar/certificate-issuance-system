@@ -1,18 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../supabase/auth.service';
-import { SupabaseService } from '../../../supabase/supabase.service';
 import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-menu',
-  imports: [RouterLink, RouterModule],
+  standalone: true,
+  imports: [ CommonModule, RouterLink, RouterModule ],
   templateUrl: './admin-menu.component.html',
 })
-export class AdminMenuComponent {
+export class AdminMenuComponent implements OnInit {
+  userRole: string = '';
+
   constructor(
     private authService: AuthService,
-    private supabase: SupabaseService
   ) {}
+
+  ngOnInit() {
+    this.userRole = this.authService.userRol;
+  }
 
   logout() {
     this.authService.signOut();

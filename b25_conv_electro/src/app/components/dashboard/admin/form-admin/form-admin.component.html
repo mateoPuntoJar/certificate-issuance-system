@@ -1,62 +1,62 @@
-<div class="flex justify-center">
-</div>
-  <div class="flex justify-center mb-8">
-    <div class="overflow-x-auto">
-      <table class="table table-zebra">
-        <!-- head -->
-        <thead>
+<!-- Tabla de comentarios -->
+<div class="mb-6">
+  <div class="overflow-x-auto rounded-2xl shadow-md bg-white w-full">
+    <table class="table table-zebra w-full">
+      <thead class="bg-[#EDEDED] text-[#002782] uppercase text-sm font-semibold">
+        <tr>
+          <th class="px-4 py-3">Fecha</th>
+          <th class="px-4 py-3">Comentarios</th>
+          <th class="px-4 py-3">Estado</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        @if (loading) {
           <tr>
-            <th>Fecha</th>
-            <th>Comentarios</th>
-            <th>Estado</th>
+            <td colspan="3" class="text-center py-6">
+              <span class="loading loading-dots loading-lg text-[#002782]"></span>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <!-- row 1 -->
-         @if(loading){
-          <tr>
-            <td></td>
-            <td><span class="loading loading-dots loading-xl"></span></td>
-            <td></td>
-          </tr>
-          
-          
-         }@else {
-            @if(comments.length > 0){
-              @for(comment of comments; track $index){
+        } @else {
+          @if (comments.length > 0) {
+            @for (comment of comments; track $index) {
               <tr>
-                <th>{{comment.fecha_notificacion | date:'dd/MM/yyyy'}}</th>
-                <td>{{comment.mensaje}}</td>
-                @if(comment.leido){
-                  <td>Notificacion leida</td>
-                }@else {
-                  <td>Notifacion no revisada</td>
-               
-                }
+                <td class="px-4 py-2">{{ comment.fecha_notificacion | date:'dd/MM/yyyy' }}</td>
+                <td class="px-4 py-2">{{ comment.mensaje }}</td>
+                <td class="px-4 py-2">
+                  <span class="badge"
+                        [ngClass]="comment.leido ? 'badge-success' : 'badge-warning'">
+                    {{ comment.leido ? 'Leída' : 'No revisada' }}
+                  </span>
+                </td>
               </tr>
-              }
-                
-              
-            }@else {
-              <td>No hay comentarios</td>
             }
+          } @else {
+            <tr>
+              <td colspan="3" class="text-center text-gray-500 py-4">No hay comentarios</td>
+            </tr>
           }
-       
-        </tbody>
-      </table>
-    </div>
+        }
+      </tbody>
+    </table>
   </div>
-<!--   --------CAMPO COMENTARIO----------- -->
-<div class="relative w-full max-w-md mx-auto">
-  <input 
-    id="mensaje"
-    placeholder="Agregar comentario" 
-    [formControl]="mensaje" 
-    class="textarea textarea-primary w-full pr-28"/>
+</div>
 
-  <button 
-    (click)="sendNotification()" 
-    class="absolute bottom-2 right-2 px-4 py-2 bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full">
-    ENVIAR
-  </button>
+<!-- Campo para añadir nuevo comentario -->
+<div class="space-y-3">
+  <label for="mensaje" class="block font-semibold text-[#002782]">Agregar nuevo comentario</label>
+  <input
+    id="mensaje"
+    [formControl]="mensaje"
+    placeholder="Escribe tu mensaje..."
+    class="input input-bordered w-full rounded-xl border-gray-300
+           focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
+           transition duration-200"
+  />
+  <div class="text-right">
+    <button
+      (click)="sendNotification()"
+      class="btn bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full px-6">
+      Enviar
+    </button>
+  </div>
 </div>

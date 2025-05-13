@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SupabaseService } from '../../../supabase/supabase.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { SingleStudentComponent } from './single-student/single-student.component';
-import { Subscription } from 'rxjs';
 import { AuthService } from '../../../supabase/auth.service';
 
 export interface User {
@@ -13,8 +11,8 @@ export interface User {
   rol: string;
   fecha_registro: string;
   centro_nombre: string;
-  centro: string; 
-  centros: Centro; 
+  centro: string;
+  centros: Centro;
 }
 
 export interface Centro {
@@ -32,65 +30,100 @@ export interface Centro {
 export class AdminComponent implements OnInit {
   loading = true;
   error: string | null = null;
-  private subscription: Subscription = new Subscription();
-  rol = "";
-  public usuario: User[] = [];
+  usuario: User[] = [];
+  rol = '';
+  centro = '';
+  showModal = false;
 
   selectedUser: User = {
-    uid: "",
-    nombre: "",
-    correo: "",
-    rol: "",
-    fecha_registro: "",
-    centro_nombre: "",
-    centro: "",
+    uid: '',
+    nombre: '',
+    correo: '',
+    rol: '',
+    fecha_registro: '',
+    centro_nombre: '',
+    centro: '',
     centros: {
-      id_centro: "",
-      nombre: ""
+      id_centro: '',
+      nombre: ''
     }
   };
-  showModal = false;
-   id : string = "";
-  centro: string = ""
 
   constructor(
-    private supabase: SupabaseService, 
-    private cdr: ChangeDetectorRef, 
+    private supabase: SupabaseService,
+    private cdr: ChangeDetectorRef,
     private authService: AuthService
   ) {}
 
-  ngOnInit(): void {
-    // Obtener el rol primero
-   
+  async ngOnInit(): Promise<void> {
+    await this.authService.restoreSession();
+
     this.rol = this.authService.userRol;
-  this.centro = this.authService.userCentro;
+    this.centro = this.authService.userCentro;
 
-    if (this.rol === "superadmin") {
-    this.subscription = this.supabase.centroSeleccionado$.subscribe(centro => {
-      if (centro) {
-        this.cargarCentros(centro);
+    // Solo para superadmin: escucha cambios del centro seleccionado
+    if (this.rol === 'superadmin') {
+      this.supabase.centroSeleccionado$.subscribe(async centro => {
+        this.centro = centro;
+        if (!centro) {
+          await this.cargarTodosLosUsuarios();
+        } else {
+          await this.cargarUsuariosPorCentro(centro);
+        }
+      });
+
+      // Carga inicial
+      const centroActual = this.supabase.getCentroSeleccionado();
+      if (!centroActual) {
+        await this.cargarTodosLosUsuarios();
+      } else {
+        await this.cargarUsuariosPorCentro(centroActual);
       }
-    });
 
-    const centroActual = this.supabase.getCentroSeleccionado();
-    if (centroActual) {
-      this.cargarCentros(centroActual);
+    } else if (this.rol === 'admin' && this.centro) {
+      await this.cargarUsuariosPorCentro(this.centro);
     }
-  } else if (this.rol === "admin") {
-    if (this.centro) {
-      this.cargarCentros(this.centro);
-    }
-  }
-}
 
-
-  getRol() {
-   return this.rol = this.authService.userRol;
-  
+    this.cdr.detectChanges();
   }
 
-  getCentro(){
-    return this.centro = this.authService.userCentro;
+
+
+  async cargarTodosLosUsuarios() {
+    this.loading = true;
+    try {
+      const { data, error } = await this.supabase.client
+        .from('usuarios')
+        .select('uid, nombre, correo, rol, fecha_registro, centro');
+
+      if (error) throw error;
+
+      this.usuario = (data || []).map((u: any) => ({
+        ...u,
+        centro_nombre: '',
+        centros: {
+          id_centro: '',
+          nombre: ''
+        }
+      }));
+    } catch {
+      this.error = 'Error al cargar todos los usuarios';
+    } finally {
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async cargarUsuariosPorCentro(centro: string) {
+    this.loading = true;
+    try {
+      this.usuario = await this.supabase.getEstudiantesPorCentro(centro);
+    } catch {
+      this.error = 'Error al cargar usuarios del centro';
+    } finally {
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
   }
 
   openDetails(user: User) {
@@ -101,48 +134,17 @@ export class AdminComponent implements OnInit {
   closeDetails() {
     this.showModal = false;
     this.selectedUser = {
-      uid: "",
-      nombre: "",
-      correo: "",
-      rol: "",
-      fecha_registro: "",
-      centro_nombre: "",
-      centro: "",
+      uid: '',
+      nombre: '',
+      correo: '',
+      rol: '',
+      fecha_registro: '',
+      centro_nombre: '',
+      centro: '',
       centros: {
-        id_centro: "",
-        nombre: ""
+        id_centro: '',
+        nombre: ''
       }
     };
   }
-
-  // Modificar
-  async cargarCentros(centro: string) {
-    this.loading = true;
-    try {
-      this.usuario = await this.supabase.getEstudiantesPorCentro(centro);
-      console.log(this.usuario)
-      this.loading = false;
-      this.cdr.detectChanges();
-    } catch (error) {
-      this.error = 'Error al cargar los estudiantes';
-      this.loading = false;
-      this.cdr.detectChanges();
-    }
-  }
-
-  allStudent() {
-  this.supabase.getAllStudents().subscribe({
-    next:(respuesta) =>{
-      this.loading = true;
-      this.usuario = respuesta.data;
-      this.loading = false;
-      this.cdr.detectChanges();
-    },
-    error: (error) => {
-      alert('NO SE ENCONTRARON ESTUDIANTES');
-      this.loading = false;
-    }
-  });
-  }
-
 }

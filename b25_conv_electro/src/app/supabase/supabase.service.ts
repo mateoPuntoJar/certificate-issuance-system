@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { supabase } from './config/init-supabase';
-import { from, Observable } from 'rxjs';
-
+import { Centro} from '../components/dashboard/admin/admin.component';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -53,6 +53,67 @@ export class SupabaseService {
       estado_verificacion: data.estado_verificacion,
     });
   }
+
+  private centroSeleccionadoSubject = new BehaviorSubject<string>("");
+//Metodo para que se puedan suscribir los componenetes.*
+public centroSeleccionado$ = this.centroSeleccionadoSubject.asObservable();
+//Obtener los estudiantes filtrados por el centro*
+async getEstudiantesPorCentro(centro: string) {
+try {
+    // Primero obtenemos los estudiantes
+    const { data: estudiantes, error: estudiantesError } = await this.client
+      .from('usuarios')
+      .select('*')
+      .eq('centro', centro);
+
+    if (estudiantesError) throw estudiantesError;
+
+    // Luego obtenemos el nombre del centro
+    const { data: centroData, error: centroError } = await this.client
+      .from('centros')
+      .select('nombre')
+      .eq('id_centro', centro)
+      .single();
+
+    if (centroError) throw centroError;
+
+    // Asignamos el nombre del centro a cada estudiante
+    const estudiantesConCentro = estudiantes.map(estudiante => ({
+      ...estudiante,
+      centro_nombre: centroData.nombre,  // Agregamos el nombre del centro a cada estudiante
+    }));
+
+    return estudiantesConCentro;
+
+  } catch (error) {
+    console.error('Error al obtener estudiantes o centro:', error);
+    throw error;
+  }
+}
+
+async getCentros(){
+try{
+const {data ,error} = await this.client
+.from("centros")
+.select("*")
+if(error) throw error;
+console.log(data)
+return data
+}catch(error){
+console.error("Error al obtener los centros", error);
+throw error
+}
+}
+
+
+// Método para establecer la categoría seleccionada
+seleccionarCentro(centro: string) {
+this.centroSeleccionadoSubject.next(centro);
+}
+// Método para obtener la categoría actualmente seleccionada
+getCentroSeleccionado(): string {
+return this.centroSeleccionadoSubject.getValue();
+}
 
   // Genera una URL firmada temporalmente para acceder a un archivo almacenado en el bucket
   async getSignedUrl(path: string, expiresInSeconds: number = 60): Promise<string | null> {
@@ -108,7 +169,31 @@ export class SupabaseService {
     return from(
       supabase
         .from('usuarios')
+        .select(`uid,nombre, 
+          correo,
+          rol,
+          fecha_registro,
+          centro,
+          centros (id_centro, 
+          nombre)`
+        )
+    );
+  } 
+
+  /*   getAllStudents(): Observable<any> {
+    return from(
+      supabase
+        .from('usuarios')
         .select('*')
+        );
+  }
+ */
+    getAdminStudents(centro : string): Observable<any> {
+    return from(
+      supabase
+        .from('usuarios')
+        .select('*')
+        .eq('centro', centro)
     );
   }
 

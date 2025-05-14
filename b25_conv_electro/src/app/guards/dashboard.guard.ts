@@ -44,20 +44,43 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
       return false;
     }
 
-    // Rutas exclusivas para admin
-    const adminOnlyRoutes = [
-      '/dashboard/admin',
-      '/dashboard/registrar-centro',
-      '/dashboard/registrar-usuario',
+    // Ruta exclusiva para admin
+    const adminOnlyRoute = [
+      '/dashboard/registrar-usuario'
     ];
 
-    if (adminOnlyRoutes.includes(url) && rol !== 'admin' && rol !== 'superadmin') {
+    if (adminOnlyRoute.includes(url) && rol !== 'admin') {
       this.router.navigate(['/']);
       return false;
     }
 
-    // Resto de rutas (accesibles solo por alumno o invitado)
-    if (!adminOnlyRoutes.includes(url) && !['alumno', 'invitado'].includes(rol)) {
+    // Ruta exclusiva para superadmin
+    const superAdminOnlyRoute = [
+      '/dashboard/registrar-centro'
+    ];
+
+    if (superAdminOnlyRoute.includes(url) && rol !== 'superadmin') {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    // Ruta compartida por admin y superadmin
+    const adminAndSuperadminRoute = [
+      '/dashboard/admin'
+    ];
+
+    if (adminAndSuperadminRoute.includes(url) && !['admin', 'superadmin'].includes(rol)) {
+    this.router.navigate(['/']);
+    return false;
+  }
+
+    // Rutas generales (no protegidas por rol): solo para alumno o invitado
+    if (
+      !adminOnlyRoute.includes(url) &&
+      !superAdminOnlyRoute.includes(url) &&
+      !adminAndSuperadminRoute.includes(url) &&
+      !['alumno', 'invitado'].includes(rol)
+    ) {
       this.router.navigate(['/']);
       return false;
     }

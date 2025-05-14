@@ -38,6 +38,9 @@
       <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['email']" class="text-red-600 text-sm mt-1">
         Introduzca un email correcto
       </div>
+      <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['emailDuplicado']" class="text-red-600 text-sm mt-1">
+        La dirección de correo ya existe. Inicia sesión o inténtalo de nuevo.
+      </div>
     </div>
 
     <!-- Contraseña del administrador -->
@@ -58,11 +61,14 @@
       </div>
     </div>
 
+    <!-- Botón para reestablecer el formulario -->
     <div class="flex flex-col sm:flex-row justify-end gap-4 mt-6">
       <button type="button" (click)="resetForm()"
         class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto">
         Limpiar
       </button>
+
+      <!-- Botón para enviar el formulario -->
       <button
         type="submit"
         [disabled]="form.invalid || isLoading"
@@ -79,7 +85,6 @@
         </svg>
         {{ isLoading ? 'Registrando...' : 'Enviar' }}
       </button>
-
     </div>
   </form>
   <div *ngIf="successMessage" class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">

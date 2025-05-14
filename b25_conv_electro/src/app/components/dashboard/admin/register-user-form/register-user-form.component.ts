@@ -14,6 +14,7 @@ export class RegisterUserFormComponent {
   form: FormGroup;
   successMessage = false;
   isLoading = false;
+  emailError: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,15 +37,15 @@ export class RegisterUserFormComponent {
     /**
    * Registra un nuevo alumno tanto en Supabase Auth como en la tabla 'usuarios'.
    *
-   * 1. Registra al usuario en Supabase Auth.
-   * 2. Inserta al usuario en la tabla 'usuarios' con rol 'alumno' y el centro asociado al administrador actual.
+   * Registra al usuario en Supabase Auth.
+   * Inserta al usuario en la tabla 'usuarios' con rol 'alumno' y el centro asociado al administrador actual.
    *
    * @param nombre - Nombre del alumno
    * @param email - Correo electrónico del alumno
    * @param password - Contraseña del alumno
    * @returns booleano que indica si el registro fue exitoso
    */
-  async registrarAlumno(nombre: string, email: string, password: string): Promise<boolean> {
+  async registrarAlumno(nombre: string, email: string, password: string): Promise<true | false | string> {
   try {
     // Crear el usuario en Supabase Auth
     const { data: signUpData, error: signUpError } = await this.supabase.auth.signUp({ email, password });
@@ -69,15 +70,21 @@ export class RegisterUserFormComponent {
       rol: 'alumno',
     });
 
+    // Captura el error de clave duplicada al intentar registrarse con un correo existente
     if (insertError) {
+      if (insertError.code === '23505') {
+        console.error('El correo ya está registrado.');
+        return 'El correo ya está registrado. Inicia sesión o inténtalo de nuevo.';
+      }
+
       console.error('Error al insertar en tabla usuarios:', insertError.message, insertError);
       return false;
     }
 
     return true;
 
-  } catch (error) {
-    console.error('Error al registrar alumno:', error);
+  } catch (error: any) {
+    console.error('Error al registrar alumno:', error?.message || error);
     return false;
   }
 }
@@ -87,7 +94,7 @@ export class RegisterUserFormComponent {
  *
  * Valida el formulario.
  * Obtiene los valores de nombre, email y contraseña.
- * Llama al método 'registrarAlumno' para registrar al alumno en Supabase Auth y en la base de datos.
+ * Llama al método 'registrarAlumno' para registrar al alumno en Supabase Auth y en la tabla 'alumnos'.
  * Muestra un mensaje de éxito y resetea el formulario.
  */
   async onSubmit(): Promise<void> {
@@ -96,6 +103,10 @@ export class RegisterUserFormComponent {
     return;
   }
 
+  // Reinicia errores previos
+  this.emailError = false;
+  this.form.get('userEmail')?.setErrors(null);
+
   this.isLoading = true;
 
   const { userName, userEmail, userPassword } = this.form.value;
@@ -103,13 +114,21 @@ export class RegisterUserFormComponent {
   try {
     const registrado = await this.registrarAlumno(userName, userEmail, userPassword);
 
-    if (registrado) {
+    if (registrado === true) {
       this.successMessage = true;
       this.resetForm();
+    } else if (typeof registrado === 'string') {
+      this.emailError = true;
+
+      this.form.get('userEmail')?.setErrors({ emailDuplicado: true });
+
+      this.form.get('userEmail')?.markAsTouched();
+
+      console.warn(registrado);
     } else {
-      console.warn('El registro del alumno falló. Inténtelo nuevamente.');
+      console.warn('Registro fallido: no se recibió respuesta esperada del método registrarAlumno().');
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error inesperado en el envío del formulario:', error);
   } finally {
     this.isLoading = false;

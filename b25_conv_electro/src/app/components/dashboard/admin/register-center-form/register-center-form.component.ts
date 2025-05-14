@@ -1,16 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-} from '@angular/core';
-import {
-  ReactiveFormsModule,
-  FormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -167,12 +157,12 @@ export class RegisterCenterFormComponent {
   /**
    * Maneja el envío del formulario de registro del centro y del administrador.
    *
-   * - Valida el formulario.
-   * - Genera un ID único para el centro.
-   * - Inserta el centro en la base de datos.
-   * - Registra al usuario administrador en Supabase Auth y en la tabla 'usuarios'.
-   * - Actualiza el centro con el UID del administrador.
-   * - Muestra un mensaje de éxito y resetea el formulario.
+   * Valida el formulario.
+   * Genera un ID único para el centro.
+   * Inserta el centro en la base de datos.
+   * Registra al usuario administrador en Supabase Auth y en la tabla 'usuarios'.
+   * Actualiza el centro con el UID del administrador.
+   * Muestra un mensaje de éxito y resetea el formulario.
    */
   async onSubmit(): Promise<void> {
     if (this.form.valid) {

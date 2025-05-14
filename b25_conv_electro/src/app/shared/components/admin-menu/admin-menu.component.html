@@ -1,90 +1,78 @@
 <ul class="menu space-y-2 text-sm sm:text-base">
- <!--  <li>
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">Filtrar por Estado</legend>
-      <select class="select select-primary">
-        <option disabled selected>Selecciona un estado</option>
-        <option>Pendiente</option>
-        <option>Aprobado</option>
-        <option>Rechazado</option>
-      </select>
-      <span class="label">Optional</span>
-    </fieldset>
 
-  </li> -->
-
-   @if(rol == "superadmin"){
-  <li>
+  <!-- Filtro por localidad (solo superadmin) -->
+  <li *ngIf="userRole === 'superadmin'">
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Filtrar por localidad</legend>
-      <select class="select select-primary w-full form-control"  [(ngModel)]="centroSeleccionado"
+      <select
+      class="select select-primary w-full form-control"
+      [(ngModel)]="centroSeleccionado"
       (change)="seleccionarCentro(centroSeleccionado)">
-        <option disabled value="">Selecciona una Localidad</option>
-        @for(centro of centros; track centro.id_centro) {
-          <option [value]="centro.id_centro">{{centro.nombre}}</option>
-        }
-      </select>
-      <span class="label">Optional</span>
+      <option value="">Ver todos</option>
+      @for (centro of centros; track centro.id_centro) {
+        <option [value]="centro.id_centro">{{ centro.nombre }}</option>
+      }
+    </select>
     </fieldset>
-
   </li>
 
-  <!-- Registrar nuevo centro -->
-  <li>
+  <!-- Registrar nuevo centro (solo superadmin) -->
+  <li *ngIf="userRole === 'superadmin'">
     <a
       routerLink="registrar-centro"
       routerLinkActive="text-[#002782] font-bold"
       class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
-      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      <svg class="w-6 h-6 text-[#002782] min-w-[24px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
       </svg>
       Registrar nuevo centro
     </a>
   </li>
-  }
 
-  <!-- Registrar nuevo alumno -->
+<!-- Registrar nuevo alumno -->
+<li>
+  <a
+    routerLink="registrar-usuario"
+    routerLinkActive="text-[#002782] font-bold"
+    class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+    <svg class="w-6 h-6 text-[#002782] min-w-[24px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+    </svg>
+    Registrar nuevo alumno/a
+  </a>
+</li>
+
+<!-- Estudiantes -->
+<li>
+  <a
+    routerLink="admin"
+    routerLinkActive="text-[#002782] font-bold"
+    class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
+    <svg class="w-6 h-6 text-[#002782] min-w-[24px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+    </svg>
+    Estudiantes
+  </a>
+</li>
+
+
+  <!-- Cerrar sesión -->
   <li>
     <a
-      routerLink="registrar-usuario"
-      routerLinkActive="text-[#002782] font-bold"
-      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
-      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      (click)="logout()"
+      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition cursor-pointer">
+      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          d="M17 16l4-4m0 0l-4-4m4 4H7" />
       </svg>
-      Registrar nuevo alumno/a
+      Cerrar sesión
     </a>
   </li>
-
-    <!-- Estudiantes -->
-  <li>
-    <a
-      routerLink="admin"
-      routerLinkActive="text-[#002782] font-bold"
-      class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition">
-      <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M5.121 17.804A13.937 13.937 0 0112 15c2.837 0 5.45.88 7.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-      Estudiantes
-    </a>
-  </li>
-
-    <!-- Cerrar sesión -->
-    <li>
-      <a
-        (click)="logout()"
-        class="flex items-center gap-3 sm:gap-4 px-2 hover:text-[#FF5B41] transition cursor-pointer"
-      >
-        <svg class="w-5 h-5 text-[#002782] min-w-[20px]" xmlns="http://www.w3.org/2000/svg" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7" />
-        </svg>
-        Cerrar sesión
-      </a>
-    </li>
 </ul>
-

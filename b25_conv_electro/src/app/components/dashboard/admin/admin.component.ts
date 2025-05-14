@@ -28,6 +28,7 @@ export interface Centro {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminComponent implements OnInit {
+  centersMap: Record<string, string> = {};
   loading = true;
   error: string | null = null;
   usuario: User[] = [];
@@ -63,6 +64,7 @@ export class AdminComponent implements OnInit {
 
     // Solo para superadmin: escucha cambios del centro seleccionado
     if (this.rol === 'superadmin') {
+      this.getAllCenters();
       this.supabase.centroSeleccionado$.subscribe(async centro => {
         this.centro = centro;
         if (!centro) {
@@ -146,5 +148,13 @@ export class AdminComponent implements OnInit {
         nombre: ''
       }
     };
+  }
+
+  async getAllCenters() {
+    let centers = await this.supabase.getCentros();
+    this.centersMap = centers.reduce((acc, centro) => {
+      acc[centro.id_centro] = centro.nombre;
+      return acc;
+    }, {} as Record<string, string>);
   }
 }

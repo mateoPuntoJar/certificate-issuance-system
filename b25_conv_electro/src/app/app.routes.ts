@@ -30,11 +30,10 @@ export const routes: Routes = [
       { path: 'form', component: FormComponent },
       { path: 'status', component: StatusComponent },
       { path: 'notifications', component: NotificationsComponent },
-      { path: 'registrar-invitado', component: RegisterGuestFormComponent },
+      { path: 'register-guest', component: RegisterGuestFormComponent },
       { path: 'admin', component: AdminComponent },
-      { path: 'registrar-centro', component: RegisterCenterFormComponent},
-      { path: 'registrar-usuario', component: RegisterUserFormComponent},
-
+      { path: 'registrar-centro', component: RegisterCenterFormComponent },
+      { path: 'registrar-usuario', component: RegisterUserFormComponent },
     ],
   },
   {

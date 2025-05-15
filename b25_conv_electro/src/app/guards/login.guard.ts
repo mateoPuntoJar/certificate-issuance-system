@@ -15,8 +15,11 @@ export class LoginGuard implements CanActivate {
     if (rol === 'admin' || rol === 'superadmin') {
       this.router.navigate(['/dashboard/admin']);
       return false;
-    } else if (rol === 'alumno' || rol === 'invitado') {
+    } else if (rol === 'alumno') {
       this.router.navigate(['/dashboard/profile']);
+      return false;
+    } else if (rol === 'invitado') {
+      this.router.navigate(['/dashboard/registrar-invitado']);
       return false;
     }
 

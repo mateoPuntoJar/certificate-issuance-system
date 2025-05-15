@@ -1,8 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { v4 as uuidv4 } from 'uuid';
+
+/**
+ * Validador de grupo: devuelve error { passwordsMismatch: true }
+ * si los dos campos no coinciden.
+ */
+export function matchPasswords(
+  passwordKey: string,
+  confirmKey: string
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const pass = group.get(passwordKey)?.value;
+    const confirm = group.get(confirmKey)?.value;
+    return pass === confirm ? null : { passwordsMismatch: true };
+  };
+}
 
 @Component({
   selector: 'app-register-center-form',
@@ -16,13 +44,56 @@ export class RegisterCenterFormComponent {
   successMessage: boolean = false;
   isLoading: boolean = false;
   provinciasEspana = [
-    'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Barcelona',
-    'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real', 'Córdoba', 'Cuenca',
-    'Gerona', 'Granada', 'Guadalajara', 'Guipúzcoa', 'Huelva', 'Huesca', 'Islas Baleares', 'Jaén',
-    'La Coruña', 'La Rioja', 'Las Palmas', 'León', 'Lérida', 'Lugo', 'Madrid', 'Málaga', 'Murcia',
-    'Navarra', 'Orense', 'Palencia', 'Pontevedra', 'Salamanca', 'Santa Cruz de Tenerife', 'Segovia',
-    'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya',
-    'Zamora','Zaragoza',
+    'Álava',
+    'Albacete',
+    'Alicante',
+    'Almería',
+    'Asturias',
+    'Ávila',
+    'Badajoz',
+    'Barcelona',
+    'Burgos',
+    'Cáceres',
+    'Cádiz',
+    'Cantabria',
+    'Castellón',
+    'Ciudad Real',
+    'Córdoba',
+    'Cuenca',
+    'Gerona',
+    'Granada',
+    'Guadalajara',
+    'Guipúzcoa',
+    'Huelva',
+    'Huesca',
+    'Islas Baleares',
+    'Jaén',
+    'La Coruña',
+    'La Rioja',
+    'Las Palmas',
+    'León',
+    'Lérida',
+    'Lugo',
+    'Madrid',
+    'Málaga',
+    'Murcia',
+    'Navarra',
+    'Orense',
+    'Palencia',
+    'Pontevedra',
+    'Salamanca',
+    'Santa Cruz de Tenerife',
+    'Segovia',
+    'Sevilla',
+    'Soria',
+    'Tarragona',
+    'Teruel',
+    'Toledo',
+    'Valencia',
+    'Valladolid',
+    'Vizcaya',
+    'Zamora',
+    'Zaragoza',
   ];
 
   constructor(
@@ -30,13 +101,19 @@ export class RegisterCenterFormComponent {
     private cdr: ChangeDetectorRef,
     private supabase: SupabaseService
   ) {
-    this.form = this.fb.group({
-      provincia: ['', [Validators.required]],
-      centro: ['', [Validators.required, Validators.minLength(6)]],
-      adminName: ['', [Validators.required, Validators.minLength(6)]],
-      adminEmail: ['', [Validators.required, Validators.email]],
-      adminPassword: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.form = this.fb.group(
+      {
+        provincia: ['', [Validators.required]],
+        centro: ['', [Validators.required, Validators.minLength(6)]],
+        adminName: ['', [Validators.required, Validators.minLength(6)]],
+        adminEmail: ['', [Validators.required, Validators.email]],
+        adminPassword: ['', [Validators.required, Validators.minLength(6)]],
+        adminPasswordConfirm: [''],
+      },
+      {
+        validators: matchPasswords('adminPassword', 'adminPasswordConfirm'),
+      }
+    );
   }
 
   // Resetear el formulario y dejar los inputs vacíos

@@ -1,8 +1,30 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { AuthService } from '../../../../supabase/auth.service';
 import { CommonModule } from '@angular/common';
+
+export function matchPasswords(
+  passwordKey: string,
+  confirmKey: string
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const pass = group.get(passwordKey)?.value;
+    const confirm = group.get(confirmKey)?.value;
+    return pass === confirm ? null : { passwordsMismatch: true };
+  };
+}
 
 @Component({
   selector: 'app-register-user-form',
@@ -22,11 +44,17 @@ export class RegisterUserFormComponent {
     private supabase: SupabaseService,
     private authService: AuthService
   ) {
-    this.form = this.fb.group({
-      userName: ['', [Validators.required, Validators.minLength(6)]],
-      userEmail: ['', [Validators.required, Validators.email]],
-      userPassword: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.form = this.fb.group(
+      {
+        userName: ['', [Validators.required, Validators.minLength(6)]],
+        userEmail: ['', [Validators.required, Validators.email]],
+        userPassword: ['', [Validators.required, Validators.minLength(6)]],
+        userPasswordConfirm: [''], // sin validadores individuales
+      },
+      {
+        validators: matchPasswords('userPassword', 'userPasswordConfirm'),
+      }
+    );
   }
 
   // Resetea el formulario y deja los inputs vacíos
@@ -34,7 +62,7 @@ export class RegisterUserFormComponent {
     this.form.reset({ userName: '', userEmail: '', userPassword: '' });
   }
 
-    /**
+  /**
    * Registra un nuevo alumno tanto en Supabase Auth como en la tabla 'usuarios'.
    *
    * Registra al usuario en Supabase Auth.
@@ -45,94 +73,114 @@ export class RegisterUserFormComponent {
    * @param password - Contraseña del alumno
    * @returns booleano que indica si el registro fue exitoso
    */
-  async registrarAlumno(nombre: string, email: string, password: string): Promise<true | false | string> {
-  try {
-    // Crear el usuario en Supabase Auth
-    const { data: signUpData, error: signUpError } = await this.supabase.auth.signUp({ email, password });
+  async registrarAlumno(
+    nombre: string,
+    email: string,
+    password: string
+  ): Promise<true | false | string> {
+    try {
+      // Crear el usuario en Supabase Auth
+      const { data: signUpData, error: signUpError } =
+        await this.supabase.auth.signUp({ email, password });
 
-    if (signUpError) {
-      console.error('Error en Supabase Auth signUp:', signUpError.message, signUpError);
-      return false;
-    }
-
-    const uid = signUpData.user?.id;
-    if (!uid) {
-      console.error('UID no obtenido después del registro en Auth.');
-      return false;
-    }
-
-    // Insertar el alumno en la tabla 'usuarios'
-    const { error: insertError } = await this.supabase.client.from('usuarios').insert({
-      uid,
-      nombre,
-      correo: email,
-      centro: this.authService.userCentro,
-      rol: 'alumno',
-    });
-
-    // Captura el error de clave duplicada al intentar registrarse con un correo existente
-    if (insertError) {
-      if (insertError.code === '23505') {
-        console.error('El correo ya está registrado.');
-        return 'El correo ya está registrado. Inicia sesión o inténtalo de nuevo.';
+      if (signUpError) {
+        console.error(
+          'Error en Supabase Auth signUp:',
+          signUpError.message,
+          signUpError
+        );
+        return false;
       }
 
-      console.error('Error al insertar en tabla usuarios:', insertError.message, insertError);
+      const uid = signUpData.user?.id;
+      if (!uid) {
+        console.error('UID no obtenido después del registro en Auth.');
+        return false;
+      }
+
+      // Insertar el alumno en la tabla 'usuarios'
+      const { error: insertError } = await this.supabase.client
+        .from('usuarios')
+        .insert({
+          uid,
+          nombre,
+          correo: email,
+          centro: this.authService.userCentro,
+          rol: 'alumno',
+        });
+
+      // Captura el error de clave duplicada al intentar registrarse con un correo existente
+      if (insertError) {
+        if (insertError.code === '23505') {
+          console.error('El correo ya está registrado.');
+          return 'El correo ya está registrado. Inicia sesión o inténtalo de nuevo.';
+        }
+
+        console.error(
+          'Error al insertar en tabla usuarios:',
+          insertError.message,
+          insertError
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error: any) {
+      console.error('Error al registrar alumno:', error?.message || error);
       return false;
     }
-
-    return true;
-
-  } catch (error: any) {
-    console.error('Error al registrar alumno:', error?.message || error);
-    return false;
   }
-}
 
   /**
- * Maneja el envío del formulario de registro del alumno.
- *
- * Valida el formulario.
- * Obtiene los valores de nombre, email y contraseña.
- * Llama al método 'registrarAlumno' para registrar al alumno en Supabase Auth y en la tabla 'alumnos'.
- * Muestra un mensaje de éxito y resetea el formulario.
- */
+   * Maneja el envío del formulario de registro del alumno.
+   *
+   * Valida el formulario.
+   * Obtiene los valores de nombre, email y contraseña.
+   * Llama al método 'registrarAlumno' para registrar al alumno en Supabase Auth y en la tabla 'alumnos'.
+   * Muestra un mensaje de éxito y resetea el formulario.
+   */
   async onSubmit(): Promise<void> {
-  if (!this.form.valid) {
-    this.form.markAllAsTouched();
-    return;
-  }
-
-  // Reinicia errores previos
-  this.emailError = false;
-  this.form.get('userEmail')?.setErrors(null);
-
-  this.isLoading = true;
-
-  const { userName, userEmail, userPassword } = this.form.value;
-
-  try {
-    const registrado = await this.registrarAlumno(userName, userEmail, userPassword);
-
-    if (registrado === true) {
-      this.successMessage = true;
-      this.resetForm();
-    } else if (typeof registrado === 'string') {
-      this.emailError = true;
-
-      this.form.get('userEmail')?.setErrors({ emailDuplicado: true });
-
-      this.form.get('userEmail')?.markAsTouched();
-
-      console.warn(registrado);
-    } else {
-      console.warn('Registro fallido: no se recibió respuesta esperada del método registrarAlumno().');
+    if (!this.form.valid) {
+      this.form.markAllAsTouched();
+      return;
     }
-  } catch (error: any) {
-    console.error('Error inesperado en el envío del formulario:', error);
-  } finally {
-    this.isLoading = false;
-    this.cdr.markForCheck();
+
+    // Reinicia errores previos
+    this.emailError = false;
+    this.form.get('userEmail')?.setErrors(null);
+
+    this.isLoading = true;
+
+    const { userName, userEmail, userPassword } = this.form.value;
+
+    try {
+      const registrado = await this.registrarAlumno(
+        userName,
+        userEmail,
+        userPassword
+      );
+
+      if (registrado === true) {
+        this.successMessage = true;
+        this.resetForm();
+      } else if (typeof registrado === 'string') {
+        this.emailError = true;
+
+        this.form.get('userEmail')?.setErrors({ emailDuplicado: true });
+
+        this.form.get('userEmail')?.markAsTouched();
+
+        console.warn(registrado);
+      } else {
+        console.warn(
+          'Registro fallido: no se recibió respuesta esperada del método registrarAlumno().'
+        );
+      }
+    } catch (error: any) {
+      console.error('Error inesperado en el envío del formulario:', error);
+    } finally {
+      this.isLoading = false;
+      this.cdr.markForCheck();
+    }
   }
-}
 }

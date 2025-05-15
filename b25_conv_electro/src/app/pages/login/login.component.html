@@ -1,32 +1,88 @@
-<div class="flex items-center justify-center min-h-screen bg-base-100">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full max-w-3xl h-4/5">
-    <fieldset class=" flex flex-col fieldset bg-base-200 border-base-300 rounded-box border p-8 w-4/5 mx-auto h-[70vh]">
-      <legend class="fieldset-legend text-xl font-semibold mb-4">Inicia sesión</legend>
+<div *ngIf="loading" class="flex justify-center items-center h-screen">
+  <span class="loading loading-spinner loading-lg text-primary"></span>
+</div>
+
+<div
+  *ngIf="!loading"
+  class="flex items-center justify-center min-h-screen bg-base-100"
+>
+  <form [formGroup]="loginForm" class="w-full max-w-3xl h-4/5">
+    <fieldset
+      class="flex flex-col fieldset bg-base-200 border-base-300 rounded-box border p-8 w-4/5 mx-auto"
+    >
+      <h2 class="text-center text-3xl font-bold mb-6 text-primary">
+        Iniciar sesión
+      </h2>
 
       <label class="label font-bold">Email</label>
-      <input type="email" formControlName="email" class="input input-bordered w-full mb-4" placeholder="ejemplo@ejemplo.com" />
+      <input
+        type="email"
+        formControlName="email"
+        [ngClass]="{
+          'border-red-500':
+            loginForm.get('email')?.touched && loginForm.get('email')?.invalid,
+          'border-green-500':
+            loginForm.get('email')?.touched && loginForm.get('email')?.valid,
+          'border-gray-300': !loginForm.get('email')?.touched
+        }"
+        class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200 mb-4"
+        placeholder="ejemplo@ejemplo.com"
+      />
       @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
-        <div class="text-error text-sm mb-4">
-            <span *ngIf="loginForm.get('email')?.errors?.['required']">El email es obligatorio</span>
-            <span *ngIf="loginForm.get('email')?.errors?.['email']">Email inválido</span>
-        </div>
+      <div class="text-error text-sm mb-4">
+        <span *ngIf="loginForm.get('email')?.errors?.['required']"
+          >El email es obligatorio</span
+        >
+        <span *ngIf="loginForm.get('email')?.errors?.['email']"
+          >Email inválido</span
+        >
+      </div>
       }
 
       <label class="label font-bold">Contraseña</label>
-      <input type="password" formControlName="password" class="input input-bordered w-full mb-6" placeholder="********" />
-      @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-        <div class="text-error text-sm mb-4">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es obligatoria</span>
-            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Mínimo 6 caracteres</span>
-        </div>
+      <input
+        type="password"
+        formControlName="password"
+        [ngClass]="{
+          'border-red-500':
+            loginForm.get('password')?.touched &&
+            loginForm.get('password')?.invalid,
+          'border-green-500':
+            loginForm.get('password')?.touched &&
+            loginForm.get('password')?.valid,
+          'border-gray-300': !loginForm.get('password')?.touched
+        }"
+        class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200 mb-6"
+        placeholder="********"
+      />
+      @if (loginForm.get('password')?.touched &&
+      loginForm.get('password')?.invalid) {
+      <div class="text-error text-sm mb-4">
+        <span *ngIf="loginForm.get('password')?.errors?.['required']"
+          >La contraseña es obligatoria</span
+        >
+        <span *ngIf="loginForm.get('password')?.errors?.['minlength']"
+          >Mínimo 6 caracteres</span
+        >
+      </div>
       }
 
-
-      <button type="submit" class="btn btn-primary w-full">Iniciar sesión</button>
+      <button
+        type="submit"
+        (click)="onSubmit()"
+        class="btn btn-primary w-full mb-4"
+      >
+        Iniciar sesión
+      </button>
 
       <p class="mt-auto pt-4">
         ¿No tienes una cuenta?
-        <a href="#" class="text-secondary hover:underline">Crear una cuenta</a>
+        <button
+          (click)="guestLogin()"
+          class="text-secondary hover:underline cursor-pointer"
+        >
+          Entrar como invitado
+        </button>
       </p>
     </fieldset>
   </form>

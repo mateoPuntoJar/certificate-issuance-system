@@ -1,0 +1,46 @@
+<div class="fixed inset-0 bg-black/30 backdrop-blur-lg flex items-center justify-center z-50 p-4">
+  <div class="bg-white text-neutral-800 p-6 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 transition-all duration-300">
+
+    <!-- Título -->
+    <h2 class="text-3xl font-bold text-center text-[#002782]">Detalles del Estudiante</h2>
+
+    <!-- Tarjeta del estudiante -->
+    <div class="flex justify-center">
+      <div class="bg-white rounded-2xl shadow-md p-6 w-full max-w-sm text-center space-y-3">
+        <div class="avatar flex justify-center">
+          <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+            <img [src]="'https://ui-avatars.com/api/?name=' + selectedUser().nombre + '&background=002782&color=fff'" alt="avatar" />
+          </div>
+        </div>
+        <h3 class="text-xl font-semibold text-[#002782]">{{ selectedUser().nombre }}</h3>
+        <p class="text-sm text-gray-500">{{ selectedUser().correo }}</p>
+        <p class="text-sm"><strong>Centro:</strong> {{ selectedUser().centro_nombre }}</p>
+        <p class="text-sm"><strong>Fecha de registro:</strong> {{ selectedUser().fecha_registro | date:'dd/MM/yyyy' }}</p>
+      </div>
+    </div>
+
+    <!-- Formulario administrativo -->
+    <div class="bg-[#EDEDED] p-6 rounded-2xl shadow-sm">
+      <app-form-admin [selectedUser]="selectedUser()"></app-form-admin>
+    </div>
+
+    <!-- Archivos adjuntos -->
+    <div>
+      <h3 class="text-2xl font-bold text-[#002782] text-center mb-4">Archivos Adjuntos</h3>
+      <div class="flex justify-center">
+        <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-white shadow-md w-full max-w-4xl">
+          <app-archivos-adjuntos [id_user]="selectedUser().uid"></app-archivos-adjuntos>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de cerrar -->
+    <div class="flex justify-end mt-4">
+      <button class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full"
+              (click)="onClose()">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+</div>

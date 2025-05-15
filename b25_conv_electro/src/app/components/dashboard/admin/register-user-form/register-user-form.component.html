@@ -1,6 +1,10 @@
-<div class="max-w-4xl mx-auto px-4 sm:px-6 p-6 rounded-2xl shadow-md bg-[#EDEDED] my-24">
+<div
+  class="max-w-4xl mx-auto px-4 sm:px-6 p-6 rounded-2xl shadow-md bg-[#EDEDED] my-24"
+>
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
-    <h2 class="text-center text-3xl font-bold mb-6 text-primary">Registrar un nuevo alumno/a</h2>
+    <h2 class="text-center text-3xl font-bold mb-6 text-primary">
+      Registrar un nuevo alumno/a
+    </h2>
 
     <h3 class="text-xl font-bold mb-6 text-secondary">Datos del alumno/a</h3>
 
@@ -39,17 +43,29 @@
     <!-- Nombre del alumno -->
     <div>
       <label class="block font-semibold mb-2">Nombre del alumno/a</label>
-      <input type="text" formControlName="userName" placeholder="Ej. María López Gallardo" [ngClass]="{
-            'border-red-500': form.get('userName')?.touched && form.get('userName')?.invalid,
-            'border-green-500': form.get('userName')?.touched && form.get('userName')?.valid,
-            'border-gray-300': !form.get('userName')?.touched
-          }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400
-                 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
-                 transition-all duration-200" />
-      <div *ngIf="form.get('userName')?.touched && form.get('userName')?.errors?.['required']" class="text-red-600 text-sm mt-1">
+      <input
+        type="text"
+        formControlName="userName"
+        placeholder="Ej. María López Gallardo"
+        [ngClass]="{
+          'border-red-500':
+            form.get('userName')?.touched && form.get('userName')?.invalid,
+          'border-green-500':
+            form.get('userName')?.touched && form.get('userName')?.valid,
+          'border-gray-300': !form.get('userName')?.touched
+        }"
+        class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
+      />
+      <div
+        *ngIf="form.get('userName')?.touched && form.get('userName')?.errors?.['required']"
+        class="text-red-600 text-sm mt-1"
+      >
         Campo obligatorio
       </div>
-      <div *ngIf="form.get('userName')?.touched && form.get('userName')?.errors?.['minlength']" class="text-red-600 text-sm mt-1">
+      <div
+        *ngIf="form.get('userName')?.touched && form.get('userName')?.errors?.['minlength']"
+        class="text-red-600 text-sm mt-1"
+      >
         Mínimo 6 caracteres
       </div>
     </div>
@@ -57,46 +73,106 @@
     <!-- Correo del administrador -->
     <div>
       <label class="block font-semibold mb-2">Email del alumno/a</label>
-      <input type="email" formControlName="userEmail" placeholder="Ej. ejemplo@ejemplo.com" [ngClass]="{
-            'border-red-500': form.get('userEmail')?.touched && form.get('userEmail')?.invalid,
-            'border-green-500': form.get('userEmail')?.touched && form.get('userEmail')?.valid,
-            'border-gray-300': !form.get('userEmail')?.touched
-          }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400
-                 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
-                 transition-all duration-200" />
-      <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['required']" class="text-red-600 text-sm mt-1">
+      <input
+        type="email"
+        formControlName="userEmail"
+        placeholder="Ej. ejemplo@ejemplo.com"
+        [ngClass]="{
+          'border-red-500':
+            form.get('userEmail')?.touched && form.get('userEmail')?.invalid,
+          'border-green-500':
+            form.get('userEmail')?.touched && form.get('userEmail')?.valid,
+          'border-gray-300': !form.get('userEmail')?.touched
+        }"
+        class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
+      />
+      <div
+        *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['required']"
+        class="text-red-600 text-sm mt-1"
+      >
         Campo obligatorio
       </div>
-      <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['email']" class="text-red-600 text-sm mt-1">
+      <div
+        *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['email']"
+        class="text-red-600 text-sm mt-1"
+      >
         Introduzca un email correcto
       </div>
-      <div *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['emailDuplicado']" class="text-red-600 text-sm mt-1">
+      <div
+        *ngIf="form.get('userEmail')?.touched && form.get('userEmail')?.errors?.['emailDuplicado']"
+        class="text-red-600 text-sm mt-1"
+      >
         La dirección de correo ya existe. Inicia sesión o inténtalo de nuevo.
       </div>
     </div>
 
-    <!-- Contraseña del administrador -->
+    <!-- Contraseña del alumno -->
     <div>
       <label class="block font-semibold mb-2">Contraseña del alumno</label>
-      <input type="password" formControlName="userPassword" placeholder="******" [ngClass]="{
-            'border-red-500': form.get('userPassword')?.touched && form.get('userPassword')?.invalid,
-            'border-green-500': form.get('userPassword')?.touched && form.get('userPassword')?.valid,
-            'border-gray-300': !form.get('userPassword')?.touched
-          }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400
-                 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
-                 transition-all duration-200" />
-      <div *ngIf="form.get('userPassword')?.touched && form.get('userPassword')?.errors?.['required']" class="text-red-600 text-sm mt-1">
+      <input
+        type="password"
+        formControlName="userPassword"
+        placeholder="******"
+        [ngClass]="{
+          'border-red-500':
+            form.get('userPassword')?.touched &&
+            form.get('userPassword')?.invalid,
+          'border-green-500':
+            form.get('userPassword')?.touched &&
+            form.get('userPassword')?.valid,
+          'border-gray-300': !form.get('userPassword')?.touched
+        }"
+        class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
+      />
+      <div
+        *ngIf="form.get('userPassword')?.touched && form.get('userPassword')?.errors?.['required']"
+        class="text-red-600 text-sm mt-1"
+      >
         Campo obligatorio
       </div>
-      <div *ngIf="form.get('userPassword')?.touched && form.get('userPassword')?.errors?.['minlength']" class="text-red-600 text-sm mt-1">
+      <div
+        *ngIf="form.get('userPassword')?.touched && form.get('userPassword')?.errors?.['minlength']"
+        class="text-red-600 text-sm mt-1"
+      >
         Mínimo 6 caracteres
+      </div>
+    </div>
+
+    <!-- Confirmar contraseña del alumno -->
+    <div>
+      <label class="block font-semibold mb-2"
+        >Confirmar contraseña del alumno</label
+      >
+      <input
+        type="password"
+        formControlName="userPasswordConfirm"
+        placeholder="******"
+        [ngClass]="{
+          'border-red-500':
+            form.hasError('passwordsMismatch') &&
+            form.get('userPasswordConfirm')?.touched,
+          'border-gray-300': !form.get('userPasswordConfirm')?.touched
+        }"
+        class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
+      />
+      <div
+        *ngIf="
+          form.hasError('passwordsMismatch') &&
+          form.get('userPasswordConfirm')?.touched
+        "
+        class="text-red-600 text-sm mt-1"
+      >
+        Las contraseñas no coinciden
       </div>
     </div>
 
     <!-- Botón para reestablecer el formulario -->
     <div class="flex flex-col sm:flex-row justify-end gap-4 mt-6">
-      <button type="button" (click)="resetForm()"
-        class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto">
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto"
+      >
         Limpiar
       </button>
 
@@ -104,23 +180,37 @@
       <button
         type="submit"
         [disabled]="form.invalid || isLoading"
-        class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto flex items-center justify-center gap-2">
+        class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto flex items-center justify-center gap-2"
+      >
         <svg
           *ngIf="isLoading"
           class="w-5 h-5 animate-spin"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
-          viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          ></path>
         </svg>
-        {{ isLoading ? 'Registrando...' : 'Enviar' }}
+        {{ isLoading ? "Registrando..." : "Enviar" }}
       </button>
     </div>
   </form>
-  <div *ngIf="successMessage" class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">
+  <div
+    *ngIf="successMessage"
+    class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4"
+  >
     ✅ Tu solicitud se ha enviado correctamente.
   </div>
 </div>
-

@@ -3,10 +3,9 @@ import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../supabase/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginGuard implements CanActivate {
-
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): boolean {
@@ -15,8 +14,11 @@ export class LoginGuard implements CanActivate {
     if (rol === 'admin' || rol === 'superadmin') {
       this.router.navigate(['/dashboard/admin']);
       return false;
-    } else if (rol === 'alumno' || rol === 'invitado') {
+    } else if (rol === 'alumno') {
       this.router.navigate(['/dashboard/profile']);
+      return false;
+    } else if (rol === 'invitado') {
+      this.router.navigate(['/dashboard/register-guest']);
       return false;
     }
 

@@ -10,6 +10,7 @@ import { LoginGuard } from './guards/login.guard';
 import { DashboardGuard } from './guards/dashboard.guard';
 import { RegisterUserFormComponent } from './components/dashboard/admin/register-user-form/register-user-form.component';
 import { RegisterCenterFormComponent } from './components/dashboard/admin/register-center-form/register-center-form.component';
+import { RegisterGuestFormComponent } from './components/dashboard/student/register-guest-form/register-guest-form.component';
 
 export const routes: Routes = [
   {
@@ -29,10 +30,10 @@ export const routes: Routes = [
       { path: 'form', component: FormComponent },
       { path: 'status', component: StatusComponent },
       { path: 'notifications', component: NotificationsComponent },
+      { path: 'register-guest', component: RegisterGuestFormComponent },
       { path: 'admin', component: AdminComponent },
-      { path: 'registrar-centro', component: RegisterCenterFormComponent},
-      { path: 'registrar-usuario', component: RegisterUserFormComponent},
-
+      { path: 'registrar-centro', component: RegisterCenterFormComponent },
+      { path: 'registrar-usuario', component: RegisterUserFormComponent },
     ],
   },
   {

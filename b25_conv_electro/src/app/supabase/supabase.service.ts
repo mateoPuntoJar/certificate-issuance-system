@@ -221,5 +221,21 @@ export class SupabaseService {
         .eq('uid_usuario', id_usuario)
     );
   }
+
+  // Registra un usuario invitado en la BD
+  async insertProfileGuest(uid: string, tipo: string, fileName: string, experiencia: string) {
+  const profileData: any = {
+    uid_usuario: uid,
+    experiencia_laboral: experiencia?.trim() || null,
+  };
+
+  if (tipo === 'reglada') profileData.titulo_academico = fileName;
+  if (tipo === 'certificado') profileData.certificado_profesionalidad = fileName;
+
+  return this.client
+    .from('perfiles_invitados')
+    .upsert(profileData, { onConflict: 'uid_usuario' });
+}
+
 }
 

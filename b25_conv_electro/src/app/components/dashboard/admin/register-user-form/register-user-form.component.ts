@@ -1,8 +1,20 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { AuthService } from '../../../../supabase/auth.service';
 import { CommonModule } from '@angular/common';
+
+export function matchPasswords(
+  passwordKey: string,
+  confirmKey: string
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const pass = group.get(passwordKey)?.value;
+    const confirm = group.get(confirmKey)?.value;
+    return pass === confirm ? null : { passwordsMismatch: true };
+  };
+}
 
 @Component({
   selector: 'app-register-user-form',
@@ -34,12 +46,18 @@ export class RegisterUserFormComponent {
     private supabase: SupabaseService,
     private authService: AuthService
   ) {
-    this.form = this.fb.group({
-      provincia: ['', [Validators.required]],
-      userName: ['', [Validators.required, Validators.minLength(6)]],
-      userEmail: ['', [Validators.required, Validators.email]],
-      userPassword: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.form = this.fb.group(
+      {
+        provincia: ['', [Validators.required]],
+        userName: ['', [Validators.required, Validators.minLength(6)]],
+        userEmail: ['', [Validators.required, Validators.email]],
+        userPassword: ['', [Validators.required, Validators.minLength(6)]],
+        userPasswordConfirm: [''], // sin validadores individuales
+      },
+      {
+        validators: matchPasswords('userPassword', 'userPasswordConfirm'),
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -89,6 +107,7 @@ export class RegisterUserFormComponent {
 }
 
   /**
+   *
    * Registra un nuevo alumno tanto en Supabase Auth como en la tabla 'usuarios'.
    *
    * Registra al usuario en Supabase Auth.
@@ -159,7 +178,6 @@ export class RegisterUserFormComponent {
           centro: idCentro,
           rol: 'alumno',
         });
-
       if (insertError) {
         if (insertError.code === '23505') {
           console.error('El correo ya está registrado.');
@@ -218,6 +236,7 @@ export class RegisterUserFormComponent {
         this.emailError = true;
 
         this.form.get('userEmail')?.setErrors({ emailDuplicado: true });
+
         this.form.get('userEmail')?.markAsTouched();
 
         console.warn(registrado);

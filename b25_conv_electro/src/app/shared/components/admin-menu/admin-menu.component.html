@@ -31,8 +31,8 @@
     </a>
   </li>
 
-<!-- Registrar nuevo alumno -->
-<li>
+<!-- Registrar nuevo alumno (solo admin) -->
+<li *ngIf="userRole === 'admin'">
   <a
     routerLink="registrar-usuario"
     routerLinkActive="text-[#002782] font-bold"
@@ -61,7 +61,6 @@
   </a>
 </li>
 
-
   <!-- Cerrar sesión -->
   <li>
     <a
@@ -75,5 +74,4 @@
       Cerrar sesión
     </a>
   </li>
-
 </ul>

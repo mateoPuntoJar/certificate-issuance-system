@@ -108,15 +108,30 @@
         </div>
       </div>
 
+      <!-- Botón para reestablecer el formulario -->
       <div class="flex flex-col sm:flex-row justify-end gap-4 mt-6">
         <button type="button" (click)="resetForm()"
           class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto">
           Limpiar
         </button>
-        <button type="submit"
-          class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto">
-          Enviar
-        </button>
+
+        <!-- Botón para enviar el formulario -->
+        <button
+        type="submit"
+        [disabled]="form.invalid || isLoading"
+        class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto flex items-center justify-center gap-2">
+        <svg
+          *ngIf="isLoading"
+          class="w-5 h-5 animate-spin"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+        {{ isLoading ? 'Registrando...' : 'Enviar' }}
+      </button>
       </div>
     </form>
     <div *ngIf="successMessage" class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">

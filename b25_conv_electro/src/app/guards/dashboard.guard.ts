@@ -51,13 +51,20 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
       '/dashboard/registrar-usuario',
     ];
 
+    const guestOnlyRoute = ['/dashboard/registrar-invitado'];
+
     if (adminOnlyRoutes.includes(url) && rol !== 'admin' && rol !== 'superadmin') {
       this.router.navigate(['/']);
       return false;
     }
 
-    // Resto de rutas (accesibles solo por alumno o invitado)
-    if (!adminOnlyRoutes.includes(url) && !['alumno', 'invitado'].includes(rol)) {
+    // Resto de rutas (accesibles solo por alumno)
+    if ((!adminOnlyRoutes.includes(url) || !guestOnlyRoute.includes(url)) && !['alumno'].includes(rol)) {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    if (guestOnlyRoute.includes(url) && rol !== 'invitado') {
       this.router.navigate(['/']);
       return false;
     }

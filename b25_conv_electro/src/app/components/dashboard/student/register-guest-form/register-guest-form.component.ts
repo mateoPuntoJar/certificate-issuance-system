@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, OnInit, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from '../../../../supabase/supabase.service';
@@ -17,12 +17,7 @@ export class RegisterGuestFormComponent implements OnInit {
   uploadedDocs: any[] = [];
   loading = true;
   rol: string = '';
-
-  comunidades: string[] = [
-    'Andalucía', 'Aragón', 'Asturias', 'Baleares', 'Canarias', 'Cantabria',
-    'Castilla-La Mancha', 'Castilla y León', 'Cataluña', 'Ceuta', 'Comunidad Valenciana',
-    'Extremadura', 'Galicia', 'La Rioja', 'Madrid', 'Melilla', 'Murcia', 'Navarra', 'País Vasco'
-  ];
+  centros: any[] = [];
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -36,7 +31,7 @@ export class RegisterGuestFormComponent implements OnInit {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      centro: ['', Validators.required],
+      centro: ['', Validators.required], // ahora almacena el id_centro
       tipoTitulacion: ['', Validators.required],
       titulo: ['', Validators.required],
       experiencia: [''],
@@ -47,6 +42,9 @@ export class RegisterGuestFormComponent implements OnInit {
   async ngOnInit() {
     this.rol = this.auth.userRol;
 
+    // Cargar centros para el select
+    this.centros = await this.supabase.getCentros();
+
     const uid = (await this.supabase.client.auth.getSession()).data.session?.user?.id;
     if (uid) await this.loadDocs(uid);
 
@@ -54,18 +52,6 @@ export class RegisterGuestFormComponent implements OnInit {
       const newUid = session?.user?.id;
       if (newUid && !this.uploadedDocs.length) this.loadDocs(newUid);
     });
-  }
-
-  @HostListener('window:beforeunload')
-  handleUnload() {
-    if (this.rol === 'invitado') {
-      this.auth.signOut();
-    }
-  }
-
-  async cerrarSesion() {
-    await this.auth.signOut();
-    this.router.navigate(['/']);
   }
 
   async loadDocs(uid: string) {
@@ -87,6 +73,17 @@ export class RegisterGuestFormComponent implements OnInit {
     const uid = (await this.supabase.client.auth.getSession()).data.session?.user?.id;
     if (!file || !uid) return;
 
+    // Insertar en tabla 'usuarios'
+    await this.supabase.client.from('usuarios').upsert({
+      uid: uid,
+      nombre: this.form.value.nombre,
+      correo: this.form.value.correo,
+      rol: 'invitado',
+      fecha_registro: new Date(),
+      centro: this.form.value.centro // id_centro
+    });
+
+    // Subida del documento
     const filePath = `${uid}/${file.name}`;
     const { error: uploadError } = await this.supabase.client.storage
       .from('documentos')
@@ -108,20 +105,8 @@ export class RegisterGuestFormComponent implements OnInit {
       estado_verificacion: 'enviado',
     });
 
-    await this.supabase.insertProfileStudent(uid, tipo, file.name, this.form.value.experiencia);
-
-    const update: any = {
-      ...(this.form.value.experiencia && { experiencia_laboral: this.form.value.experiencia }),
-      ...(nombre && { titulo_academico: nombre }),
-      ...(tipo === 'certificado' && { certificado_profesionalidad: nombre }),
-    };
-
-    if (Object.keys(update).length) {
-      await this.supabase.client
-        .from('perfiles_alumnos')
-        .update(update)
-        .eq('uid_usuario', uid);
-    }
+    // Insertar o actualizar en perfiles_invitados
+    await this.supabase.insertProfileGuest(uid, tipo, nombre, this.form.value.experiencia);
 
     await this.loadDocs(uid);
     this.successMessage = true;

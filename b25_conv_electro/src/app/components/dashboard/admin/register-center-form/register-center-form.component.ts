@@ -1,16 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-} from '@angular/core';
-import {
-  ReactiveFormsModule,
-  FormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -24,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class RegisterCenterFormComponent {
   form: FormGroup;
   successMessage: boolean = false;
+  isLoading: boolean = false;
   provinciasEspana = [
     'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Barcelona',
     'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real', 'Córdoba', 'Cuenca',
@@ -67,7 +58,7 @@ export class RegisterCenterFormComponent {
     centroId: string
   ): Promise<string> {
     try {
-      // Primero registrar al usuario en Supabase
+      // Primero registra al usuario en Supabase
       const { data, error: signUpError } = await this.supabase.auth.signUp({
         email: correo,
         password: password,
@@ -83,7 +74,7 @@ export class RegisterCenterFormComponent {
 
       const uid = data.user.id;
 
-      // Después insertar el nuevo usuario en la tabla 'usuarios'
+      // Inserta el nuevo usuario en la tabla 'usuarios'
       const { error: insertError } = await this.supabase.client
         .from('usuarios')
         .insert({
@@ -167,27 +158,29 @@ export class RegisterCenterFormComponent {
   /**
    * Maneja el envío del formulario de registro del centro y del administrador.
    *
-   * - Valida el formulario.
-   * - Genera un ID único para el centro.
-   * - Inserta el centro en la base de datos.
-   * - Registra al usuario administrador en Supabase Auth y en la tabla 'usuarios'.
-   * - Actualiza el centro con el UID del administrador.
-   * - Muestra un mensaje de éxito y resetea el formulario.
+   * Valida el formulario.
+   * Genera un ID único para el centro.
+   * Inserta el centro en la base de datos.
+   * Registra al usuario administrador en Supabase Auth y en la tabla 'usuarios'.
+   * Actualiza el centro con el UID del administrador.
+   * Muestra un mensaje de éxito y resetea el formulario.
    */
   async onSubmit(): Promise<void> {
     if (this.form.valid) {
-      // Obtener los valores del formulario
+      // Obtiene los valores del formulario
       const nombreCentro = this.form.value.centro;
       const provincia = this.form.value.provincia;
       const nombreAdmin = this.form.value.adminName;
       const correoAdmin = this.form.value.adminEmail;
       const passwordAdmin = this.form.value.adminPassword;
 
-      // Generar un ID único para el centro
+      // Genera un ID único para el centro
       const centroId = uuidv4();
 
       try {
-        // Insertar el centro sin UID
+        this.isLoading = true;
+
+        // Inserta el centro sin UID
         const idCentro = await this.insertarCentro(
           centroId,
           nombreCentro,
@@ -195,7 +188,7 @@ export class RegisterCenterFormComponent {
           null
         );
 
-        // Registrar al administrador y obtener su UID
+        // Registra al administrador y obtener su UID
         const uidUsuario = await this.registrarUsuarioAdministrador(
           nombreAdmin,
           correoAdmin,
@@ -203,14 +196,16 @@ export class RegisterCenterFormComponent {
           idCentro
         );
 
-        // Actualizar el centro con el UID del administrador
+        // Actualiza el centro con el UID del administrador
         await this.actualizarUidCentro(idCentro, uidUsuario);
 
-        // Mostrar mensaje de éxito y resetear el formulario
+        // Muestra mensaje de éxito y resetea el formulario
         this.successMessage = true;
         this.resetForm();
       } catch (error) {
         console.error('Error en el proceso de registro:', error);
+      } finally {
+        this.isLoading = false;
       }
     } else {
       this.form.markAllAsTouched();

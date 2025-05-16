@@ -12,23 +12,13 @@ import { AuthService } from '../supabase/auth.service';
   providedIn: 'root',
 })
 export class DashboardGuard implements CanActivate, CanActivateChild {
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
-  /**
-   * Protege la ruta padre /dashboard
-   */
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const isAuthenticated = this.auth.isAuthenticated();
     const rol = this.auth.userRol;
 
-    // Si no está autenticado o no tiene un rol válido, redirige al login
-    if (
-      !isAuthenticated ||
-      !['superadmin', 'admin', 'alumno', 'invitado'].includes(rol)
-    ) {
+    if (!isAuthenticated || !['superadmin', 'admin', 'alumno', 'invitado'].includes(rol)) {
       this.router.navigate(['/']);
       return false;
     }
@@ -36,13 +26,7 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
     return true;
   }
 
-  /**
-   * Protege las rutas hijas de /dashboard
-   */
-  canActivateChild(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const isAuthenticated = this.auth.isAuthenticated();
     const rol = this.auth.userRol;
     const url = state.url;
@@ -52,40 +36,29 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
       return false;
     }
 
-    // Rutas protegidas por rol
-    const adminOnlyRoute = ['/dashboard/registrar-usuario'];
     const superAdminOnlyRoute = ['/dashboard/registrar-centro'];
-    const adminAndSuperadminRoute = ['/dashboard/admin'];
+    const adminAndSuperadminRoute = [
+      '/dashboard/admin',
+      '/dashboard/registrar-usuario'
+    ];
     const guestOnlyRoute = ['/dashboard/register-guest'];
 
-    // Ruta exclusiva para admin
-    if (adminOnlyRoute.includes(url) && rol !== 'admin') {
-      this.router.navigate(['/']);
-      return false;
-    }
-
-    // Ruta exclusiva para superadmin
     if (superAdminOnlyRoute.includes(url) && rol !== 'superadmin') {
       this.router.navigate(['/']);
       return false;
     }
 
-    // Ruta compartida por admin y superadmin
-    if (
-      adminAndSuperadminRoute.includes(url) &&
-      !['admin', 'superadmin'].includes(rol)
-    ) {
+    if (adminAndSuperadminRoute.includes(url) && !['admin', 'superadmin'].includes(rol)) {
       this.router.navigate(['/']);
       return false;
     }
 
-    // Ruta exclusiva para invitado
     if (guestOnlyRoute.includes(url) && rol !== 'invitado') {
       this.router.navigate(['/']);
       return false;
     }
 
-    // Rutas generales: solo para alumno o invitado
+    // Otras rutas generales para alumno o invitado
     if (
       !superAdminOnlyRoute.includes(url) &&
       !adminAndSuperadminRoute.includes(url) &&

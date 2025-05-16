@@ -31,7 +31,7 @@ export class RegisterGuestFormComponent implements OnInit {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      centro: ['', Validators.required], // ahora almacena el id_centro
+      centro: ['', Validators.required],
       tipoTitulacion: ['', Validators.required],
       titulo: ['', Validators.required],
       experiencia: [''],

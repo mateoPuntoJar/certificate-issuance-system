@@ -1,15 +1,10 @@
 <!-- Instrucciones -->
 <section class="p-6">
-  <button
-    routerLink="/"
-    type="submit"
-    class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto"
-  >
+  <button routerLink="/" type="submit"
+    class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto">
     <span class="font-bold text-2xl">← </span>Volver a inicio
   </button>
-  <div
-    class="max-w-4xl mx-auto p-4 mb-6 px-4 sm:px-6 sm:p-6 bg-white rounded-2xl shadow-sm"
-  >
+  <div class="max-w-4xl mx-auto p-4 mb-6 px-4 sm:px-6 sm:p-6 bg-white rounded-2xl shadow-sm">
     <h2 class="text-3xl font-bold text-[#002782] mb-4">
       Instrucciones para subir la documentación
     </h2>
@@ -18,8 +13,7 @@
         <span class="mt-1 text-[#002782]">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path
-              d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"
-            />
+              d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z" />
           </svg>
         </span>
         Selecciona un tipo de titulación: Certificado Profesional o Titulación
@@ -28,9 +22,7 @@
       <li class="flex items-start gap-2">
         <span class="mt-1 text-[#002782]">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h5v-2H4V5h12v3h2V5a2 2 0 00-2-2H4z"
-            />
+            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h5v-2H4V5h12v3h2V5a2 2 0 00-2-2H4z" />
             <path d="M14 11v2h-4v2h4v2l3-3-3-3z" />
           </svg>
         </span>
@@ -40,9 +32,7 @@
       <li class="flex items-start gap-2">
         <span class="mt-1 text-[#002782]">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v.5a.5.5 0 01-.5.5h-15a.5.5 0 01-.5-.5V5z"
-            />
+            <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v.5a.5.5 0 01-.5.5h-15a.5.5 0 01-.5-.5V5z" />
             <path d="M4 8h12v2H4V8zm0 4h12v2H4v-2z" />
           </svg>
         </span>
@@ -50,61 +40,50 @@
       </li>
       <li class="flex items-start gap-2">
         <span class="mt-1 text-[#002782]">
-          <svg
-            class="w-5 h-5 text-[#002782]"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
+          <svg class="w-5 h-5 text-[#002782]" fill="currentColor" viewBox="0 0 20 20">
             <path
-              d="M4 3a2 2 0 012-2h6.586a2 2 0 011.414.586l3.414 3.414A2 2 0 0118 6.414V17a2 2 0 01-2 2H6a2 2 0 01-2-2V3z"
-            />
+              d="M4 3a2 2 0 012-2h6.586a2 2 0 011.414.586l3.414 3.414A2 2 0 0118 6.414V17a2 2 0 01-2 2H6a2 2 0 01-2-2V3z" />
           </svg>
         </span>
         Para mantener un formato uniforme, nombra tus archivos así:
       </li>
     </ul>
     <p class="mt-4 text-gray-700 leading-relaxed text-sm sm:text-base">
-      <span class="block font-semibold text-[#FF5B41]"
-        >Apellido1_Apellido2_Nombre_Certificado_Año</span
-      >
+      <span class="block font-semibold text-[#FF5B41]">Apellido1_Apellido2_Nombre_Certificado_Año</span>
       <br />
       Ejemplo:
-      <code class="bg-gray-100 px-2 py-1 rounded-md"
-        >García_López_Marta_TituloDietetica_2023.pdf</code
-      >
+      <code class="bg-gray-100 px-2 py-1 rounded-md">García_López_Marta_TituloDietetica_2023.pdf</code>
     </p>
   </div>
 
   <!-- Formulario invitado -->
-  <div
-    class="max-w-4xl mx-auto px-4 sm:px-6 p-6 rounded-2xl shadow-md bg-[#EDEDED]"
-  >
-    <form
-      [formGroup]="form"
-      (ngSubmit)="onSubmit()"
-      class="space-y-4"
-      novalidate
-    >
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 p-6 rounded-2xl shadow-md bg-[#EDEDED]">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
       <!-- Nombre -->
       <div>
         <label class="block font-semibold mb-2">Nombre</label>
-        <input
-          type="text"
-          formControlName="nombre"
-          placeholder="Ej. Ana López"
-          [ngClass]="{
+        <input type="text" formControlName="nombre" placeholder="Ej. Ana López" [ngClass]="{
             'border-red-500':
               form.get('nombre')?.touched && form.get('nombre')?.invalid,
             'border-green-500':
               form.get('nombre')?.touched && form.get('nombre')?.valid,
             'border-gray-300': !form.get('nombre')?.touched
           }"
-          class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
-        />
-        <div
-          *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid"
-          class="text-red-600 text-sm mt-1"
-        >
+          class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200" />
+        <div *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid" class="text-red-600 text-sm mt-1">
+          Campo obligatorio
+        </div>
+      </div>
+
+      <!-- Apellidos -->
+      <div>
+        <label class="block font-semibold mb-2">Apellidos</label>
+        <input type="text" formControlName="apellidos" placeholder="Ej. Pérez García" [ngClass]="{
+      'border-red-500': form.get('apellidos')?.touched && form.get('apellidos')?.invalid,
+      'border-green-500': form.get('apellidos')?.touched && form.get('apellidos')?.valid,
+      'border-gray-300': !form.get('apellidos')?.touched
+    }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200" />
+        <div *ngIf="form.get('apellidos')?.touched && form.get('apellidos')?.invalid" class="text-red-600 text-sm mt-1">
           Campo obligatorio
         </div>
       </div>
@@ -112,24 +91,29 @@
       <!-- Correo -->
       <div>
         <label class="block font-semibold mb-2">Correo electrónico</label>
-        <input
-          type="email"
-          formControlName="correo"
-          placeholder="Ej. ana@email.com"
-          [ngClass]="{
+        <input type="email" formControlName="correo" placeholder="Ej. ana@email.com" [ngClass]="{
             'border-red-500':
               form.get('correo')?.touched && form.get('correo')?.invalid,
             'border-green-500':
               form.get('correo')?.touched && form.get('correo')?.valid,
             'border-gray-300': !form.get('correo')?.touched
           }"
-          class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
-        />
-        <div
-          *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid"
-          class="text-red-600 text-sm mt-1"
-        >
+          class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200" />
+        <div *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid" class="text-red-600 text-sm mt-1">
           Campo obligatorio y formato no válido
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div>
+        <label class="block font-semibold mb-2">Teléfono</label>
+        <input type="tel" formControlName="telefono" placeholder="Ej. 600123456" [ngClass]="{
+      'border-red-500': form.get('telefono')?.touched && form.get('telefono')?.invalid,
+      'border-green-500': form.get('telefono')?.touched && form.get('telefono')?.valid,
+      'border-gray-300': !form.get('telefono')?.touched
+    }" class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200" />
+        <div *ngIf="form.get('telefono')?.touched && form.get('telefono')?.invalid" class="text-red-600 text-sm mt-1">
+          Campo obligatorio
         </div>
       </div>
 
@@ -137,38 +121,29 @@
       <div>
         <label class="block font-semibold mb-2">Centro (Provincia)</label>
         <div class="relative">
-          <select
-            formControlName="centro"
-            [ngClass]="{
+          <select formControlName="centro" [ngClass]="{
               'border-red-500':
                 form.get('centro')?.touched && form.get('centro')?.invalid,
               'border-green-500':
                 form.get('centro')?.touched && form.get('centro')?.valid,
               'border-gray-300': !form.get('centro')?.touched
             }"
-            class="w-full appearance-none rounded-xl bg-white border p-3 pr-12 text-gray-700 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 peer transition-all duration-200 cursor-pointer"
-          >
+            class="w-full appearance-none rounded-xl bg-white border p-3 pr-12 text-gray-700 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 peer transition-all duration-200 cursor-pointer">
             <option disabled value="">Selecciona una provincia</option>
             <option *ngFor="let centro of centros" [value]="centro.id_centro">
               {{ centro.provincia }}
             </option>
           </select>
           <div
-            class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#002782] peer-focus:text-[#FF5B41] transition-all"
-          >
+            class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#002782] peer-focus:text-[#FF5B41] transition-all">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
+              <path fill-rule="evenodd"
                 d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.7a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.06z"
-                clip-rule="evenodd"
-              />
+                clip-rule="evenodd" />
             </svg>
           </div>
         </div>
-        <div
-          *ngIf="form.get('centro')?.touched && form.get('centro')?.invalid"
-          class="text-red-600 text-sm mt-1"
-        >
+        <div *ngIf="form.get('centro')?.touched && form.get('centro')?.invalid" class="text-red-600 text-sm mt-1">
           Campo obligatorio
         </div>
       </div>
@@ -177,9 +152,7 @@
       <div>
         <label class="block font-semibold mb-2">Tipo de titulación</label>
         <div class="relative">
-          <select
-            formControlName="tipoTitulacion"
-            [ngClass]="{
+          <select formControlName="tipoTitulacion" [ngClass]="{
               'border-red-500':
                 form.get('tipoTitulacion')?.touched &&
                 form.get('tipoTitulacion')?.invalid,
@@ -188,57 +161,40 @@
                 form.get('tipoTitulacion')?.valid,
               'border-gray-300': !form.get('tipoTitulacion')?.touched
             }"
-            class="w-full appearance-none rounded-xl bg-white border p-3 pr-12 text-gray-700 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 peer transition-all duration-200 cursor-pointer"
-          >
+            class="w-full appearance-none rounded-xl bg-white border p-3 pr-12 text-gray-700 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 peer transition-all duration-200 cursor-pointer">
             <option disabled value="">Selecciona una opción</option>
             <option value="certificado">Certificado Profesional</option>
             <option value="reglada">Titulación Académica Reglada</option>
           </select>
           <div
-            class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#002782] peer-focus:text-[#FF5B41] transition-all"
-          >
+            class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#002782] peer-focus:text-[#FF5B41] transition-all">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
+              <path fill-rule="evenodd"
                 d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.7a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.06z"
-                clip-rule="evenodd"
-              />
+                clip-rule="evenodd" />
             </svg>
           </div>
         </div>
-        <div
-          *ngIf="
+        <div *ngIf="
             form.get('tipoTitulacion')?.touched &&
             form.get('tipoTitulacion')?.invalid
-          "
-          class="text-red-600 text-sm mt-1"
-        >
+          " class="text-red-600 text-sm mt-1">
           Campo obligatorio
         </div>
       </div>
 
       <!-- Título académico -->
       <div>
-        <label class="block font-semibold mb-2"
-          >Nombre de la titulación/certificado</label
-        >
-        <input
-          type="text"
-          formControlName="titulo"
-          placeholder="Ej. Grado en Dietética"
-          [ngClass]="{
+        <label class="block font-semibold mb-2">Nombre de la titulación/certificado</label>
+        <input type="text" formControlName="titulo" placeholder="Ej. Grado en Dietética" [ngClass]="{
             'border-red-500':
               form.get('titulo')?.touched && form.get('titulo')?.invalid,
             'border-green-500':
               form.get('titulo')?.touched && form.get('titulo')?.valid,
             'border-gray-300': !form.get('titulo')?.touched
           }"
-          class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"
-        />
-        <div
-          *ngIf="form.get('titulo')?.touched && form.get('titulo')?.invalid"
-          class="text-red-600 text-sm mt-1"
-        >
+          class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200" />
+        <div *ngIf="form.get('titulo')?.touched && form.get('titulo')?.invalid" class="text-red-600 text-sm mt-1">
           Campo obligatorio
         </div>
       </div>
@@ -246,28 +202,20 @@
       <!-- Experiencia laboral (opcional) -->
       <div>
         <label class="block font-semibold mb-2">Experiencia laboral</label>
-        <textarea
-          formControlName="experiencia"
-          [ngClass]="{
+        <textarea formControlName="experiencia" [ngClass]="{
             'border-green-500':
               form.get('experiencia')?.dirty &&
               form.get('experiencia')?.value?.trim() !== '',
             'border-gray-300': form.get('experiencia')?.value?.trim() === ''
-          }"
-          rows="4"
+          }" rows="4"
           class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200 resize-none"
-          placeholder="Describe brevemente tu experiencia"
-        ></textarea>
+          placeholder="Describe brevemente tu experiencia"></textarea>
       </div>
 
       <!-- Subida de archivos -->
       <div>
         <label class="block font-semibold mb-2">Documentos (PDF, etc.)</label>
-        <input
-          #fileInput
-          type="file"
-          (change)="onFileChange($event)"
-          [ngClass]="{
+        <input #fileInput type="file" (change)="onFileChange($event)" [ngClass]="{
             'border-red-500':
               form.get('documentos')?.touched &&
               form.get('documentos')?.invalid,
@@ -275,39 +223,41 @@
               form.get('documentos')?.touched && form.get('documentos')?.valid,
             'border-gray-300': !form.get('documentos')?.touched
           }"
-          class="file-input w-full bg-white border file:bg-[#FF5B41] file:text-white file:font-semibold file:px-4 file:py-2 file:border-0 hover:file:bg-[#ff7762] focus:outline-none focus:border-[#FF5B41] transition-all duration-200"
-        />
-        <div
-          *ngIf="
+          class="file-input w-full bg-white border file:bg-[#FF5B41] file:text-white file:font-semibold file:px-4 file:py-2 file:border-0 hover:file:bg-[#ff7762] focus:outline-none focus:border-[#FF5B41] transition-all duration-200" />
+        <div *ngIf="
             form.get('documentos')?.touched && form.get('documentos')?.invalid
-          "
-          class="text-red-600 text-sm mt-1"
-        >
+          " class="text-red-600 text-sm mt-1">
           Debes subir al menos un archivo
+        </div>
+      </div>
+
+      <!-- Aceptar política de privacidad -->
+      <div>
+        <label class="flex items-start gap-3 text-sm text-gray-700">
+          <input type="checkbox" formControlName="aceptaPolitica"
+            class="mt-1 rounded border-gray-300 text-[#002782] shadow-sm focus:ring-[#002782]" />
+          Acepto la política de privacidad y el tratamiento de mis datos según la normativa vigente.
+        </label>
+        <div *ngIf="form.get('aceptaPolitica')?.touched && form.get('aceptaPolitica')?.invalid"
+          class="text-red-600 text-sm mt-1">
+          Debes aceptar la política de privacidad para continuar
         </div>
       </div>
 
       <!-- Botones -->
       <div class="flex flex-col sm:flex-row justify-end gap-4 mt-6">
-        <button
-          type="button"
-          (click)="resetForm()"
-          class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto"
-        >
+        <button type="button" (click)="resetForm()"
+          class="btn px-8 py-3 text-base bg-gray-300 hover:bg-gray-200 text-black rounded-full w-full sm:w-auto">
           Limpiar
         </button>
-        <button
-          type="submit"
-          class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto"
-        >
+        <button type="submit"
+          class="btn px-8 py-3 text-base bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full w-full sm:w-auto">
           Enviar
         </button>
       </div>
     </form>
-    <div
-      *ngIf="successMessage"
-      class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4"
-    >
+    <div *ngIf="successMessage"
+      class="bg-green-100 border-l-4 mt-4 border-green-500 text-green-700 p-4 rounded-xl mb-4">
       ✅ Tu solicitud se ha enviado correctamente.
     </div>
   </div>

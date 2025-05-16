@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -18,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, CommonModule],
+  imports: [ReactiveFormsModule, NgIf, CommonModule, RouterModule],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -79,7 +79,7 @@ export class LoginComponent {
     this.auth
       .login('usuario@invitado.com', '123456')
       .then(() => {
-        this.router.navigate(['/dashboard/register-guest']);
+        this.router.navigate(['/register-guest']);
       })
       .catch((error) => {
         console.warn(

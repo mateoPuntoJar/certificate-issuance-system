@@ -195,6 +195,10 @@
           'border-red-500':
             form.hasError('passwordsMismatch') &&
             form.get('adminPasswordConfirm')?.touched,
+          'border-green-500':
+            !form.hasError('passwordsMismatch') &&
+            form.get('adminPasswordConfirm')?.touched &&
+            form.get('adminPasswordConfirm')?.valid,
           'border-gray-300': !form.get('adminPasswordConfirm')?.touched
         }"
         class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"

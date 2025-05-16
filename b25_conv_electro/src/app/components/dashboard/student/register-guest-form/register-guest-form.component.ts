@@ -1,14 +1,26 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  ChangeDetectorRef,
+  OnInit,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from '../../../../supabase/supabase.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../supabase/auth.service';
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterModule],
   templateUrl: './register-guest-form.component.html',
 })
 export class RegisterGuestFormComponent implements OnInit {
@@ -45,7 +57,8 @@ export class RegisterGuestFormComponent implements OnInit {
     // Cargar centros para el select
     this.centros = await this.supabase.getCentros();
 
-    const uid = (await this.supabase.client.auth.getSession()).data.session?.user?.id;
+    const uid = (await this.supabase.client.auth.getSession()).data.session
+      ?.user?.id;
     if (uid) await this.loadDocs(uid);
 
     this.supabase.client.auth.onAuthStateChange((_e, session) => {
@@ -70,7 +83,8 @@ export class RegisterGuestFormComponent implements OnInit {
     if (this.form.invalid) return this.form.markAllAsTouched();
 
     const file = this.form.value.documentos[0];
-    const uid = (await this.supabase.client.auth.getSession()).data.session?.user?.id;
+    const uid = (await this.supabase.client.auth.getSession()).data.session
+      ?.user?.id;
     if (!file || !uid) return;
 
     // Insertar en tabla 'usuarios'
@@ -80,7 +94,7 @@ export class RegisterGuestFormComponent implements OnInit {
       correo: this.form.value.correo,
       rol: 'invitado',
       fecha_registro: new Date(),
-      centro: this.form.value.centro // id_centro
+      centro: this.form.value.centro, // id_centro
     });
 
     // Subida del documento
@@ -93,7 +107,10 @@ export class RegisterGuestFormComponent implements OnInit {
     const ext = file.name.split('.').pop()?.toLowerCase() || 'desconocido';
     const tipo = this.form.value.tipoTitulacion;
     const nombre = this.form.value.titulo;
-    const docLabel = tipo === 'reglada' ? 'Titulación Académica Reglada' : 'Certificado Profesional';
+    const docLabel =
+      tipo === 'reglada'
+        ? 'Titulación Académica Reglada'
+        : 'Certificado Profesional';
 
     await this.supabase.insertDocument({
       uid_usuario: uid,
@@ -106,7 +123,12 @@ export class RegisterGuestFormComponent implements OnInit {
     });
 
     // Insertar o actualizar en perfiles_invitados
-    await this.supabase.insertProfileGuest(uid, tipo, nombre, this.form.value.experiencia);
+    await this.supabase.insertProfileGuest(
+      uid,
+      tipo,
+      nombre,
+      this.form.value.experiencia
+    );
 
     await this.loadDocs(uid);
     this.successMessage = true;

@@ -8,37 +8,48 @@
 
     <h3 class="text-xl font-bold mb-6 text-secondary">Datos del alumno/a</h3>
 
-      <!-- Centro (Provincia) -->
-      <div *ngIf="userRole === 'superadmin'">
-        <label class="block font-semibold mb-2">Centro de estudios</label>
-        <div class="relative">
-          <select formControlName="provincia" [ngClass]="{
-                'border-red-500': form.get('provincia')?.touched && form.get('provincia')?.invalid,
-                'border-green-500': form.get('provincia')?.touched && form.get('provincia')?.valid,
-                'border-gray-300': !form.get('provincia')?.touched
-              }" class="w-full appearance-none rounded-xl bg-white border p-3 pr-12 text-gray-700
-                     focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
-                     peer transition-all duration-200 cursor-pointer">
-            <option disabled value="">Seleccione una provincia</option>
-            <option *ngFor="let provincia of provinciasDisponibles" [value]="provincia">
-              {{ provincia }}
-            </option>
-
-          </select>
-          <div class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#002782]
-                        peer-focus:text-[#FF5B41] transition-all">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.7a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.06z"
-                clip-rule="evenodd" />
-            </svg>
-          </div>
-        </div>
-        <div *ngIf="form.get('provincia')?.touched && form.get('provincia')?.invalid"
-          class="text-red-600 text-sm mt-1">
-          Campo obligatorio
+    <!-- Centro (Provincia) -->
+    <div *ngIf="userRole === 'superadmin'">
+      <label class="block font-semibold mb-2">Centro de estudios</label>
+      <div class="relative">
+        <select
+          formControlName="provincia"
+          [ngClass]="{
+            'border-red-500':
+              form.get('provincia')?.touched && form.get('provincia')?.invalid,
+            'border-green-500':
+              form.get('provincia')?.touched && form.get('provincia')?.valid,
+            'border-gray-300': !form.get('provincia')?.touched
+          }"
+          class="w-full appearance-none rounded-xl bg-white border p-3 pr-12 text-gray-700 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 peer transition-all duration-200 cursor-pointer"
+        >
+          <option disabled value="">Seleccione una provincia</option>
+          <option
+            *ngFor="let provincia of provinciasDisponibles"
+            [value]="provincia"
+          >
+            {{ provincia }}
+          </option>
+        </select>
+        <div
+          class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#002782] peer-focus:text-[#FF5B41] transition-all"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.7a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.06z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </div>
       </div>
+      <div
+        *ngIf="form.get('provincia')?.touched && form.get('provincia')?.invalid"
+        class="text-red-600 text-sm mt-1"
+      >
+        Campo obligatorio
+      </div>
+    </div>
 
     <!-- Nombre del alumno -->
     <div>
@@ -151,6 +162,10 @@
           'border-red-500':
             form.hasError('passwordsMismatch') &&
             form.get('userPasswordConfirm')?.touched,
+          'border-green-500':
+            !form.hasError('passwordsMismatch') &&
+            form.get('userPasswordConfirm')?.touched &&
+            form.get('userPasswordConfirm')?.valid,
           'border-gray-300': !form.get('userPasswordConfirm')?.touched
         }"
         class="w-full rounded-xl bg-white border p-3 placeholder-gray-400 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition-all duration-200"

@@ -87,7 +87,6 @@ export class DashboardGuard implements CanActivate, CanActivateChild {
 
     // Rutas generales: solo para alumno o invitado
     if (
-      !adminOnlyRoute.includes(url) &&
       !superAdminOnlyRoute.includes(url) &&
       !adminAndSuperadminRoute.includes(url) &&
       !guestOnlyRoute.includes(url) &&

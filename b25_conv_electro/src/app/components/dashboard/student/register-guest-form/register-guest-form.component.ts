@@ -1,21 +1,9 @@
-import {
-  Component,
-  ElementRef,
-  ViewChild,
-  ChangeDetectorRef,
-  OnInit,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-  FormsModule,
-} from '@angular/forms';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from '../../../../supabase/supabase.service';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../../supabase/auth.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-form',
@@ -26,10 +14,9 @@ import { AuthService } from '../../../../supabase/auth.service';
 export class RegisterGuestFormComponent implements OnInit {
   form: FormGroup;
   successMessage = false;
-  uploadedDocs: any[] = [];
   loading = true;
-  rol: string = '';
   centros: any[] = [];
+  id_invitado: string = uuidv4();
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -37,100 +24,75 @@ export class RegisterGuestFormComponent implements OnInit {
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private supabase: SupabaseService,
-    private auth: AuthService,
     private router: Router
   ) {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
+      apellidos: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
+      telefono: ['', Validators.required],
       centro: ['', Validators.required],
       tipoTitulacion: ['', Validators.required],
       titulo: ['', Validators.required],
       experiencia: [''],
       documentos: [null, Validators.required],
+      aceptaPolitica: [false, Validators.requiredTrue]
     });
   }
 
   async ngOnInit() {
-    this.rol = this.auth.userRol;
-
-    // Cargar centros para el select
     this.centros = await this.supabase.getCentros();
-
-    const uid = (await this.supabase.client.auth.getSession()).data.session
-      ?.user?.id;
-    if (uid) await this.loadDocs(uid);
-
-    this.supabase.client.auth.onAuthStateChange((_e, session) => {
-      const newUid = session?.user?.id;
-      if (newUid && !this.uploadedDocs.length) this.loadDocs(newUid);
-    });
-  }
-
-  async loadDocs(uid: string) {
-    this.loading = true;
-    const { data } = await this.supabase.client
-      .from('documentos_subidos')
-      .select('*')
-      .eq('uid_usuario', uid);
-
-    this.uploadedDocs = data || [];
-    this.loading = false;
-    this.cdr.detectChanges();
   }
 
   async onSubmit() {
     if (this.form.invalid) return this.form.markAllAsTouched();
 
     const file = this.form.value.documentos[0];
-    const uid = (await this.supabase.client.auth.getSession()).data.session
-      ?.user?.id;
-    if (!file || !uid) return;
+    if (!file) return;
 
-    // Insertar en tabla 'usuarios'
-    await this.supabase.client.from('usuarios').upsert({
-      uid: uid,
-      nombre: this.form.value.nombre,
-      correo: this.form.value.correo,
-      rol: 'invitado',
-      fecha_registro: new Date(),
-      centro: this.form.value.centro, // id_centro
-    });
+    const filePath = `${this.id_invitado}/${file.name}`;
 
-    // Subida del documento
-    const filePath = `${uid}/${file.name}`;
     const { error: uploadError } = await this.supabase.client.storage
       .from('documentos')
       .upload(filePath, file, { contentType: file.type, upsert: true });
+
     if (uploadError) return;
 
     const ext = file.name.split('.').pop()?.toLowerCase() || 'desconocido';
     const tipo = this.form.value.tipoTitulacion;
-    const nombre = this.form.value.titulo;
-    const docLabel =
-      tipo === 'reglada'
-        ? 'Titulación Académica Reglada'
-        : 'Certificado Profesional';
+    const docLabel = tipo === 'reglada' ? 'Titulación Académica Reglada' : 'Certificado Profesional';
 
-    await this.supabase.insertDocument({
-      uid_usuario: uid,
-      tipo_documento: docLabel,
-      nombre_titulacion: nombre,
-      nombre_archivo: file.name,
-      formato_documento: ext,
-      fecha_subida: new Date(),
-      estado_verificacion: 'enviado',
+    const { data: signed, error: signedError } = await this.supabase.client.storage
+      .from('documentos')
+      .createSignedUrl(filePath, 3600);
+
+    if (signedError) return;
+
+    await this.supabase.insertProfileGuest({
+      id_invitado: this.id_invitado,
+      nombre: this.form.value.nombre,
+      apellidos: this.form.value.apellidos,
+      correo: this.form.value.correo,
+      telefono: this.form.value.telefono,
+      centro: this.form.value.centro,
+      tipo_titulacion: this.form.value.tipoTitulacion,
+      nombre_titulacion: this.form.value.titulo,
+      experiencia: this.form.value.experiencia || null,
+      acepta_politica: true
     });
 
-    // Insertar o actualizar en perfiles_invitados
-    await this.supabase.insertProfileGuest(
-      uid,
-      tipo,
-      nombre,
-      this.form.value.experiencia
-    );
+    await this.supabase.client.from('documentos_subidos').insert({
+      id_invitado: this.id_invitado,
+      uid_usuario: null,
+      tipo_documento: docLabel,
+      nombre_titulacion: this.form.value.titulo,
+      nombre_archivo: file.name,
+      url_documento: signed?.signedUrl || '',
+      formato_documento: ext,
+      fecha_subida: new Date(),
+      estado_verificacion: 'enviado'
+    });
 
-    await this.loadDocs(uid);
     this.successMessage = true;
     this.resetForm();
 
@@ -151,29 +113,17 @@ export class RegisterGuestFormComponent implements OnInit {
   resetForm() {
     this.form.reset({
       nombre: '',
+      apellidos: '',
       correo: '',
+      telefono: '',
       centro: '',
       tipoTitulacion: '',
       titulo: '',
       experiencia: '',
       documentos: null,
+      aceptaPolitica: false
     });
     this.fileInput.nativeElement.value = '';
-  }
-
-  async downloadFile(doc: any) {
-    const path = `${doc.uid_usuario}/${doc.nombre_archivo}`;
-    const signedUrl = await this.supabase.getSignedUrl(path);
-    if (!signedUrl) return;
-
-    const response = await fetch(signedUrl);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = doc.nombre_archivo;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    this.id_invitado = uuidv4();
   }
 }

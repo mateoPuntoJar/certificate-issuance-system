@@ -79,6 +79,12 @@
       >
         Mínimo 6 caracteres
       </div>
+      <div
+        *ngIf="centroDuplicado"
+        class="text-red-600 text-sm mt-1"
+      >
+        El centro ya existe, modifica la provincia o el nombre del centro.
+      </div>
     </div>
 
     <h3 class="text-xl font-bold mb-6 text-secondary">
@@ -145,6 +151,12 @@
         class="text-red-600 text-sm mt-1"
       >
         Introduzca un email correcto
+      </div>
+      <div
+        *ngIf="correoDuplicado"
+        class="text-red-600 text-sm mt-1"
+      >
+        La dirección de correo ya existe. Inicia sesión o usa otra dirección.
       </div>
     </div>
 

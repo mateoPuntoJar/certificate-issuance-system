@@ -46,13 +46,16 @@ export class RegisterUserFormComponent {
     private supabase: SupabaseService,
     private authService: AuthService
   ) {
+    // Determinar si el rol del usuario actual es superadmin
+    const esSuperadmin = this.authService.userRol === 'superadmin';
+
     this.form = this.fb.group(
       {
-        provincia: ['', [Validators.required]],
+        provincia: ['', esSuperadmin ? [Validators.required] : [] ],    // Solo si el rol es superadmin
         userName: ['', [Validators.required, Validators.minLength(6)]],
         userEmail: ['', [Validators.required, Validators.email]],
         userPassword: ['', [Validators.required, Validators.minLength(6)]],
-        userPasswordConfirm: [''], // sin validadores individuales
+        userPasswordConfirm: [''], // Sin validadores individuales
       },
       {
         validators: matchPasswords('userPassword', 'userPasswordConfirm'),
@@ -87,7 +90,6 @@ export class RegisterUserFormComponent {
       .select('provincia');
 
     if (error) {
-      console.error('Error al cargar provincias desde centros:', error.message);
       return;
     }
 
@@ -102,7 +104,7 @@ export class RegisterUserFormComponent {
 
     this.cdr.detectChanges();
   } catch (err) {
-    console.error('Error inesperado al cargar provincias:', err);
+    // Error capturado, no se necesita acción adicional
   }
 }
 
@@ -119,85 +121,79 @@ export class RegisterUserFormComponent {
    * @param provincia - Provincia del centro en el que queremos registrar al alumno en caso de que exista
    * @returns booleano que indica si el registro fue exitoso
    */
-  async registrarAlumno (nombre: string, email: string, password: string, provincia?: string): Promise<true | false | string> {
-    try {
-      // Crear el usuario en Supabase Auth
-      const { data: signUpData, error: signUpError } =
-        await this.supabase.auth.signUp({ email, password });
+  async registrarAlumno(nombre: string, email: string, password: string, provincia?: string): Promise<true | false | string> {
+  try {
+    // Comprobar si el email ya está registrado en la tabla 'usuarios'
+    const { data: existingUser, error: existingUserError } = await this.supabase.client
+      .from('usuarios')
+      .select('uid')
+      .eq('correo', email)
+      .maybeSingle();
 
-      if (signUpError) {
-        console.error(
-          'Error en Supabase Auth signUp:',
-          signUpError.message,
-          signUpError
-        );
-        return false;
-      }
-
-      const uid = signUpData.user?.id;
-      if (!uid) {
-        console.error('UID no obtenido después del registro en Auth.');
-        return false;
-      }
-
-      let idCentro: string | null = null;
-
-      if (this.authService.userRol === 'superadmin') {
-        if (!provincia) {
-          console.error('Provincia no proporcionada por el superadmin.');
-          return false;
-        }
-
-        const { data: centroData, error: centroError } =
-          await this.supabase.client
-            .from('centros')
-            .select('id_centro')
-            .eq('provincia', provincia)
-            .single();
-
-        if (centroError || !centroData) {
-          console.error(
-            'Provincia no encontrada o error al obtener centro:',
-            centroError?.message || 'No se encontró la provincia'
-          );
-          return false;
-        }
-
-        idCentro = centroData.id_centro;
-      } else {
-        idCentro = this.authService.userCentro;
-      }
-
-      // Inserta el alumno en la tabla 'usuarios'
-      const { error: insertError } = await this.supabase.client
-        .from('usuarios')
-        .insert({
-          uid,
-          nombre,
-          correo: email,
-          centro: idCentro,
-          rol: 'alumno',
-        });
-      if (insertError) {
-        if (insertError.code === '23505') {
-          console.error('El correo ya está registrado.');
-          return 'El correo ya está registrado. Inicia sesión o inténtalo de nuevo.';
-        }
-
-        console.error(
-          'Error al insertar en tabla usuarios:',
-          insertError.message,
-          insertError
-        );
-        return false;
-      }
-
-      return true;
-    } catch (error: any) {
-      console.error('Error al registrar alumno:', error?.message || error);
+    if (existingUserError && existingUserError.code !== 'PGRST116') {
       return false;
     }
+
+    if (existingUser) {
+      // Si el email ya existe, devuelve un mensaje y detiene la ejecución del método
+      return 'El correo ya está registrado. Inicia sesión o usa otro correo.';
+    }
+
+    // Si no existe, continua con registro en Supabase Auth
+    const { data: signUpData, error: signUpError } = await this.supabase.auth.signUp({ email, password });
+
+    if (signUpError) {
+      return false;
+    }
+
+    const uid = signUpData.user?.id;
+    if (!uid) {
+      return false;
+    }
+
+    // Conseguir idCentro según rol y provincia
+    let idCentro: string | null = null;
+
+    if (this.authService.userRol === 'superadmin') {
+      if (!provincia) {
+        return false;
+      }
+
+      const { data: centroData, error: centroError } = await this.supabase.client
+        .from('centros')
+        .select('id_centro')
+        .eq('provincia', provincia)
+        .single();
+
+      if (centroError || !centroData) {
+        return false;
+      }
+
+      idCentro = centroData.id_centro;
+    } else {
+      idCentro = this.authService.userCentro;
+    }
+
+    // Insertar usuario en tabla 'usuarios'
+    const { error: insertError } = await this.supabase.client
+      .from('usuarios')
+      .insert({
+        uid,
+        nombre,
+        correo: email,
+        centro: idCentro,
+        rol: 'alumno',
+      });
+
+    if (insertError) {
+      return false;
+    }
+
+    return true;
+  } catch (error: any) {
+    return false;
   }
+}
 
   /**
    * Maneja el envío del formulario de registro del alumno.
@@ -208,6 +204,7 @@ export class RegisterUserFormComponent {
    * Muestra un mensaje de éxito y resetea el formulario.
    */
   async onSubmit(): Promise<void> {
+    // Comprueba que el formulario sea válido
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -239,17 +236,12 @@ export class RegisterUserFormComponent {
 
         this.form.get('userEmail')?.markAsTouched();
 
-        console.warn(registrado);
-      } else {
-        console.warn(
-          'Registro fallido: no se recibió respuesta esperada del método registrarAlumno().'
-        );
       }
     } catch (error: any) {
-      console.error('Error inesperado en el envío del formulario:', error);
+      // Error capturado, no se necesita acción adicional
     } finally {
       this.isLoading = false;
-      this.cdr.markForCheck();
+       this.cdr.detectChanges();
     }
   }
 }

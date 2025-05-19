@@ -1,58 +1,69 @@
 @if (loading) {
-  <div class="flex justify-center items-center h-screen">
-    <span class="loading loading-bars loading-lg text-primary"></span>
-  </div>
+<div class="flex justify-center items-center h-screen">
+  <span class="loading loading-spinner loading-lg text-primary"></span>
+  <span class="ml-4 text-lg">Cargando estudiantes...</span>
+</div>
+} @else if (estudiantes.length === 0) {
+<div class="text-center mt-10 text-[#002782] font-bold text-lg">
+  No hay estudiantes registrados.
+</div>
 } @else {
-  <div class="overflow-x-auto rounded-2xl shadow-md bg-white">
-    <table class="table table-zebra w-full">
-      <thead class="bg-base-200 text-[#002782] text-sm uppercase font-semibold">
-        <tr>
-          <th class="rounded-tl-2xl">Usuario</th>
-          <th>Fecha de registro</th>
-          <th>Rol</th>
-          @if (rol === "superadmin") {<th>Centro</th>}
-          <th class="rounded-tr-2xl">Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of usuario; track $index) {
-          @if ((rol === "admin" && item.rol !== "admin") || (rol === "superadmin" && item.rol !== "superadmin") ){
-            <tr class="hover">
-              <td>
-                <div class="flex items-center gap-4">
-                  <div class="avatar">
-                    <div class="mask mask-circle w-12 h-12">
-                      <img src="https://ui-avatars.com/api/?name={{item.nombre}}&background=002782&color=fff"
-                          alt="Avatar {{item.nombre}}" />
-                    </div>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-base">{{ item.nombre }}</p>
-                    <p class="text-sm text-gray-500">{{ item.correo }}</p>
-                  </div>
-                </div>
-              </td>
-              <td class="text-sm">{{ item.fecha_registro | date: 'dd/MM/yyyy' }}</td>
-              <td>
-                <span class="badge badge-outline text-xs px-3 py-1">{{ item.rol }}</span>
-              </td>
-              @if (rol === "superadmin") {
-                <td>
-                  <p class="text-sm text-gray-500">{{ centersMap[item.centro] }}</p>
-                </td>
-              }
-              <td>
-                <button class="btn btn-sm btn-outline btn-primary" (click)="openDetails(item)">
-                  Ver detalles
-                </button>
-              </td>
-            </tr>
-          }
+<div class="overflow-x-auto rounded-2xl shadow-md bg-white">
+  <table class="table table-zebra w-full">
+    <thead class="bg-base-200 text-[#002782] text-sm uppercase font-semibold">
+      <tr>
+        <th class="rounded-tl-2xl">Usuario</th>
+        <th>Fecha de registro</th>
+        <th>Rol</th>
+        @if (rol === "superadmin") {
+        <th>Centro</th>
         }
-      </tbody>
-    </table>
-  </div>
-  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <app-single-student (close)="closeDetails()" [selectedUser]="selectedUser"></app-single-student>
-  </div>
+        <th class="rounded-tr-2xl">Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of estudiantes; track $index) {
+      <tr class="hover">
+        <td>
+          <div class="flex items-center gap-4">
+            <div class="avatar">
+              <div class="mask mask-circle w-12 h-12">
+                <img
+                  src="https://ui-avatars.com/api/?name={{
+                    item.nombre
+                  }}&background=002782&color=fff"
+                  alt="Avatar {{ item.nombre }}"
+                />
+              </div>
+            </div>
+            <div>
+              <p class="font-semibold text-base">{{ item.nombre }}</p>
+              <p class="text-sm text-gray-500">{{ item.correo }}</p>
+            </div>
+          </div>
+        </td>
+        <td class="text-sm">{{ item.fecha_registro | date : "dd/MM/yyyy" }}</td>
+        <td>
+          <span class="badge badge-outline text-xs px-3 py-1">{{
+            item.rol
+          }}</span>
+        </td>
+        @if (rol === "superadmin") {
+        <td>
+          <p class="text-sm text-gray-500">{{ centersMap[item.centro] }}</p>
+        </td>
+        }
+        <td>
+          <button
+            class="btn btn-sm btn-outline btn-primary"
+            (click)="openDetails(item)"
+          >
+            Ver detalles
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
 }

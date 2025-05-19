@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { SupabaseService } from '../../../supabase/supabase.service';
 import { SingleStudentComponent } from './single-student/single-student.component';
 import { AuthService } from '../../../supabase/auth.service';
@@ -46,8 +51,8 @@ export class AdminComponent implements OnInit {
     centro: '',
     centros: {
       id_centro: '',
-      nombre: ''
-    }
+      nombre: '',
+    },
   };
 
   constructor(
@@ -65,7 +70,7 @@ export class AdminComponent implements OnInit {
     // Solo para superadmin: escucha cambios del centro seleccionado
     if (this.rol === 'superadmin') {
       this.getAllCenters();
-      this.supabase.centroSeleccionado$.subscribe(async centro => {
+      this.supabase.centroSeleccionado$.subscribe(async (centro) => {
         this.centro = centro;
         if (!centro) {
           await this.cargarTodosLosUsuarios();
@@ -81,15 +86,12 @@ export class AdminComponent implements OnInit {
       } else {
         await this.cargarUsuariosPorCentro(centroActual);
       }
-
     } else if (this.rol === 'admin' && this.centro) {
       await this.cargarUsuariosPorCentro(this.centro);
     }
 
     this.cdr.detectChanges();
   }
-
-
 
   async cargarTodosLosUsuarios() {
     this.loading = true;
@@ -105,8 +107,8 @@ export class AdminComponent implements OnInit {
         centro_nombre: '',
         centros: {
           id_centro: '',
-          nombre: ''
-        }
+          nombre: '',
+        },
       }));
     } catch {
       this.error = 'Error al cargar todos los usuarios';
@@ -145,8 +147,8 @@ export class AdminComponent implements OnInit {
       centro: '',
       centros: {
         id_centro: '',
-        nombre: ''
-      }
+        nombre: '',
+      },
     };
   }
 
@@ -156,5 +158,9 @@ export class AdminComponent implements OnInit {
       acc[centro.id_centro] = centro.nombre;
       return acc;
     }, {} as Record<string, string>);
+  }
+
+  get estudiantes(): User[] {
+    return this.usuario.filter((u) => u.rol === 'alumno');
   }
 }

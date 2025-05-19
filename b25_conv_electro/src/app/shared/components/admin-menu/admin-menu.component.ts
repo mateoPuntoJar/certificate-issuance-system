@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../../supabase/auth.service';
 import { SupabaseService } from '../../../supabase/supabase.service';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterLink, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-menu',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterModule],
+  imports: [ CommonModule, FormsModule, RouterLink, RouterModule ],
   templateUrl: './admin-menu.component.html',
 })
 export class AdminMenuComponent implements OnInit {
@@ -20,7 +20,8 @@ export class AdminMenuComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private supabase: SupabaseService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,10 +31,29 @@ export class AdminMenuComponent implements OnInit {
     this.supabase.centroSeleccionado$.subscribe(centro => {
       this.centroSeleccionado = centro;
     });
+
+    // Verificar si hay sesión al iniciar el componente
+    this.supabase.client.auth.getSession().then(({ data, error }) => {
+      if (!data.session) {
+        this.router.navigate(['']);
+      }
+    });
+
+    // Escuchar cambios de sesión
+    this.supabase.client.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        this.router.navigate(['']);
+      }
+    });
   }
 
-  logout() {
-    this.authService.signOut();
+  // Cerrar sesión
+  async logout(): Promise<void> {
+    try {
+      await this.authService.signOut();
+    } catch (error: any) {
+      // Error ignorado, no se interrumpe el flujo aunque ocurra un error al cerrar sesión
+    }
   }
 
   async loadCentros() {

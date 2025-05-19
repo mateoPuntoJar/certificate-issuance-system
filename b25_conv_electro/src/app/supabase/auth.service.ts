@@ -43,7 +43,7 @@ export class AuthService {
 
     this.user = data.user;
     this.userRol = profileRol.rol;
-    this.userCentro = profileRol.centro; 
+    this.userCentro = profileRol.centro;
 
     // Redirigir al dashboard
     this.redirecTo();
@@ -51,10 +51,16 @@ export class AuthService {
 
   // Cerrar sesión
   async signOut(): Promise<void> {
-    await this.supabaseService.client.auth.signOut();
-    this.user = null;
-    this.userRol = '';
-    await this.router.navigate(['']);
+    try {
+      await this.supabaseService.client.auth.signOut();
+    } catch (error: any) {
+      // Error ignorado, puede que el token ya no sea válido
+    } finally {
+      this.user = null;
+      this.userRol = '';
+      this.userCentro = '';
+      await this.router.navigate(['']);
+    }
   }
 
   // Verificar si está autenticado

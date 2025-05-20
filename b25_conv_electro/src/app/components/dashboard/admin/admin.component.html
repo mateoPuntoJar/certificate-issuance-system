@@ -3,12 +3,12 @@
   <span class="loading loading-spinner loading-lg text-primary"></span>
   <span class="ml-4 text-lg">Cargando estudiantes...</span>
 </div>
-} @else if (estudiantes.length === 0) {
-<div class="text-center mt-10 text-[#002782] font-bold text-lg">
-  No hay estudiantes registrados.
+} @else { @if (estudiantes.length === 0) {
+<div class="text-center mt-10 text-gray-500 text-lg">
+  No hay ningún estudiante registrado.
 </div>
 } @else {
-<div class="overflow-x-auto rounded-2xl shadow-md bg-white">
+<div class="overflow-x-auto rounded-2xl shadow-md bg-white mt-4">
   <table class="table table-zebra w-full">
     <thead class="bg-base-200 text-[#002782] text-sm uppercase font-semibold">
       <tr>
@@ -65,5 +65,14 @@
       }
     </tbody>
   </table>
+</div>
+}
+
+<div
+  *ngIf="showModal"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+>
+  <app-single-student (close)="closeDetails()" [selectedUser]="selectedUser">
+  </app-single-student>
 </div>
 }

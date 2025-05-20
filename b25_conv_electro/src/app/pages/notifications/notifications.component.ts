@@ -46,7 +46,9 @@ export class NotificationsComponent implements OnInit {
 
     const { data, error } = await this.supabaseService.client
       .from('notificaciones')
-      .select('id_notificacion, mensaje, fecha_notificacion, leido')
+      .select(
+        'id_notificacion, mensaje, fecha_notificacion, leido, id_documento'
+      )
       .eq('uid_usuario', uid)
       .order('fecha_notificacion', { ascending: false });
     if (error) {
@@ -58,6 +60,7 @@ export class NotificationsComponent implements OnInit {
         mensaje: n.mensaje,
         fecha: this.formatearFecha(n.fecha_notificacion),
         leido: n.leido,
+        documento: n.id_documento,
         supabaseId: n.id_notificacion,
       }));
       this.cdr.markForCheck();

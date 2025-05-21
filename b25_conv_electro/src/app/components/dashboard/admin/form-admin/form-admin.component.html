@@ -2,7 +2,9 @@
 <div class="mb-6">
   <div class="overflow-x-auto rounded-2xl shadow-md bg-white w-full">
     <table class="table table-zebra w-full">
-      <thead class="bg-[#EDEDED] text-[#002782] uppercase text-sm font-semibold">
+      <thead
+        class="bg-[#EDEDED] text-[#002782] uppercase text-sm font-semibold"
+      >
         <tr>
           <th class="px-4 py-3">Fecha</th>
           <th class="px-4 py-3">Comentarios</th>
@@ -11,31 +13,34 @@
       </thead>
       <tbody class="text-sm">
         @if (loading) {
-          <tr>
-            <td colspan="3" class="text-center py-6">
-              <span class="loading loading-dots loading-lg text-[#002782]"></span>
-            </td>
-          </tr>
-        } @else {
-          @if (comments.length > 0) {
-            @for (comment of comments; track $index) {
-              <tr>
-                <td class="px-4 py-2">{{ comment.fecha_notificacion | date:'dd/MM/yyyy' }}</td>
-                <td class="px-4 py-2">{{ comment.mensaje }}</td>
-                <td class="px-4 py-2">
-                  <span class="badge"
-                        [ngClass]="comment.leido ? 'badge-success' : 'badge-warning'">
-                    {{ comment.leido ? 'Leída' : 'No revisada' }}
-                  </span>
-                </td>
-              </tr>
-            }
-          } @else {
-            <tr>
-              <td colspan="3" class="text-center text-gray-500 py-4">No hay comentarios</td>
-            </tr>
-          }
-        }
+        <tr>
+          <td colspan="3" class="text-center py-6">
+            <span class="loading loading-dots loading-lg text-[#002782]"></span>
+          </td>
+        </tr>
+        } @else { @if (comments.length > 0) { @for (comment of comments; track
+        $index) {
+        <tr>
+          <td class="px-4 py-2">
+            {{ comment.fecha_notificacion | date : "dd/MM/yyyy" }}
+          </td>
+          <td class="px-4 py-2">{{ comment.mensaje }}</td>
+          <td class="px-4 py-2">
+            <span
+              class="badge"
+              [ngClass]="comment.leido ? 'badge-success' : 'badge-warning w-28'"
+            >
+              {{ comment.leido ? "Leída" : "No revisada" }}
+            </span>
+          </td>
+        </tr>
+        } } @else {
+        <tr>
+          <td colspan="3" class="text-center text-gray-500 py-4">
+            No hay comentarios
+          </td>
+        </tr>
+        } }
       </tbody>
     </table>
   </div>
@@ -43,19 +48,20 @@
 
 <!-- Campo para añadir nuevo comentario -->
 <div class="space-y-3">
-  <label for="mensaje" class="block font-semibold text-[#002782]">Agregar nuevo comentario</label>
+  <label for="mensaje" class="block font-semibold text-[#002782]"
+    >Agregar nuevo comentario</label
+  >
   <input
     id="mensaje"
     [formControl]="mensaje"
     placeholder="Escribe tu mensaje..."
-    class="input input-bordered w-full rounded-xl border-gray-300
-           focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20
-           transition duration-200"
+    class="input input-bordered w-full rounded-xl border-gray-300 focus:outline-none focus:border-[#FF5B41] focus:shadow-md focus:shadow-[#FF5B41]/20 transition duration-200"
   />
   <div class="text-right">
     <button
       (click)="sendNotification()"
-      class="btn bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full px-6">
+      class="btn bg-[#002782] hover:bg-[#FF5B41] text-white rounded-full px-6"
+    >
       Enviar
     </button>
   </div>

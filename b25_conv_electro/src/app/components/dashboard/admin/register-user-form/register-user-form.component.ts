@@ -52,6 +52,7 @@ export class RegisterUserFormComponent {
     this.form = this.fb.group(
       {
         provincia: ['', esSuperadmin ? [Validators.required] : [] ],    // Solo si el rol es superadmin
+        centro: ['', esSuperadmin ? [Validators.required] : [] ],    // Solo si el rol es superadmin
         userName: ['', [Validators.required, Validators.minLength(6)]],
         userEmail: ['', [Validators.required, Validators.email]],
         userPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -61,16 +62,40 @@ export class RegisterUserFormComponent {
         validators: matchPasswords('userPassword', 'userPasswordConfirm'),
       }
     );
+
+    this.form.get('provincia')?.valueChanges.subscribe((provincia) => {
+      this.obtenerCentros(provincia);
+    });
   }
+
+  centrosDisponibles: any[] = [];
+
 
   ngOnInit(): void {
     this.userRole = this.authService.userRol;
+
     this.cargarProvinciasDesdeCentros();
+  }
+
+   async obtenerCentros(provincia: string) {
+    const { data, error } = await this.supabase.client
+      .from('centros')
+      .select('id_centro, nombre')
+      .eq('provincia', provincia);
+
+    if (!error) {
+      this.centrosDisponibles = data || [];
+      this.form.get('centro')?.reset();
+    } else {
+      console.error('Error al obtener centros:', error.message);
+      this.centrosDisponibles = [];
+    }
   }
 
   // Resetea el formulario y deja los inputs vacíos
   resetForm() {
-    this.form.reset({ userName: '', userEmail: '', userPassword: '' });
+    this.form.reset({ userName: '', userEmail: '', userPassword: '', userPasswordConfirm: '', provincia: '', centro: '' });
+    this.centrosDisponibles = [];
   }
 
   /**
@@ -108,92 +133,6 @@ export class RegisterUserFormComponent {
   }
 }
 
-  /**
-   *
-   * Registra un nuevo alumno tanto en Supabase Auth como en la tabla 'usuarios'.
-   *
-   * Registra al usuario en Supabase Auth.
-   * Inserta al usuario en la tabla 'usuarios' con rol 'alumno' y el centro asociado al administrador actual.
-   *
-   * @param nombre - Nombre del alumno
-   * @param email - Correo electrónico del alumno
-   * @param password - Contraseña del alumno
-   * @param provincia - Provincia del centro en el que queremos registrar al alumno en caso de que exista
-   * @returns booleano que indica si el registro fue exitoso
-   */
-  async registrarAlumno(nombre: string, email: string, password: string, provincia?: string): Promise<true | false | string> {
-  try {
-    // Comprobar si el email ya está registrado en la tabla 'usuarios'
-    const { data: existingUser, error: existingUserError } = await this.supabase.client
-      .from('usuarios')
-      .select('uid')
-      .eq('correo', email)
-      .maybeSingle();
-
-    if (existingUserError && existingUserError.code !== 'PGRST116') {
-      return false;
-    }
-
-    if (existingUser) {
-      // Si el email ya existe, devuelve un mensaje y detiene la ejecución del método
-      return 'El correo ya está registrado. Inicia sesión o usa otro correo.';
-    }
-
-    // Si no existe, continua con registro en Supabase Auth
-    const { data: signUpData, error: signUpError } = await this.supabase.auth.signUp({ email, password });
-
-    if (signUpError) {
-      return false;
-    }
-
-    const uid = signUpData.user?.id;
-    if (!uid) {
-      return false;
-    }
-
-    // Conseguir idCentro según rol y provincia
-    let idCentro: string | null = null;
-
-    if (this.authService.userRol === 'superadmin') {
-      if (!provincia) {
-        return false;
-      }
-
-      const { data: centroData, error: centroError } = await this.supabase.client
-        .from('centros')
-        .select('id_centro')
-        .eq('provincia', provincia)
-        .single();
-
-      if (centroError || !centroData) {
-        return false;
-      }
-
-      idCentro = centroData.id_centro;
-    } else {
-      idCentro = this.authService.userCentro;
-    }
-
-    // Insertar usuario en tabla 'usuarios'
-    const { error: insertError } = await this.supabase.client
-      .from('usuarios')
-      .insert({
-        uid,
-        nombre,
-        correo: email,
-        centro: idCentro,
-        rol: 'alumno',
-      });
-
-    if (insertError) {
-      return false;
-    }
-
-    return true;
-  } catch (error: any) {
-    return false;
-  }
-}
 
   /**
    * Maneja el envío del formulario de registro del alumno.
@@ -216,27 +155,22 @@ export class RegisterUserFormComponent {
 
     this.isLoading = true;
 
-    const { userName, userEmail, userPassword, provincia } = this.form.value;
+    const adminCenter = await this.getAdminCenter();
+
+    const { userName, userEmail, userPassword, centro } = this.form.value;
 
     try {
-      const registrado = await this.registrarAlumno(
-        userName,
+      const centroARegistrar =  this.authService.userRol === 'superadmin' ? centro : adminCenter
+      await this.supabase.createUser(
         userEmail,
         userPassword,
-        this.authService.userRol === 'superadmin' ? provincia : undefined
+        userName,
+        'alumno',
+        centroARegistrar
       );
 
-      if (registrado === true) {
-        this.successMessage = true;
-        this.resetForm();
-      } else if (typeof registrado === 'string') {
-        this.emailError = true;
-
-        this.form.get('userEmail')?.setErrors({ emailDuplicado: true });
-
-        this.form.get('userEmail')?.markAsTouched();
-
-      }
+      this.successMessage = true;
+      this.resetForm();
     } catch (error: any) {
       // Error capturado, no se necesita acción adicional
     } finally {
@@ -244,4 +178,44 @@ export class RegisterUserFormComponent {
        this.cdr.detectChanges();
     }
   }
+
+
+  async getAdminCenter(): Promise<string | undefined> {
+    const session = await this.supabase.client.auth.getSession();
+
+  const userId = session.data.session?.user?.id;
+
+  if (!userId) {
+    console.error('No hay usuario autenticado');
+    return;
+  }
+
+  const { data, error } = await this.supabase.client
+    .from('usuarios')
+    .select('centro')
+    .eq('uid', userId)
+    .single();
+
+  if (error) {
+    console.error('Error al obtener el centro del usuario:', error.message);
+    return;
+  }
+
+  return data?.centro ?? null;
+}
+
+async existeUsuarioPorCorreo(correo: string): Promise<boolean> {
+  const { data, error } = await this.supabase.client
+    .from('usuarios')
+    .select('id') // Solo seleccionamos el ID por eficiencia
+    .eq('correo', correo)
+    .maybeSingle(); // Usa maybeSingle para evitar excepción si no hay resultados
+
+  if (error) {
+    console.error('Error al verificar existencia del usuario:', error.message);
+    return false;
+  }
+
+  return !!data; // Devuelve true si se encontró el usuario
+}
 }

@@ -161,6 +161,9 @@ export class AdminComponent implements OnInit {
   }
 
   get estudiantes(): User[] {
+    if (this.rol === 'superadmin') {
+      return this.usuario; // Muestra todos los usuarios
+    }
     return this.usuario.filter((u) => u.rol === 'alumno');
   }
 }

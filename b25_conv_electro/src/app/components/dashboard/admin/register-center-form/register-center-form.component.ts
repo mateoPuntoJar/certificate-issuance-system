@@ -75,81 +75,6 @@ export class RegisterCenterFormComponent {
   }
 
     /**
-   * Registra un nuevo usuario en la tabla 'usuarios' con rol de administrador.
-   *
-   * Comprueba si ya existe un usuario con el correo proporcionado.
-   * Registra al usuario en Supabase Auth.
-   * Inserta el nuevo usuario en la tabla `usuarios` con rol 'admin' y el centro asignado.
-   *
-   * @param {string} nombre - Nombre completo del usuario.
-   * @param {string} correo - Correo electrónico del usuario (usado para login).
-   * @param {string} password - Contraseña del usuario.
-   * @param {string} centroId - ID del centro al que se asigna el administrador.
-   * @returns {Promise<string>} UID del usuario registrado si todo va bien.
-   * @throws {Error} Si hay errores durante la verificación, registro o inserción.
-   */
-  public async registrarUsuarioAdministrador(
-  nombre: string,
-  correo: string,
-  password: string,
-  centroId: string
-): Promise<string> {
-  try {
-    // Comprobamos si ya existe un usuario con ese correo
-    const { data: usuarioExistente, error: consultaError } = await this.supabase.client
-      .from('usuarios')
-      .select('uid')
-      .eq('correo', correo)
-      .maybeSingle();
-
-    if (consultaError) {
-      throw new Error(`Error al comprobar existencia del usuario: ${consultaError.message}`);
-    }
-
-    if (usuarioExistente) {
-      throw new Error('Correo ya registrado');
-    }
-
-    // Si no existe, registra al usuario en Supabase Auth
-    const { data, error: signUpError } = await this.supabase.auth.signUp({
-      email: correo,
-      password: password,
-    });
-
-    if (signUpError || !data?.user) {
-      throw new Error(
-        `Error al registrar el usuario: ${
-          signUpError?.message || 'Usuario no encontrado'
-        }`
-      );
-    }
-
-    const uid = data.user.id;
-
-    // Inserta el nuevo usuario en la tabla 'usuarios'
-    const { error: insertError } = await this.supabase.client
-      .from('usuarios')
-      .insert({
-        uid,
-        nombre,
-        correo,
-        centro: centroId,
-        rol: 'admin',
-      });
-
-    if (insertError) {
-      throw new Error(
-        `Error al insertar el usuario en la base de datos: ${insertError.message}`
-      );
-    }
-
-    return uid;
-  } catch (error: any) {
-    throw new Error(`Error en el proceso de registro: ${error.message}`);
-  }
-}
-
-    /**
    * Inserta un nuevo centro educativo en la tabla 'centros'.
    *
    * - Comprueba si ya existe un centro con el mismo nombre y provincia.
@@ -279,15 +204,22 @@ export class RegisterCenterFormComponent {
         );
 
         // Registrar al administrador y obtener su UID
-        const uidUsuario = await this.registrarUsuarioAdministrador(
-          nombreAdmin,
-          correoAdmin,
-          passwordAdmin,
-          idCentro
-        );
+        await this.supabase.createUser(correoAdmin, passwordAdmin, nombreAdmin, 'admin', centroId);
+
+        const { data, error } = await this.supabase.client
+          .from('usuarios')
+          .select('uid')
+          .eq('correo', correoAdmin)
+          .single();
+
+        const idAdmin = data && 'uid' in data ? data.uid : null;
+
+        if (error || !idAdmin) {
+          throw new Error('No se pudo obtener el ID del admin');
+        }
 
         // Actualizar el centro con el UID del administrador
-        await this.actualizarUidCentro(idCentro, uidUsuario);
+        await this.actualizarUidCentro(idCentro, idAdmin);
 
         this.successMessage = true;
         this.resetForm();

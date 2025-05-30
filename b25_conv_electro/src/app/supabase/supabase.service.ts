@@ -22,12 +22,10 @@ export class SupabaseService {
   }
 
   async uploadFile(file: File, path: string) {
-    return this.client.storage
-      .from('documentos')
-      .upload(path, file, {
-        contentType: file.type,
-        upsert: true,
-      });
+    return this.client.storage.from('documentos').upload(path, file, {
+      contentType: file.type,
+      upsert: true,
+    });
   }
 
   async insertDocument(data: {
@@ -74,11 +72,11 @@ export class SupabaseService {
       url_documento: data.url_documento,
       formato_documento: data.formato_documento,
       fecha_subida: data.fecha_subida,
-      estado_verificacion: data.estado_verificacion
+      estado_verificacion: data.estado_verificacion,
     });
   }
 
-  private centroSeleccionadoSubject = new BehaviorSubject<string>("");
+  private centroSeleccionadoSubject = new BehaviorSubject<string>('');
   public centroSeleccionado$ = this.centroSeleccionadoSubject.asObservable();
 
   async getEstudiantesPorCentro(centro: string) {
@@ -96,7 +94,7 @@ export class SupabaseService {
         .single();
       if (centroError) throw centroError;
 
-      return estudiantes.map(est => ({
+      return estudiantes.map((est) => ({
         ...est,
         centro_nombre: centroData.nombre,
       }));
@@ -108,11 +106,11 @@ export class SupabaseService {
 
   async getCentros() {
     try {
-      const { data, error } = await this.client.from("centros").select("*");
+      const { data, error } = await this.client.from('centros').select('*');
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error("Error al obtener los centros", error);
+      console.error('Error al obtener los centros', error);
       throw error;
     }
   }
@@ -125,7 +123,10 @@ export class SupabaseService {
     return this.centroSeleccionadoSubject.getValue();
   }
 
-  async getSignedUrl(path: string, expiresInSeconds: number = 60): Promise<string | null> {
+  async getSignedUrl(
+    path: string,
+    expiresInSeconds: number = 60
+  ): Promise<string | null> {
     const { data, error } = await this.client.storage
       .from('documentos')
       .createSignedUrl(path, expiresInSeconds);
@@ -142,13 +143,19 @@ export class SupabaseService {
     );
   }
 
-  async insertProfileStudent(uid: string, tipo: string, fileName: string, experiencia: string) {
+  async insertProfileStudent(
+    uid: string,
+    tipo: string,
+    fileName: string,
+    experiencia: string
+  ) {
     const profileData: any = {
       uid_usuario: uid,
       experiencia_laboral: experiencia?.trim() || null,
     };
     if (tipo === 'reglada') profileData.titulo_academico = fileName;
-    if (tipo === 'certificado') profileData.certificado_profesionalidad = fileName;
+    if (tipo === 'certificado')
+      profileData.certificado_profesionalidad = fileName;
 
     return this.client
       .from('perfiles_alumnos')
@@ -157,34 +164,26 @@ export class SupabaseService {
 
   getAllNotification(id: string): Observable<any> {
     return from(
-      supabase
-        .from('notificaciones')
-        .select('*')
-        .eq('uid_usuario', id)
+      supabase.from('notificaciones').select('*').eq('uid_usuario', id)
     );
   }
 
   async getAllDocuments() {
-    return this.client
-      .from('documentos_subidos')
-      .select('*');
+    return this.client.from('documentos_subidos').select('*');
   }
 
   getAllStudents(): Observable<any> {
     return from(
       supabase
         .from('usuarios')
-        .select(`uid,nombre,correo,rol,fecha_registro,centro,centros (id_centro,nombre)`)
+        .select(
+          `uid,nombre,correo,rol,fecha_registro,centro,centros (id_centro,nombre)`
+        )
     );
   }
 
   getAdminStudents(centro: string): Observable<any> {
-    return from(
-      supabase
-        .from('usuarios')
-        .select('*')
-        .eq('centro', centro)
-    );
+    return from(supabase.from('usuarios').select('*').eq('centro', centro));
   }
 
   sendNotification(id_usuario: string, mensaje: string) {
@@ -219,7 +218,25 @@ export class SupabaseService {
   }) {
     return this.client.from('perfiles_invitados').insert({
       ...data,
-      fecha_registro: new Date()
+      fecha_registro: new Date(),
+    });
+  }
+
+  async createUser(
+    email: string,
+    password: string,
+    nombre: string,
+    rol: string,
+    centro: string
+  ): Promise<void> {
+    await supabase.functions.invoke('create-user', {
+      body: {
+        email,
+        password,
+        nombre,
+        rol,
+        centro,
+      },
     });
   }
 }

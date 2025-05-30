@@ -31,6 +31,7 @@ export class RegisterGuestFormComponent implements OnInit {
       apellidos: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', Validators.required],
+      provincia: ['', Validators.required],
       centro: ['', Validators.required],
       tipoTitulacion: ['', Validators.required],
       titulo: ['', Validators.required],
@@ -38,11 +39,36 @@ export class RegisterGuestFormComponent implements OnInit {
       documentos: [null, Validators.required],
       aceptaPolitica: [false, Validators.requiredTrue]
     });
+
+    this.form.get('provincia')?.valueChanges.subscribe((provincia) => {
+      this.obtenerCentros(provincia);
+    });
+
   }
+
+  centrosDisponibles: any[] = [];
+  provincias: string[] = [];
 
   async ngOnInit() {
     this.centros = await this.supabase.getCentros();
+    this.provincias = [...new Set(this.centros.map(c => c.provincia))];
   }
+
+     async obtenerCentros(provincia: string) {
+    const { data, error } = await this.supabase.client
+      .from('centros')
+      .select('id_centro, nombre')
+      .eq('provincia', provincia);
+
+    if (!error) {
+      this.centrosDisponibles = data || [];
+      this.form.get('centro')?.reset();
+    } else {
+      console.error('Error al obtener centros:', error.message);
+      this.centrosDisponibles = [];
+    }
+  }
+
 
   async onSubmit() {
     if (this.form.invalid) return this.form.markAllAsTouched();

@@ -1,13 +1,12 @@
-import { Component, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { supabase } from './config/init-supabase';
-import { Centro } from '../components/dashboard/admin/admin.component';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SupabaseService {
-  constructor() {}
+  constructor() { }
 
   get client() {
     return supabase;
@@ -238,5 +237,50 @@ export class SupabaseService {
         centro,
       },
     });
+  }
+
+  async deleteDocument(nombreArchivo: string, uid: string, id_documento: number) {
+    const { error: bucketError } = await this.client.storage
+      .from('documentos')
+      .remove([`${uid}/${nombreArchivo}`]);
+
+    if (bucketError) {
+      console.error('Error al borrar del bucket:', bucketError);
+      return { success: false };
+    }
+
+    const { error: dbError } = await this.client
+      .from('documentos_subidos')
+      .delete()
+      .eq('id_documento', id_documento);
+
+    if (dbError) {
+      console.error('Error al borrar en documentos_subidos:', dbError);
+      return { success: false };
+    }
+
+    const { data: perfiles, error: perfilError } = await this.client
+      .from('perfiles_alumnos')
+      .select('titulo_academico, certificado_profesionalidad')
+      .eq('uid_usuario', uid);
+
+    if (perfilError) {
+      console.error('Error al consultar perfil:', perfilError);
+      return { success: false };
+    }
+
+    const perfil = perfiles?.[0];
+
+    if (perfil) {
+      const updates: any = {};
+      if (perfil.titulo_academico === nombreArchivo) updates.titulo_academico = null;
+      if (perfil.certificado_profesionalidad === nombreArchivo) updates.certificado_profesionalidad = null;
+
+      if (Object.keys(updates).length > 0) {
+        await this.client.from('perfiles_alumnos').update(updates).eq('uid_usuario', uid);
+      }
+    }
+
+    return { success: true };
   }
 }

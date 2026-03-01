@@ -1,7 +1,6 @@
 ![GitHub stars](https://img.shields.io/github/stars/mateoPuntoJar/certificate-issuance-system?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/mateoPuntoJar/certificate-issuance-system?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/mateoPuntoJar/certificate-issuance-system)
-![GitHub license](https://img.shields.io/github/license/mateoPuntoJar/certificate-issuance-system)
 ![Languages](https://img.shields.io/github/languages/top/mateoPuntoJar/certificate-issuance-system)
 
 # Certificate Issuance System

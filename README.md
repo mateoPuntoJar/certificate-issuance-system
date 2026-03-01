@@ -29,7 +29,7 @@ This project was developed as a real-world application focused on secure documen
 - REST API design
 
 ### Frontend
-- Angular
+- Angular 19
 - Reactive Forms
 - Route Guards
 - Session handling
